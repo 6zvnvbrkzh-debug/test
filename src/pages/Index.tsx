@@ -7,9 +7,9 @@ import { ProductCard } from "@/components/marketplace/ProductCard";
 import { mockListings } from "@/lib/mock-data";
 
 const features = [
-  { icon: Zap, title: "Verified Hardware", desc: "Every listing reviewed for accuracy" },
-  { icon: Shield, title: "Secure Payments", desc: "Stripe-powered buyer protection" },
-  { icon: Package, title: "Fast Shipping", desc: "Seller ratings you can trust" },
+  { icon: Zap, title: "Geprüfte Hardware", desc: "Jede Anzeige wird auf Richtigkeit überprüft" },
+  { icon: Shield, title: "Sichere Zahlungen", desc: "Käuferschutz durch Stripe" },
+  { icon: Package, title: "Schneller Versand", desc: "Verkäuferbewertungen denen du vertrauen kannst" },
 ];
 
 const HomePage = () => {
@@ -29,24 +29,24 @@ const HomePage = () => {
           >
             <div className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1 text-xs text-muted-foreground mb-6">
               <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-              Marketplace is live
+              Marktplatz ist live
             </div>
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-balance leading-[1.1] mb-4" style={{ letterSpacing: "-0.04em" }}>
-              The hardware lab for streaming enthusiasts
+              Das Hardware-Labor für Streaming-Enthusiasten
             </h1>
             <p className="text-lg text-muted-foreground max-w-lg mb-8">
-              Buy and sell streaming devices, receivers, and accessories. Built for people who care about specs, not stock photos.
+              Kaufe und verkaufe Streaming-Geräte, Receiver und Zubehör. Gebaut für Leute, die Wert auf Specs legen, nicht auf Stockfotos.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link to="/marketplace">
                 <Button size="lg" className="gap-2 press-scale transition-signal">
-                  Browse Hardware
+                  Hardware durchsuchen
                   <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
                 </Button>
               </Link>
               <Link to="/create-listing">
                 <Button variant="outline" size="lg" className="press-scale transition-signal">
-                  Start Selling
+                  Jetzt verkaufen
                 </Button>
               </Link>
             </div>
@@ -80,9 +80,9 @@ const HomePage = () => {
       {/* Trending */}
       <section className="container pb-20">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold tracking-tight">Trending Hardware</h2>
+          <h2 className="text-xl font-bold tracking-tight">Beliebte Hardware</h2>
           <Link to="/marketplace" className="text-sm text-muted-foreground hover:text-foreground transition-signal flex items-center gap-1">
-            View all <ArrowRight className="h-3 w-3" strokeWidth={1.5} />
+            Alle anzeigen <ArrowRight className="h-3 w-3" strokeWidth={1.5} />
           </Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -96,14 +96,14 @@ const HomePage = () => {
       <section className="container pb-20">
         <div className="rounded-xl border bg-card p-8 md:p-12 text-center">
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-3" style={{ letterSpacing: "-0.03em" }}>
-            Ready to sell your gear?
+            Bereit, deine Geräte zu verkaufen?
           </h2>
           <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-            List your streaming hardware in under 2 minutes. No listing fees for your first 5 items.
+            Stelle deine Streaming-Hardware in unter 2 Minuten ein. Keine Gebühren für deine ersten 5 Artikel.
           </p>
           <Link to="/create-listing">
             <Button size="lg" className="press-scale transition-signal">
-              Create Your First Listing
+              Erste Anzeige erstellen
             </Button>
           </Link>
         </div>

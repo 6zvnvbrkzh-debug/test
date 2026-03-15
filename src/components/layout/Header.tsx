@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 const navLinks = [
-  { to: "/marketplace", label: "Marketplace" },
-  { to: "/marketplace?category=streaming-box", label: "Streaming Boxes" },
-  { to: "/marketplace?category=receiver", label: "Receivers" },
-  { to: "/marketplace?category=accessories", label: "Accessories" },
+  { to: "/marketplace", label: "Marktplatz" },
+  { to: "/marketplace?category=streaming-box", label: "Streaming Boxen" },
+  { to: "/marketplace?category=receiver", label: "Receiver" },
+  { to: "/marketplace?category=accessories", label: "Zubehör" },
 ];
 
 export function Header() {
@@ -52,7 +52,7 @@ export function Header() {
           <Link to="/create-listing">
             <Button size="sm" className="hidden sm:flex gap-1.5 press-scale transition-signal">
               <Plus className="h-3.5 w-3.5" strokeWidth={2} />
-              Sell
+              Verkaufen
             </Button>
           </Link>
           <Link to="/dashboard">
@@ -87,7 +87,7 @@ export function Header() {
           <Link to="/create-listing" onClick={() => setMobileOpen(false)}>
             <Button size="sm" className="w-full mt-2 gap-1.5">
               <Plus className="h-3.5 w-3.5" strokeWidth={2} />
-              Sell an Item
+              Artikel verkaufen
             </Button>
           </Link>
         </nav>

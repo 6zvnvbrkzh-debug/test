@@ -14,9 +14,9 @@ const ProductDetailPage = () => {
     return (
       <Layout>
         <div className="container py-20 text-center">
-          <h1 className="text-xl font-bold mb-2">Listing not found</h1>
+          <h1 className="text-xl font-bold mb-2">Anzeige nicht gefunden</h1>
           <Link to="/marketplace">
-            <Button variant="link">Back to marketplace</Button>
+            <Button variant="link">Zurück zum Marktplatz</Button>
           </Link>
         </div>
       </Layout>
@@ -30,7 +30,7 @@ const ProductDetailPage = () => {
       <div className="container py-6">
         <Link to="/marketplace" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-signal mb-6">
           <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.5} />
-          Back to marketplace
+          Zurück zum Marktplatz
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
@@ -74,10 +74,10 @@ const ProductDetailPage = () => {
             {/* Actions */}
             <div className="space-y-2">
               <Button className="w-full press-scale transition-signal" size="lg">
-                Buy Now
+                Jetzt kaufen
               </Button>
               <Button variant="outline" className="w-full press-scale transition-signal" size="lg">
-                Message Seller
+                Verkäufer kontaktieren
               </Button>
             </div>
 
@@ -85,11 +85,11 @@ const ProductDetailPage = () => {
             <div className="flex gap-4 text-xs text-muted-foreground">
               <div className="flex items-center gap-1.5">
                 <ShieldCheck className="h-3.5 w-3.5 text-primary" strokeWidth={1.5} />
-                Buyer Protection
+                Käuferschutz
               </div>
               <div className="flex items-center gap-1.5">
                 <Truck className="h-3.5 w-3.5" strokeWidth={1.5} />
-                Ships in 2-3 days
+                Versand in 2–3 Tagen
               </div>
             </div>
 
@@ -101,20 +101,20 @@ const ProductDetailPage = () => {
                 </div>
                 <div>
                   <p className="text-sm font-semibold">{listing.sellerName}</p>
-                  <p className="text-xs text-muted-foreground">Member since 2025</p>
+                  <p className="text-xs text-muted-foreground">Mitglied seit 2025</p>
                 </div>
               </div>
             </div>
 
             {/* Description */}
             <div>
-              <h3 className="text-sm font-semibold mb-2">Description</h3>
+              <h3 className="text-sm font-semibold mb-2">Beschreibung</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{listing.description}</p>
             </div>
 
             {/* Specs */}
             <div>
-              <h3 className="text-sm font-semibold mb-2">Technical Specifications</h3>
+              <h3 className="text-sm font-semibold mb-2">Technische Daten</h3>
               <div className="rounded-lg border overflow-hidden">
                 {specEntries.map(([key, value], i) => (
                   <div
