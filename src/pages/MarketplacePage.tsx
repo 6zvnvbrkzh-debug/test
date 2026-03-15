@@ -38,7 +38,7 @@ const MarketplacePage = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
             <Input
-              placeholder="Search hardware..."
+              placeholder="Hardware suchen..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="pl-9"
@@ -77,7 +77,7 @@ const MarketplacePage = () => {
             <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm md:hidden" onClick={() => setShowFilters(false)}>
               <div className="absolute right-0 top-0 h-full w-72 bg-card border-l p-6 overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="font-semibold">Filters</h3>
+                  <h3 className="font-semibold">Filter</h3>
                   <Button variant="ghost" size="icon" onClick={() => setShowFilters(false)}>
                     <X className="h-4 w-4" />
                   </Button>
@@ -98,7 +98,7 @@ const MarketplacePage = () => {
           <div className="flex-1">
             <div className="flex items-center justify-between mb-4">
               <p className="text-sm text-muted-foreground">
-                <span className="font-mono">{filtered.length}</span> results
+                <span className="font-mono">{filtered.length}</span> Ergebnisse
               </p>
             </div>
             {filtered.length > 0 ? (
@@ -109,9 +109,9 @@ const MarketplacePage = () => {
               </div>
             ) : (
               <div className="text-center py-20">
-                <p className="text-muted-foreground">No listings found</p>
+                <p className="text-muted-foreground">Keine Anzeigen gefunden</p>
                 <Button variant="link" onClick={() => { setQuery(""); setSelectedCategories([]); setSelectedConditions([]); setPriceRange([0, 500]); }}>
-                  Clear filters
+                  Filter zurücksetzen
                 </Button>
               </div>
             )}

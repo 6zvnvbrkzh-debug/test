@@ -6,9 +6,9 @@ import { ProductCard } from "@/components/marketplace/ProductCard";
 import { mockListings } from "@/lib/mock-data";
 
 const tabs = [
-  { id: "listings", label: "My Listings", icon: Package },
-  { id: "orders", label: "Orders", icon: ShoppingBag },
-  { id: "settings", label: "Settings", icon: Settings },
+  { id: "listings", label: "Meine Anzeigen", icon: Package },
+  { id: "orders", label: "Bestellungen", icon: ShoppingBag },
+  { id: "settings", label: "Einstellungen", icon: Settings },
 ];
 
 const DashboardPage = () => {
@@ -24,7 +24,7 @@ const DashboardPage = () => {
           </div>
           <div>
             <h1 className="text-xl font-bold">TechDeals</h1>
-            <p className="text-sm text-muted-foreground">Member since March 2025 · 3 active listings</p>
+            <p className="text-sm text-muted-foreground">Mitglied seit März 2025 · 3 aktive Anzeigen</p>
           </div>
         </div>
 
@@ -47,11 +47,11 @@ const DashboardPage = () => {
 
         {/* Content */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-semibold">Active Listings</h2>
+          <h2 className="font-semibold">Aktive Anzeigen</h2>
           <Link to="/create-listing">
             <Button size="sm" className="gap-1.5 press-scale transition-signal">
               <Plus className="h-3.5 w-3.5" strokeWidth={2} />
-              New Listing
+              Neue Anzeige
             </Button>
           </Link>
         </div>

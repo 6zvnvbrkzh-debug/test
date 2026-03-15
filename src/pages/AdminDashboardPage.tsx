@@ -9,16 +9,16 @@ const AdminDashboardPage = () => {
   return (
     <Layout>
       <div className="container py-8">
-        <h1 className="text-2xl font-bold tracking-tight mb-1">Admin Dashboard</h1>
-        <p className="text-sm text-muted-foreground mb-8">Manage listings and users</p>
+        <h1 className="text-2xl font-bold tracking-tight mb-1">Admin-Dashboard</h1>
+        <p className="text-sm text-muted-foreground mb-8">Anzeigen und Nutzer verwalten</p>
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
-            { label: "Active Listings", value: "8" },
-            { label: "Total Users", value: "4" },
-            { label: "Orders Today", value: "0" },
-            { label: "Revenue", value: "$0" },
+            { label: "Aktive Anzeigen", value: "8" },
+            { label: "Nutzer gesamt", value: "4" },
+            { label: "Bestellungen heute", value: "0" },
+            { label: "Umsatz", value: "0 €" },
           ].map((stat) => (
             <div key={stat.label} className="rounded-lg border bg-card p-4">
               <p className="text-xs text-muted-foreground">{stat.label}</p>
@@ -28,17 +28,17 @@ const AdminDashboardPage = () => {
         </div>
 
         {/* Listings table */}
-        <h2 className="font-semibold mb-4">All Listings</h2>
+        <h2 className="font-semibold mb-4">Alle Anzeigen</h2>
         <div className="rounded-lg border overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b bg-muted/50">
-                  <th className="text-left px-4 py-3 font-medium text-muted-foreground">Title</th>
-                  <th className="text-left px-4 py-3 font-medium text-muted-foreground">Seller</th>
-                  <th className="text-left px-4 py-3 font-medium text-muted-foreground">Price</th>
-                  <th className="text-left px-4 py-3 font-medium text-muted-foreground">Condition</th>
-                  <th className="text-right px-4 py-3 font-medium text-muted-foreground">Actions</th>
+                  <th className="text-left px-4 py-3 font-medium text-muted-foreground">Titel</th>
+                  <th className="text-left px-4 py-3 font-medium text-muted-foreground">Verkäufer</th>
+                  <th className="text-left px-4 py-3 font-medium text-muted-foreground">Preis</th>
+                  <th className="text-left px-4 py-3 font-medium text-muted-foreground">Zustand</th>
+                  <th className="text-right px-4 py-3 font-medium text-muted-foreground">Aktionen</th>
                 </tr>
               </thead>
               <tbody>
@@ -46,7 +46,7 @@ const AdminDashboardPage = () => {
                   <tr key={l.id} className="border-b last:border-0 hover:bg-muted/30 transition-signal">
                     <td className="px-4 py-3 font-medium max-w-[200px] truncate">{l.title}</td>
                     <td className="px-4 py-3 text-muted-foreground">{l.sellerName}</td>
-                    <td className="px-4 py-3 font-mono">${l.price.toFixed(2)}</td>
+                    <td className="px-4 py-3 font-mono">{l.price.toFixed(2)} €</td>
                     <td className="px-4 py-3"><ConditionBadge condition={l.condition} /></td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">

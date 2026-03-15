@@ -40,7 +40,7 @@ export function FilterSidebar({
     <aside className="space-y-6">
       {/* Categories */}
       <div>
-        <h3 className="text-sm font-semibold mb-3">Category</h3>
+        <h3 className="text-sm font-semibold mb-3">Kategorie</h3>
         <div className="space-y-2">
           {CATEGORIES.map((cat) => (
             <div key={cat.value} className="flex items-center gap-2">
@@ -60,7 +60,7 @@ export function FilterSidebar({
 
       {/* Condition */}
       <div>
-        <h3 className="text-sm font-semibold mb-3">Condition</h3>
+        <h3 className="text-sm font-semibold mb-3">Zustand</h3>
         <div className="space-y-2">
           {CONDITIONS.map((cond) => (
             <div key={cond.value} className="flex items-center gap-2">
@@ -80,7 +80,7 @@ export function FilterSidebar({
 
       {/* Price */}
       <div>
-        <h3 className="text-sm font-semibold mb-3">Price Range</h3>
+        <h3 className="text-sm font-semibold mb-3">Preisbereich</h3>
         <Slider
           min={0}
           max={500}
@@ -90,8 +90,8 @@ export function FilterSidebar({
           className="mb-2"
         />
         <div className="flex justify-between text-xs text-muted-foreground font-mono">
-          <span>${priceRange[0]}</span>
-          <span>${priceRange[1]}+</span>
+          <span>{priceRange[0]} €</span>
+          <span>{priceRange[1]}+ €</span>
         </div>
       </div>
     </aside>

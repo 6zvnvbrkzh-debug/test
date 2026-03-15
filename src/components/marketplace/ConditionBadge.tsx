@@ -8,10 +8,10 @@ const conditionStyles: Record<Condition, string> = {
 };
 
 const conditionLabels: Record<Condition, string> = {
-  NEW: "New",
-  OPEN_BOX: "Open Box",
-  USED: "Used",
-  FOR_PARTS: "For Parts",
+  NEW: "Neu",
+  OPEN_BOX: "Geöffnet",
+  USED: "Gebraucht",
+  FOR_PARTS: "Ersatzteile",
 };
 
 export function ConditionBadge({ condition }: { condition: Condition }) {

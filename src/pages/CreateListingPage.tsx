@@ -13,8 +13,8 @@ import { toast } from "sonner";
 const CreateListingPage = () => {
   const navigate = useNavigate();
   const [specs, setSpecs] = useState<{ key: string; value: string }[]>([
-    { key: "Resolution", value: "" },
-    { key: "Connectivity", value: "" },
+    { key: "Auflösung", value: "" },
+    { key: "Konnektivität", value: "" },
   ]);
 
   const addSpec = () => setSpecs([...specs, { key: "", value: "" }]);
@@ -22,20 +22,20 @@ const CreateListingPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Listing created! (Demo mode)");
+    toast.success("Anzeige erstellt! (Demo-Modus)");
     navigate("/marketplace");
   };
 
   return (
     <Layout>
       <div className="container max-w-2xl py-8">
-        <h1 className="text-2xl font-bold tracking-tight mb-1">Create Listing</h1>
-        <p className="text-sm text-muted-foreground mb-8">List your streaming hardware for sale</p>
+        <h1 className="text-2xl font-bold tracking-tight mb-1">Anzeige erstellen</h1>
+        <p className="text-sm text-muted-foreground mb-8">Stelle deine Streaming-Hardware zum Verkauf ein</p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Images */}
           <div>
-            <Label className="mb-2 block">Product Images</Label>
+            <Label className="mb-2 block">Produktbilder</Label>
             <div className="grid grid-cols-3 gap-3">
               {[1, 2, 3].map((i) => (
                 <div
@@ -43,7 +43,7 @@ const CreateListingPage = () => {
                   className="aspect-square rounded-lg border-2 border-dashed border-muted-foreground/20 flex flex-col items-center justify-center cursor-pointer hover:border-primary/40 transition-signal"
                 >
                   <Upload className="h-5 w-5 text-muted-foreground/40 mb-1" strokeWidth={1.5} />
-                  <span className="text-xs text-muted-foreground/40">Upload</span>
+                  <span className="text-xs text-muted-foreground/40">Hochladen</span>
                 </div>
               ))}
             </div>
@@ -51,23 +51,23 @@ const CreateListingPage = () => {
 
           {/* Title */}
           <div>
-            <Label htmlFor="title">Title</Label>
-            <Input id="title" placeholder="e.g. NVIDIA Shield TV Pro 2019" className="mt-1.5" required />
+            <Label htmlFor="title">Titel</Label>
+            <Input id="title" placeholder="z.B. NVIDIA Shield TV Pro 2019" className="mt-1.5" required />
           </div>
 
           {/* Description */}
           <div>
-            <Label htmlFor="desc">Description</Label>
-            <Textarea id="desc" placeholder="Describe your item, include condition details..." className="mt-1.5 min-h-[100px]" required />
+            <Label htmlFor="desc">Beschreibung</Label>
+            <Textarea id="desc" placeholder="Beschreibe deinen Artikel, inkl. Zustandsdetails..." className="mt-1.5 min-h-[100px]" required />
           </div>
 
           {/* Category & Condition */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label>Category</Label>
+              <Label>Kategorie</Label>
               <Select required>
                 <SelectTrigger className="mt-1.5">
-                  <SelectValue placeholder="Select" />
+                  <SelectValue placeholder="Auswählen" />
                 </SelectTrigger>
                 <SelectContent>
                   {CATEGORIES.map((cat) => (
@@ -77,10 +77,10 @@ const CreateListingPage = () => {
               </Select>
             </div>
             <div>
-              <Label>Condition</Label>
+              <Label>Zustand</Label>
               <Select required>
                 <SelectTrigger className="mt-1.5">
-                  <SelectValue placeholder="Select" />
+                  <SelectValue placeholder="Auswählen" />
                 </SelectTrigger>
                 <SelectContent>
                   {CONDITIONS.map((c) => (
@@ -93,23 +93,23 @@ const CreateListingPage = () => {
 
           {/* Price */}
           <div>
-            <Label htmlFor="price">Price ($)</Label>
-            <Input id="price" type="number" min="0" step="0.01" placeholder="0.00" className="mt-1.5 font-mono" required />
+            <Label htmlFor="price">Preis (€)</Label>
+            <Input id="price" type="number" min="0" step="0.01" placeholder="0,00" className="mt-1.5 font-mono" required />
           </div>
 
           {/* Specs */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <Label>Technical Specs</Label>
+              <Label>Technische Daten</Label>
               <Button type="button" variant="ghost" size="sm" onClick={addSpec} className="text-xs gap-1">
-                <Plus className="h-3 w-3" /> Add
+                <Plus className="h-3 w-3" /> Hinzufügen
               </Button>
             </div>
             <div className="space-y-2">
               {specs.map((spec, i) => (
                 <div key={i} className="flex gap-2">
                   <Input
-                    placeholder="Spec name"
+                    placeholder="Bezeichnung"
                     value={spec.key}
                     onChange={(e) => {
                       const next = [...specs];
@@ -119,7 +119,7 @@ const CreateListingPage = () => {
                     className="flex-1"
                   />
                   <Input
-                    placeholder="Value"
+                    placeholder="Wert"
                     value={spec.value}
                     onChange={(e) => {
                       const next = [...specs];
@@ -139,7 +139,7 @@ const CreateListingPage = () => {
           </div>
 
           <Button type="submit" className="w-full press-scale transition-signal" size="lg">
-            Publish Listing
+            Anzeige veröffentlichen
           </Button>
         </form>
       </div>

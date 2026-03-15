@@ -7,7 +7,7 @@ import { mockListings } from "@/lib/mock-data";
 const SellerProfilePage = () => {
   const { id } = useParams();
   const sellerListings = mockListings.filter((l) => l.sellerId === id);
-  const sellerName = sellerListings[0]?.sellerName ?? "Unknown Seller";
+  const sellerName = sellerListings[0]?.sellerName ?? "Unbekannter Verkäufer";
 
   return (
     <Layout>
@@ -20,14 +20,14 @@ const SellerProfilePage = () => {
           <div className="flex-1">
             <h1 className="text-xl font-bold">{sellerName}</h1>
             <div className="flex flex-wrap gap-4 mt-1 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" strokeWidth={1.5} />Joined 2025</span>
-              <span className="flex items-center gap-1"><Star className="h-3.5 w-3.5" strokeWidth={1.5} />Verified Seller</span>
-              <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" strokeWidth={1.5} />United States</span>
+              <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" strokeWidth={1.5} />Beigetreten 2025</span>
+              <span className="flex items-center gap-1"><Star className="h-3.5 w-3.5" strokeWidth={1.5} />Verifizierter Verkäufer</span>
+              <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" strokeWidth={1.5} />Deutschland</span>
             </div>
           </div>
         </div>
 
-        <h2 className="font-semibold mb-4">Listings ({sellerListings.length})</h2>
+        <h2 className="font-semibold mb-4">Anzeigen ({sellerListings.length})</h2>
         {sellerListings.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {sellerListings.map((l, i) => (
@@ -35,7 +35,7 @@ const SellerProfilePage = () => {
             ))}
           </div>
         ) : (
-          <p className="text-muted-foreground text-center py-12">No active listings</p>
+          <p className="text-muted-foreground text-center py-12">Keine aktiven Anzeigen</p>
         )}
       </div>
     </Layout>
