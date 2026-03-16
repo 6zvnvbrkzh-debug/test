@@ -1,127 +1,112 @@
 import { useState, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
-import { Search, SlidersHorizontal, X } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { useSearchParams, Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/marketplace/ProductCard";
-import { FilterSidebar } from "@/components/marketplace/FilterSidebar";
-import { mockListings, type Category, type Condition } from "@/lib/mock-data";
+import { mockListings, type Category } from "@/lib/mock-data";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const categoryOptions = [
+  { value: "all", label: "Alle" },
+  { value: "streaming-box", label: "Formuler" },
+  { value: "receiver", label: "Octagon" },
+  { value: "accessories", label: "Highlights" },
+];
+
+const sortOptions = [
+  { value: "name-asc", label: "Name A–Z" },
+  { value: "name-desc", label: "Name Z–A" },
+  { value: "price-asc", label: "Niedrigster Preis" },
+  { value: "price-desc", label: "Höchster Preis" },
+];
 
 const ShopPage = () => {
   const [searchParams] = useSearchParams();
   const initialCat = searchParams.get("category") as Category | null;
 
-  const [query, setQuery] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState<Category[]>(initialCat ? [initialCat] : []);
-  const [selectedConditions, setSelectedConditions] = useState<Condition[]>([]);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
-  const [showFilters, setShowFilters] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialCat || "all");
+  const [sortBy, setSortBy] = useState("name-asc");
 
   const filtered = useMemo(() => {
-    return mockListings.filter((l) => {
-      if (query && !l.title.toLowerCase().includes(query.toLowerCase())) return false;
-      if (selectedCategories.length && !selectedCategories.includes(l.category)) return false;
-      if (selectedConditions.length && !selectedConditions.includes(l.condition)) return false;
-      if (l.price < priceRange[0] || (priceRange[1] < 500 && l.price > priceRange[1])) return false;
-      return true;
-    });
-  }, [query, selectedCategories, selectedConditions, priceRange]);
+    let results = [...mockListings];
 
-  const activeFilterCount = selectedCategories.length + selectedConditions.length + (priceRange[0] > 0 || priceRange[1] < 500 ? 1 : 0);
+    if (selectedCategory !== "all") {
+      results = results.filter((l) => l.category === selectedCategory);
+    }
+
+    results.sort((a, b) => {
+      switch (sortBy) {
+        case "name-asc": return a.title.localeCompare(b.title);
+        case "name-desc": return b.title.localeCompare(a.title);
+        case "price-asc": return a.price - b.price;
+        case "price-desc": return b.price - a.price;
+        default: return 0;
+      }
+    });
+
+    return results;
+  }, [selectedCategory, sortBy]);
 
   return (
     <Layout>
-      <div className="container py-8">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold tracking-tight mb-1">Produkte</h1>
-          <p className="text-sm text-muted-foreground">Streaming Boxen, Receiver und Zubehör</p>
+      <div className="container py-6">
+        {/* Breadcrumb */}
+        <div className="text-sm text-muted-foreground mb-8">
+          <Link to="/" className="hover:text-foreground transition-signal">Start</Link>
+          <span className="mx-2">/</span>
+          <span className="text-foreground">Produkte</span>
         </div>
 
-        {/* Search bar */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
-            <Input
-              placeholder="Produkt suchen..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="pl-9"
-            />
-          </div>
-          <Button
-            variant="outline"
-            size="icon"
-            className="md:hidden shrink-0 relative"
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            <SlidersHorizontal className="h-4 w-4" strokeWidth={1.5} />
-            {activeFilterCount > 0 && (
-              <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
-                {activeFilterCount}
-              </span>
-            )}
-          </Button>
-        </div>
-
-        <div className="flex gap-8">
-          {/* Sidebar - Desktop */}
-          <div className="hidden md:block w-56 shrink-0">
-            <FilterSidebar
-              selectedCategories={selectedCategories}
-              selectedConditions={selectedConditions}
-              priceRange={priceRange}
-              onCategoryChange={setSelectedCategories}
-              onConditionChange={setSelectedConditions}
-              onPriceChange={setPriceRange}
-            />
-          </div>
-
-          {/* Mobile filters */}
-          {showFilters && (
-            <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm md:hidden" onClick={() => setShowFilters(false)}>
-              <div className="absolute right-0 top-0 h-full w-72 bg-card border-l p-6 overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="font-semibold">Filter</h3>
-                  <Button variant="ghost" size="icon" onClick={() => setShowFilters(false)}>
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-                <FilterSidebar
-                  selectedCategories={selectedCategories}
-                  selectedConditions={selectedConditions}
-                  priceRange={priceRange}
-                  onCategoryChange={setSelectedCategories}
-                  onConditionChange={setSelectedConditions}
-                  onPriceChange={setPriceRange}
-                />
-              </div>
+        {/* Header with filters */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Produkte entdecken</h1>
+          <div className="flex items-center gap-4">
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1.5">Kategorien</p>
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="w-[160px] bg-card">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {categoryOptions.map(opt => (
+                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          )}
-
-          {/* Product Grid */}
-          <div className="flex-1">
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-sm text-muted-foreground">
-                <span className="font-mono-data">{filtered.length}</span> Produkte
-              </p>
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1.5">Sortiert von</p>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-[180px] bg-card">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {sortOptions.map(opt => (
+                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-            {filtered.length > 0 ? (
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-                {filtered.map((listing, i) => (
-                  <ProductCard key={listing.id} listing={listing} index={i} />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-20">
-                <p className="text-muted-foreground">Keine Produkte gefunden</p>
-                <Button variant="link" onClick={() => { setQuery(""); setSelectedCategories([]); setSelectedConditions([]); setPriceRange([0, 500]); }}>
-                  Filter zurücksetzen
-                </Button>
-              </div>
-            )}
           </div>
         </div>
+
+        {/* Product Grid — 4 columns like original */}
+        {filtered.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+            {filtered.map((listing, i) => (
+              <ProductCard key={listing.id} listing={listing} index={i} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20">
+            <p className="text-muted-foreground">Keine Produkte gefunden</p>
+          </div>
+        )}
       </div>
     </Layout>
   );
