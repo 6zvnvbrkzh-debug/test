@@ -7,7 +7,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <img 
-              src="/images/b-electronics-logo.png" 
+              src="/images/b-electronics-logo.webp" 
               alt="B.Electronics Logo" 
               className="h-10 w-10 object-contain"
             />
