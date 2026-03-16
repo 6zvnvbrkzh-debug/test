@@ -74,34 +74,10 @@ const HomePage = () => {
       {/* Hero */}
       <section className="relative overflow-hidden bg-background">
         <div className="relative min-h-[420px] md:min-h-[520px] lg:min-h-[580px]">
-          {/* Background image with parallax feel */}
-          <AnimatePresence mode="wait" custom={direction}>
-            <motion.div
-              key={currentSlide}
-              custom={direction}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-0"
-            >
-              <img
-                src={slide.image}
-                alt={slide.title}
-                className="w-full h-full object-cover"
-              />
-              {/* Multi-layer gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
-              {/* Subtle noise texture */}
-              <div className="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI2EpIi8+PC9zdmc+')]" />
-            </motion.div>
-          </AnimatePresence>
-
           {/* Content */}
           <div className="relative z-10 container h-full flex items-center min-h-[420px] md:min-h-[520px] lg:min-h-[580px]">
-            <div className="max-w-xl py-16 md:py-20">
+            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full py-16 md:py-20">
+              <div className="max-w-xl">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentSlide}
