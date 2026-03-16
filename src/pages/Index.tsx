@@ -18,34 +18,36 @@ const HomePage = () => {
   return (
     <Layout>
       {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-signal-glow/30 to-transparent pointer-events-none" />
-        <div className="container pt-20 pb-16 md:pt-28 md:pb-24">
+      <section className="relative overflow-hidden grain">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute top-20 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="container pt-24 pb-20 md:pt-32 md:pb-28 relative">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.2, 0, 0, 1] }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="max-w-2xl"
           >
-            <div className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1 text-xs text-muted-foreground mb-6">
-              <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+            <div className="inline-flex items-center gap-2 rounded-full border bg-card/80 backdrop-blur-sm px-3 py-1.5 text-xs text-muted-foreground mb-8">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary animate-glow-pulse" />
               Marktplatz ist live
             </div>
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-balance leading-[1.1] mb-4" style={{ letterSpacing: "-0.04em" }}>
-              Das Hardware-Labor für Streaming-Enthusiasten
+            <h1 className="text-4xl md:text-[3.5rem] font-bold tracking-tight text-balance leading-[1.08] mb-5">
+              Das Hardware-Labor für{" "}
+              <span className="text-primary">Streaming-Enthusiasten</span>
             </h1>
-            <p className="text-lg text-muted-foreground max-w-lg mb-8">
+            <p className="text-base md:text-lg text-muted-foreground max-w-lg mb-10 leading-relaxed">
               Kaufe und verkaufe Streaming-Geräte, Receiver und Zubehör. Gebaut für Leute, die Wert auf Specs legen, nicht auf Stockfotos.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link to="/marketplace">
-                <Button size="lg" className="gap-2 press-scale transition-signal">
+                <Button size="lg" className="gap-2 press-scale transition-signal font-semibold shadow-lg shadow-primary/20 hover:shadow-primary/30">
                   Hardware durchsuchen
-                  <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
+                  <ArrowRight className="h-4 w-4" strokeWidth={2} />
                 </Button>
               </Link>
               <Link to="/create-listing">
-                <Button variant="outline" size="lg" className="press-scale transition-signal">
+                <Button variant="outline" size="lg" className="press-scale transition-signal font-semibold">
                   Jetzt verkaufen
                 </Button>
               </Link>
@@ -55,22 +57,22 @@ const HomePage = () => {
       </section>
 
       {/* Features */}
-      <section className="container pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <section className="container pb-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {features.map((f, i) => (
             <motion.div
               key={f.title}
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 + i * 0.1, duration: 0.4, ease: [0.2, 0, 0, 1] }}
-              className="flex items-start gap-3 rounded-lg border bg-card p-4"
+              transition={{ delay: 0.3 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="flex items-start gap-4 rounded-lg border bg-card p-5 hover:border-primary/20 transition-signal"
             >
-              <div className="rounded-md bg-primary/10 p-2">
-                <f.icon className="h-4 w-4 text-primary" strokeWidth={1.5} />
+              <div className="rounded-lg bg-primary/10 p-2.5 shrink-0">
+                <f.icon className="h-4 w-4 text-primary" strokeWidth={2} />
               </div>
               <div>
-                <h3 className="text-sm font-semibold">{f.title}</h3>
-                <p className="text-xs text-muted-foreground mt-0.5">{f.desc}</p>
+                <h3 className="text-sm font-semibold mb-0.5">{f.title}</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">{f.desc}</p>
               </div>
             </motion.div>
           ))}
@@ -78,11 +80,14 @@ const HomePage = () => {
       </section>
 
       {/* Trending */}
-      <section className="container pb-20">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold tracking-tight">Beliebte Hardware</h2>
-          <Link to="/marketplace" className="text-sm text-muted-foreground hover:text-foreground transition-signal flex items-center gap-1">
-            Alle anzeigen <ArrowRight className="h-3 w-3" strokeWidth={1.5} />
+      <section className="container pb-24">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight">Beliebte Hardware</h2>
+            <p className="text-sm text-muted-foreground mt-1">Die aktuellsten Angebote</p>
+          </div>
+          <Link to="/marketplace" className="text-sm text-muted-foreground hover:text-primary transition-signal flex items-center gap-1.5 font-medium">
+            Alle anzeigen <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
           </Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -93,19 +98,22 @@ const HomePage = () => {
       </section>
 
       {/* CTA */}
-      <section className="container pb-20">
-        <div className="rounded-xl border bg-card p-8 md:p-12 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-3" style={{ letterSpacing: "-0.03em" }}>
-            Bereit, deine Geräte zu verkaufen?
-          </h2>
-          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-            Stelle deine Streaming-Hardware in unter 2 Minuten ein. Keine Gebühren für deine ersten 5 Artikel.
-          </p>
-          <Link to="/create-listing">
-            <Button size="lg" className="press-scale transition-signal">
-              Erste Anzeige erstellen
-            </Button>
-          </Link>
+      <section className="container pb-24">
+        <div className="rounded-xl border bg-gradient-to-br from-card to-secondary/50 p-8 md:p-14 text-center relative overflow-hidden grain">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-32 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="relative">
+            <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-3">
+              Bereit, deine Geräte zu verkaufen?
+            </h2>
+            <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+              Stelle deine Streaming-Hardware in unter 2 Minuten ein. Keine Gebühren für deine ersten 5 Artikel.
+            </p>
+            <Link to="/create-listing">
+              <Button size="lg" className="press-scale transition-signal font-semibold shadow-lg shadow-primary/20">
+                Erste Anzeige erstellen
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
     </Layout>
