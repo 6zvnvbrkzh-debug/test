@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Search, ShoppingCart, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/contexts/CartContext";
 import { useState } from "react";
 
 const navLinks = [
