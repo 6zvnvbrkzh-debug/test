@@ -13,6 +13,7 @@ const navLinks = [
 
 export function Header() {
   const location = useLocation();
+  const { totalItems, setIsOpen } = useCart();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const isActive = (to: string) => {
