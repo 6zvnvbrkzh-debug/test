@@ -1,12 +1,15 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, ShieldCheck, Truck, Package } from "lucide-react";
+import { ShieldCheck, Truck, Package } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { mockListings } from "@/lib/mock-data";
+import { useCart } from "@/contexts/CartContext";
+import { toast } from "sonner";
 
 const ProductDetailPage = () => {
   const { id } = useParams();
+  const { addItem } = useCart();
   const listing = mockListings.find((l) => l.id === id);
 
   if (!listing) {
@@ -85,7 +88,15 @@ const ProductDetailPage = () => {
 
             {/* Actions */}
             <div className="space-y-2">
-              <Button className="w-full press-scale transition-signal font-semibold" size="lg" disabled={isSold}>
+              <Button
+                className="w-full press-scale transition-signal font-semibold"
+                size="lg"
+                disabled={isSold}
+                onClick={() => {
+                  addItem(listing);
+                  toast.success(`${listing.title} wurde zum Warenkorb hinzugefügt`);
+                }}
+              >
                 {isSold ? "Ausverkauft" : "In den Warenkorb"}
               </Button>
             </div>

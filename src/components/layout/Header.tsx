@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Search, ShoppingCart, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/contexts/CartContext";
 import { useState } from "react";
 
 const navLinks = [
@@ -12,6 +13,7 @@ const navLinks = [
 
 export function Header() {
   const location = useLocation();
+  const { totalItems, setIsOpen } = useCart();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const isActive = (to: string) => {
@@ -55,8 +57,18 @@ export function Header() {
           <Button variant="ghost" size="icon" className="h-10 w-10 text-muted-foreground hover:text-foreground">
             <Search className="h-5 w-5" strokeWidth={1.5} />
           </Button>
-          <Button variant="ghost" size="icon" className="h-10 w-10 text-muted-foreground hover:text-foreground">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-10 w-10 text-muted-foreground hover:text-foreground relative"
+            onClick={() => setIsOpen(true)}
+          >
             <ShoppingCart className="h-5 w-5" strokeWidth={1.5} />
+            {totalItems > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 bg-primary text-primary-foreground text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                {totalItems}
+              </span>
+            )}
           </Button>
           <Button
             variant="ghost"
