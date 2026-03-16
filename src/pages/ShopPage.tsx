@@ -8,7 +8,7 @@ import { ProductCard } from "@/components/marketplace/ProductCard";
 import { FilterSidebar } from "@/components/marketplace/FilterSidebar";
 import { mockListings, type Category, type Condition } from "@/lib/mock-data";
 
-const MarketplacePage = () => {
+const ShopPage = () => {
   const [searchParams] = useSearchParams();
   const initialCat = searchParams.get("category") as Category | null;
 
@@ -33,12 +33,17 @@ const MarketplacePage = () => {
   return (
     <Layout>
       <div className="container py-8">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold tracking-tight mb-1">Produkte</h1>
+          <p className="text-sm text-muted-foreground">Streaming Boxen, Receiver und Zubehör</p>
+        </div>
+
         {/* Search bar */}
         <div className="flex items-center gap-3 mb-6">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
             <Input
-              placeholder="Hardware suchen..."
+              placeholder="Produkt suchen..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="pl-9"
@@ -98,7 +103,7 @@ const MarketplacePage = () => {
           <div className="flex-1">
             <div className="flex items-center justify-between mb-4">
               <p className="text-sm text-muted-foreground">
-                <span className="font-mono">{filtered.length}</span> Ergebnisse
+                <span className="font-mono-data">{filtered.length}</span> Produkte
               </p>
             </div>
             {filtered.length > 0 ? (
@@ -109,7 +114,7 @@ const MarketplacePage = () => {
               </div>
             ) : (
               <div className="text-center py-20">
-                <p className="text-muted-foreground">Keine Anzeigen gefunden</p>
+                <p className="text-muted-foreground">Keine Produkte gefunden</p>
                 <Button variant="link" onClick={() => { setQuery(""); setSelectedCategories([]); setSelectedConditions([]); setPriceRange([0, 500]); }}>
                   Filter zurücksetzen
                 </Button>
@@ -122,4 +127,4 @@ const MarketplacePage = () => {
   );
 };
 
-export default MarketplacePage;
+export default ShopPage;

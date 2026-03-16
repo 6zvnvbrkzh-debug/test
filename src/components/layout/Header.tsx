@@ -1,13 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
-import { Search, Plus, User, Menu, X } from "lucide-react";
+import { ShoppingBag, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 const navLinks = [
-  { to: "/marketplace", label: "Marktplatz" },
-  { to: "/marketplace?category=streaming-box", label: "Streaming Boxen" },
-  { to: "/marketplace?category=receiver", label: "Receiver" },
-  { to: "/marketplace?category=accessories", label: "Zubehör" },
+  { to: "/produkte", label: "Alle Produkte" },
+  { to: "/produkte?category=streaming-box", label: "Streaming Boxen" },
+  { to: "/produkte?category=receiver", label: "Receiver" },
+  { to: "/produkte?category=accessories", label: "Zubehör" },
 ];
 
 export function Header() {
@@ -20,9 +20,9 @@ export function Header() {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
           <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center shadow-md shadow-primary/20 group-hover:shadow-primary/40 transition-signal">
-            <span className="text-primary-foreground font-bold text-sm tracking-tighter">SG</span>
+            <span className="text-primary-foreground font-bold text-sm tracking-tighter">B</span>
           </div>
-          <span className="font-bold text-lg tracking-tight">Signal</span>
+          <span className="font-bold text-lg tracking-tight">B-Electronics</span>
         </Link>
 
         {/* Desktop Nav */}
@@ -44,20 +44,9 @@ export function Header() {
 
         {/* Actions */}
         <div className="flex items-center gap-1.5">
-          <Link to="/marketplace">
+          <Link to="/produkte">
             <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:text-foreground">
-              <Search className="h-4 w-4" strokeWidth={1.5} />
-            </Button>
-          </Link>
-          <Link to="/create-listing">
-            <Button size="sm" className="hidden sm:flex gap-1.5 press-scale transition-signal text-[13px] h-8 rounded-md font-semibold">
-              <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
-              Verkaufen
-            </Button>
-          </Link>
-          <Link to="/dashboard">
-            <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:text-foreground">
-              <User className="h-4 w-4" strokeWidth={1.5} />
+              <ShoppingBag className="h-4 w-4" strokeWidth={1.5} />
             </Button>
           </Link>
           <Button
@@ -84,12 +73,6 @@ export function Header() {
               {link.label}
             </Link>
           ))}
-          <Link to="/create-listing" onClick={() => setMobileOpen(false)}>
-            <Button size="sm" className="w-full mt-2 gap-1.5 font-semibold">
-              <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
-              Artikel verkaufen
-            </Button>
-          </Link>
         </nav>
       )}
     </header>

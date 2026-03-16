@@ -22,8 +22,8 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
       transition={{ delay: index * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
     >
       <Link
-        to={`/product/${listing.id}`}
-        className={`group block rounded-lg border bg-card overflow-hidden transition-signal hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 ${isSold ? "opacity-60 pointer-events-none" : ""}`}
+        to={`/produkt/${listing.id}`}
+        className={`group block rounded-lg border bg-card overflow-hidden transition-signal hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 ${isSold ? "opacity-60" : ""}`}
       >
         {/* Image */}
         <div className="aspect-[4/3] bg-secondary relative overflow-hidden">
@@ -42,14 +42,12 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
             </div>
           )}
 
-          {/* Sold badge */}
           {isSold && (
             <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm">
               <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Ausverkauft</span>
             </div>
           )}
 
-          {/* Discount badge */}
           {hasDiscount && !isSold && (
             <div className="absolute top-2 left-2">
               <span className="text-[11px] font-bold bg-destructive text-destructive-foreground px-1.5 py-0.5 rounded-md">
@@ -58,7 +56,6 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
             </div>
           )}
 
-          {/* Price chip */}
           <div className="absolute bottom-2 left-2 flex items-center gap-1.5">
             <span className="font-mono-data text-xs font-medium bg-background/95 backdrop-blur-sm px-2 py-1 rounded-md border shadow-sm">
               €{listing.price.toFixed(2)}
@@ -79,12 +76,6 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
           <div className="flex items-center gap-1.5">
             <ConditionBadge condition={listing.condition} />
             <span className="text-[11px] text-muted-foreground capitalize">{listing.category.replace("-", " ")}</span>
-          </div>
-          <div className="flex items-center gap-1.5 pt-0.5">
-            <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center text-[9px] font-bold text-primary">
-              {listing.sellerName[0]}
-            </div>
-            <span className="text-xs text-muted-foreground">{listing.sellerName}</span>
           </div>
         </div>
       </Link>
