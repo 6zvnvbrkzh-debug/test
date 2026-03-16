@@ -9,6 +9,7 @@ import { toast } from "sonner";
 
 const ProductDetailPage = () => {
   const { id } = useParams();
+  const { addItem } = useCart();
   const listing = mockListings.find((l) => l.id === id);
 
   if (!listing) {
