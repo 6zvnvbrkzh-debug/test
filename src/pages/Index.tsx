@@ -155,6 +155,33 @@ const HomePage = () => {
                   </motion.div>
                 </motion.div>
               </AnimatePresence>
+              </div>
+
+              {/* Product Image */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentSlide}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  className="hidden lg:flex items-center justify-center"
+                >
+                  {currentSlide === 0 ? (
+                    <img
+                      src="/images/hero-airpods-pro.webp"
+                      alt="AirPods Pro 3"
+                      className="w-full max-w-md object-contain drop-shadow-2xl"
+                    />
+                  ) : (
+                    <img
+                      src={slide.image}
+                      alt={slide.title}
+                      className="w-full max-w-md object-contain rounded-2xl"
+                    />
+                  )}
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
 
