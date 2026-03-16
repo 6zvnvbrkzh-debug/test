@@ -26,7 +26,7 @@ export function Header() {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3 shrink-0">
           <img 
-            src="/images/b-electronics-logo.png" 
+            src="/images/b-electronics-logo.webp" 
             alt="B.Electronics Logo" 
             className="h-14 w-14 object-contain"
           />
