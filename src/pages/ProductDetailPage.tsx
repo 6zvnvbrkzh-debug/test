@@ -3,7 +3,6 @@ import { ArrowLeft, ShieldCheck, Truck, Package } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
-import { ConditionBadge } from "@/components/marketplace/ConditionBadge";
 import { mockListings } from "@/lib/mock-data";
 
 const ProductDetailPage = () => {
@@ -30,12 +29,16 @@ const ProductDetailPage = () => {
   return (
     <Layout>
       <div className="container py-6">
-        <Link to="/produkte" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-signal mb-6">
-          <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.5} />
-          Zurück zum Shop
-        </Link>
+        {/* Breadcrumb */}
+        <div className="text-sm text-muted-foreground mb-6">
+          <Link to="/" className="hover:text-foreground transition-signal">Start</Link>
+          <span className="mx-2">/</span>
+          <Link to="/produkte" className="hover:text-foreground transition-signal">Produkte</Link>
+          <span className="mx-2">/</span>
+          <span className="text-foreground line-clamp-1">{listing.title}</span>
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
           {/* Left: Image */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -43,12 +46,12 @@ const ProductDetailPage = () => {
             transition={{ duration: 0.4 }}
             className="lg:col-span-3"
           >
-            <div className="aspect-[4/3] rounded-lg bg-secondary border flex items-center justify-center relative overflow-hidden">
+            <div className="aspect-square rounded-lg bg-card border flex items-center justify-center relative overflow-hidden">
               {listing.images.length > 0 ? (
                 <img
                   src={listing.images[0]}
                   alt={listing.title}
-                  className="w-full h-full object-contain p-8"
+                  className="w-full h-full object-contain p-12"
                 />
               ) : (
                 <svg className="w-20 h-20 text-muted-foreground/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={0.5}>
@@ -57,7 +60,7 @@ const ProductDetailPage = () => {
               )}
               {isSold && (
                 <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm">
-                  <span className="text-lg font-bold text-muted-foreground uppercase tracking-wider">Ausverkauft</span>
+                  <span className="text-lg font-bold text-muted-foreground">Ausverkauft</span>
                 </div>
               )}
             </div>
@@ -70,30 +73,25 @@ const ProductDetailPage = () => {
             transition={{ duration: 0.4, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-2 space-y-6"
           >
-            {/* Header */}
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <ConditionBadge condition={listing.condition} />
-                <span className="text-xs text-muted-foreground capitalize">{listing.category.replace("-", " ")}</span>
-              </div>
-              <h1 className="text-2xl font-bold tracking-tight mb-3">{listing.title}</h1>
+              <h1 className="text-2xl font-bold tracking-tight mb-4">{listing.title}</h1>
               <div className="flex items-baseline gap-3">
-                <p className="text-3xl font-mono-data font-medium text-primary">€{listing.price.toFixed(2)}</p>
+                <p className="text-3xl font-semibold">{listing.price.toFixed(2).replace(".", ",")} €</p>
                 {hasDiscount && (
-                  <p className="text-lg font-mono-data text-muted-foreground line-through">€{listing.originalPrice!.toFixed(2)}</p>
+                  <p className="text-lg text-muted-foreground line-through">{listing.originalPrice!.toFixed(2).replace(".", ",")} €</p>
                 )}
               </div>
             </div>
 
             {/* Actions */}
             <div className="space-y-2">
-              <Button className="w-full press-scale transition-signal font-semibold shadow-lg shadow-primary/20" size="lg" disabled={isSold}>
+              <Button className="w-full press-scale transition-signal font-semibold" size="lg" disabled={isSold}>
                 {isSold ? "Ausverkauft" : "In den Warenkorb"}
               </Button>
             </div>
 
             {/* Trust signals */}
-            <div className="flex gap-4 text-xs text-muted-foreground">
+            <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
               <div className="flex items-center gap-1.5">
                 <ShieldCheck className="h-3.5 w-3.5 text-primary" strokeWidth={1.5} />
                 Händlergarantie
@@ -115,22 +113,24 @@ const ProductDetailPage = () => {
             </div>
 
             {/* Specs */}
-            <div>
-              <h3 className="text-sm font-semibold mb-2">Technische Daten</h3>
-              <div className="rounded-lg border overflow-hidden">
-                {specEntries.map(([key, value], i) => (
-                  <div
-                    key={key}
-                    className={`flex items-center justify-between px-3 py-2 text-sm ${
-                      i % 2 === 0 ? "bg-muted/50" : ""
-                    }`}
-                  >
-                    <span className="text-muted-foreground">{key}</span>
-                    <span className="font-mono-data text-xs font-medium">{value}</span>
-                  </div>
-                ))}
+            {specEntries.length > 0 && (
+              <div>
+                <h3 className="text-sm font-semibold mb-2">Technische Daten</h3>
+                <div className="rounded-lg border overflow-hidden">
+                  {specEntries.map(([key, value], i) => (
+                    <div
+                      key={key}
+                      className={`flex items-center justify-between px-3 py-2 text-sm ${
+                        i % 2 === 0 ? "bg-muted/50" : ""
+                      }`}
+                    >
+                      <span className="text-muted-foreground">{key}</span>
+                      <span className="font-mono-data text-xs font-medium">{value}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </motion.div>
         </div>
       </div>
