@@ -6,9 +6,11 @@ export function Footer() {
       <div className="container py-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-emerald-500 via-blue-500 to-purple-600 flex items-center justify-center">
-              <span className="text-white font-bold text-sm">b</span>
-            </div>
+            <img 
+              src="/images/b-electronics-logo.png" 
+              alt="B.Electronics Logo" 
+              className="h-10 w-10 object-contain"
+            />
             <span className="font-semibold">B.Electronics</span>
           </div>
           <nav className="flex items-center gap-6 text-sm text-muted-foreground">

@@ -25,9 +25,11 @@ export function Header() {
       <div className="container flex h-20 items-center justify-between gap-6">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3 shrink-0">
-          <div className="h-12 w-12 rounded-full bg-gradient-to-br from-emerald-500 via-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
-            <span className="text-white font-bold text-xl">b</span>
-          </div>
+          <img 
+            src="/images/b-electronics-logo.png" 
+            alt="B.Electronics Logo" 
+            className="h-14 w-14 object-contain"
+          />
           <span className="font-semibold text-lg hidden sm:block">B.Electronics</span>
         </Link>
 
