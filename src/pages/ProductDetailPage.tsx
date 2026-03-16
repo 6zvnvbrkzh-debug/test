@@ -1,9 +1,11 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, ShieldCheck, Truck, Package } from "lucide-react";
+import { ShieldCheck, Truck, Package } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { mockListings } from "@/lib/mock-data";
+import { useCart } from "@/contexts/CartContext";
+import { toast } from "sonner";
 
 const ProductDetailPage = () => {
   const { id } = useParams();
