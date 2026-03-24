@@ -31,7 +31,7 @@ export function Header() {
               />
             </div>
             <span className="text-sm md:text-base font-bold text-primary-foreground tracking-wide hidden sm:inline">
-              B.E
+              B.Electronics
             </span>
           </Link>
 
