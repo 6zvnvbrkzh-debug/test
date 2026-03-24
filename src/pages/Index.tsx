@@ -1,34 +1,10 @@
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ChevronLeft, ChevronRight, Zap, Truck, ShieldCheck } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowRight, Zap, Truck, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/marketplace/ProductCard";
 import { mockListings } from "@/lib/mock-data";
-import { useState, useEffect, useCallback } from "react";
-
-const heroSlides = [
-  {
-    image: "/images/hero-airpods.png",
-    title: "AirPods Pro 3",
-    titleAccent: "Premium Sound",
-    subtitle: "Kabelloser Premium-Sound mit aktiver Geräuschunterdrückung und räumlichem Audio.",
-    badge: "Nur 1 Stück verfügbar",
-    price: "180,00 €",
-    originalPrice: "239,00 €",
-    link: "/produkt/1",
-  },
-  {
-    image: "/images/hero-coming-soon.jpeg",
-    title: "Neue Produkte",
-    titleAccent: "Coming Soon",
-    subtitle: "Bald wieder neue Top-Geräte von Octagon, Formuler und mehr.",
-    badge: "",
-    price: "",
-    originalPrice: "",
-    link: "/produkte",
-  },
-];
 
 const trustBadges = [
   { icon: Zap, label: "Sofort lieferbar" },
@@ -38,234 +14,115 @@ const trustBadges = [
 
 const HomePage = () => {
   const highlights = mockListings.filter(l => l.status === "ACTIVE").slice(0, 4);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [direction, setDirection] = useState(1);
-
-  const goToSlide = useCallback((index: number) => {
-    setDirection(index > currentSlide ? 1 : -1);
-    setCurrentSlide(index);
-  }, [currentSlide]);
-
-  const nextSlide = useCallback(() => {
-    setDirection(1);
-    setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-  }, []);
-
-  const prevSlide = useCallback(() => {
-    setDirection(-1);
-    setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
-  }, []);
-
-  useEffect(() => {
-    const timer = setInterval(nextSlide, 7000);
-    return () => clearInterval(timer);
-  }, [nextSlide]);
-
-  const slide = heroSlides[currentSlide];
-
-  const slideVariants = {
-    enter: (dir: number) => ({ x: dir > 0 ? "8%" : "-8%", opacity: 0 }),
-    center: { x: 0, opacity: 1 },
-    exit: (dir: number) => ({ x: dir > 0 ? "-8%" : "8%", opacity: 0 }),
-  };
 
   return (
     <Layout>
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-background">
-        <div className="relative min-h-[420px] md:min-h-[520px] lg:min-h-[580px]">
-          {/* Content */}
-          <div className="relative z-10 container h-full flex items-center min-h-[420px] md:min-h-[520px] lg:min-h-[580px]">
-            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full py-16 md:py-20">
-              <div className="max-w-xl">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentSlide}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  {slide.badge && (
-                    <motion.div
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.15, duration: 0.4 }}
-                    >
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-primary/15 text-primary border border-primary/20 mb-5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                        {slide.badge}
-                      </span>
-                    </motion.div>
-                  )}
-
-                  <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] mb-3"
-                  >
-                    {slide.title}
-                    <br />
-                    <span className="bg-gradient-to-r from-primary via-primary to-primary/60 bg-clip-text text-transparent">
-                      {slide.titleAccent}
-                    </span>
-                  </motion.h1>
-
-                  <motion.p
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.35, duration: 0.5 }}
-                    className="text-base md:text-lg text-muted-foreground leading-relaxed mb-6 max-w-md"
-                  >
-                    {slide.subtitle}
-                  </motion.p>
-
-                  {slide.price && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.4, duration: 0.4 }}
-                      className="flex items-baseline gap-3 mb-8"
-                    >
-                      <span className="text-3xl font-bold font-mono-data">{slide.price}</span>
-                      {slide.originalPrice && (
-                        <span className="text-lg text-muted-foreground line-through font-mono-data">{slide.originalPrice}</span>
-                      )}
-                    </motion.div>
-                  )}
-
-                  <motion.div
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5, duration: 0.4 }}
-                    className="flex items-center gap-3"
-                  >
-                    <Link to={slide.link}>
-                      <Button size="lg" className="font-semibold press-scale transition-signal px-8 shadow-[0_0_20px_-4px_hsl(var(--primary)/0.4)]">
-                        Jetzt ansehen
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </Link>
-                    <Link to="/produkte">
-                      <Button size="lg" variant="outline" className="font-medium press-scale transition-signal border-border/60 hover:bg-accent/50">
-                        Alle Produkte
-                      </Button>
-                    </Link>
-                  </motion.div>
-                </motion.div>
-              </AnimatePresence>
-              </div>
-
-              {/* Product Image */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentSlide}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                  className="hidden lg:flex items-center justify-center"
-                >
-                  {currentSlide === 0 ? (
-                    <img
-                      src="/images/hero-airpods-pro.webp"
-                      alt="AirPods Pro 3"
-                      className="w-full max-w-md object-contain drop-shadow-2xl"
-                    />
-                  ) : (
-                    <img
-                      src={slide.image}
-                      alt={slide.title}
-                      className="w-full max-w-md object-contain rounded-2xl"
-                    />
-                  )}
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </div>
-
-          {/* Navigation arrows */}
-          <div className="absolute bottom-6 right-6 md:bottom-8 md:right-8 z-20 flex items-center gap-2">
-            <button
-              onClick={prevSlide}
-              className="h-9 w-9 rounded-full bg-card/60 backdrop-blur-sm border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-card transition-all duration-200"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            {/* Slide indicators */}
-            <div className="flex gap-1.5 mx-1">
-              {heroSlides.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => goToSlide(i)}
-                  className="relative h-9 w-9 flex items-center justify-center"
-                >
-                  <span className={`block rounded-full transition-all duration-500 ${
-                    i === currentSlide
-                      ? "w-6 h-1.5 bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.5)]"
-                      : "w-1.5 h-1.5 bg-muted-foreground/40 hover:bg-muted-foreground/60"
-                  }`} />
-                </button>
-              ))}
-            </div>
-            <button
-              onClick={nextSlide}
-              className="h-9 w-9 rounded-full bg-card/60 backdrop-blur-sm border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-card transition-all duration-200"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </div>
-
-          {/* Progress bar */}
-          <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-border/30 z-20">
-            <motion.div
-              key={currentSlide}
-              className="h-full bg-gradient-to-r from-primary to-primary/60"
-              initial={{ width: "0%" }}
-              animate={{ width: "100%" }}
-              transition={{ duration: 7, ease: "linear" }}
-            />
-          </div>
-        </div>
-
-        {/* Trust badges */}
-        <div className="border-t border-border/50 bg-card/30 backdrop-blur-sm">
-          <div className="container py-4">
-            <div className="flex items-center justify-center gap-8 md:gap-14">
-              {trustBadges.map(({ icon: Icon, label }) => (
-                <div key={label} className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
-                  <Icon className="h-4 w-4 text-primary/80" strokeWidth={1.5} />
-                  <span className="hidden sm:inline">{label}</span>
-                  <span className="sm:hidden">{label.split(" ")[0]}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Welcome text */}
-      <section className="container py-16 text-center">
+      {/* Editorial Hero */}
+      <section className="container pt-16 md:pt-24 pb-12 md:pb-20">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="max-w-4xl"
         >
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-4">
-            Willkommen bei B.Electronics
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Bei uns finden Sie moderne Receiver für entspanntes Streaming und beste Unterhaltung.
-            Wir bieten Top-Geräte wie Octagon und Formuler, schnelle Lieferung und persönlichen Service.
+          <p className="text-sm md:text-base text-muted-foreground tracking-widest uppercase mb-6 md:mb-8">
+            Streaming & Hardware
           </p>
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.95] mb-8 md:mb-12">
+            Moderne Receiver
+            <br />
+            für entspanntes
+            <br />
+            <span className="bg-gradient-to-r from-primary via-primary to-primary/50 bg-clip-text text-transparent">
+              Streaming.
+            </span>
+          </h1>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="flex flex-col sm:flex-row items-start gap-6 md:gap-12"
+        >
+          <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-md">
+            Bei uns finden Sie Top-Geräte von Octagon und Formuler – 
+            schnelle Lieferung und persönlichen Service.
+          </p>
+          <div className="flex items-center gap-3">
+            <Link to="/produkte">
+              <Button size="lg" className="font-semibold press-scale transition-signal px-8 shadow-[0_0_24px_-4px_hsl(var(--primary)/0.4)]">
+                Jetzt entdecken
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
         </motion.div>
       </section>
 
+      {/* Hero Product Showcase */}
+      <section className="container pb-16 md:pb-24">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.4 }}
+          className="relative rounded-2xl border border-border/40 bg-card/30 backdrop-blur-sm overflow-hidden"
+        >
+          <div className="grid md:grid-cols-2 gap-0">
+            {/* Image */}
+            <div className="aspect-square md:aspect-auto md:min-h-[400px] lg:min-h-[500px] bg-gradient-to-br from-card to-surface-sunken flex items-center justify-center p-8 md:p-12">
+              <img
+                src="/images/hero-airpods-pro.webp"
+                alt="AirPods Pro 3"
+                className="w-full max-w-xs md:max-w-sm object-contain drop-shadow-2xl"
+              />
+            </div>
+            {/* Info */}
+            <div className="flex flex-col justify-center p-8 md:p-12 lg:p-16">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-primary/15 text-primary border border-primary/20 mb-6 w-fit">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                Nur 1 Stück verfügbar
+              </span>
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">
+                AirPods Pro 3
+              </h2>
+              <p className="text-muted-foreground leading-relaxed mb-6 max-w-sm">
+                Kabelloser Premium-Sound mit aktiver Geräuschunterdrückung und räumlichem Audio.
+              </p>
+              <div className="flex items-baseline gap-3 mb-8">
+                <span className="text-3xl font-bold font-mono-data">180,00 €</span>
+                <span className="text-lg text-muted-foreground line-through font-mono-data">239,00 €</span>
+              </div>
+              <Link to="/produkt/1">
+                <Button size="lg" className="font-semibold press-scale transition-signal w-fit px-8">
+                  Jetzt ansehen
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Trust badges */}
+      <section className="container pb-16 md:pb-20">
+        <div className="flex items-center justify-center gap-8 md:gap-16">
+          {trustBadges.map(({ icon: Icon, label }) => (
+            <div key={label} className="flex items-center gap-2.5 text-xs md:text-sm text-muted-foreground">
+              <Icon className="h-4 w-4 text-primary/80" strokeWidth={1.5} />
+              <span>{label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Highlights */}
-      <section className="container pb-20">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold tracking-tight">Highlights</h2>
+      <section className="container pb-20 md:pb-28">
+        <div className="flex items-end justify-between mb-10 md:mb-14">
+          <div>
+            <p className="text-xs md:text-sm text-muted-foreground tracking-widest uppercase mb-2">Unsere Auswahl</p>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Highlights</h2>
+          </div>
           <Link to="/produkte" className="text-sm text-muted-foreground hover:text-foreground transition-signal flex items-center gap-1.5">
             Alle Produkte <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
           </Link>
@@ -277,12 +134,18 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="container pb-20">
+      {/* Editorial CTA */}
+      <section className="container pb-20 md:pb-28">
         <Link to="/produkte" className="block group">
-          <div className="rounded-xl border bg-card/50 p-10 text-center hover:border-primary/30 hover:shadow-[0_0_30px_-8px_hsl(var(--primary)/0.15)] transition-all duration-500">
-            <h3 className="text-xl font-bold mb-2">Produkte entdecken</h3>
-            <p className="text-muted-foreground text-sm">Alle Streaming Boxen, Receiver und Zubehör ansehen</p>
+          <div className="rounded-2xl border border-border/40 bg-card/30 backdrop-blur-sm p-12 md:p-16 hover:border-primary/30 hover:shadow-[0_0_40px_-8px_hsl(var(--primary)/0.15)] transition-all duration-500">
+            <p className="text-xs md:text-sm text-muted-foreground tracking-widest uppercase mb-4">Entdecken</p>
+            <h3 className="text-2xl md:text-4xl font-bold tracking-tight mb-3 group-hover:text-primary transition-colors duration-500">
+              Alle Produkte ansehen
+            </h3>
+            <p className="text-muted-foreground max-w-md">
+              Streaming Boxen, Receiver und Zubehör – alles für dein Entertainment Setup.
+            </p>
+            <ArrowRight className="h-5 w-5 mt-6 text-muted-foreground group-hover:text-primary group-hover:translate-x-2 transition-all duration-500" />
           </div>
         </Link>
       </section>
