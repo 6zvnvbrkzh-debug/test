@@ -12,6 +12,7 @@ const navItems = [
 export function Header() {
   const location = useLocation();
   const { totalItems, setIsOpen } = useCart();
+  const { user, signOut } = useAuth();
 
   const isActive = (to: string) => {
     if (to === "/") return location.pathname === "/";
