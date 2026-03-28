@@ -139,8 +139,20 @@ export function CartDrawer() {
                 <span className="text-lg font-bold">{totalPrice.toFixed(2).replace(".", ",")} €</span>
               </div>
               <p className="text-xs text-muted-foreground">Versandkosten werden an der Kasse berechnet.</p>
-              <Button className="w-full font-semibold press-scale transition-signal" size="lg">
-                Zur Kasse
+              <Button
+                className="w-full font-semibold press-scale transition-signal"
+                size="lg"
+                onClick={handleCheckout}
+                disabled={isCheckingOut}
+              >
+                {isCheckingOut ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Wird geladen...
+                  </>
+                ) : (
+                  "Zur Kasse"
+                )}
               </Button>
               <Button variant="ghost" className="w-full text-sm" onClick={() => setIsOpen(false)}>
                 Weiter einkaufen
