@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, User, LogOut } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
@@ -11,6 +12,7 @@ const navItems = [
 export function Header() {
   const location = useLocation();
   const { totalItems, setIsOpen } = useCart();
+  const { user, signOut } = useAuth();
 
   const isActive = (to: string) => {
     if (to === "/") return location.pathname === "/";
@@ -81,6 +83,26 @@ export function Header() {
                 )}
               </AnimatePresence>
             </button>
+
+            {/* Auth */}
+            {user ? (
+              <button
+                onClick={() => signOut()}
+                className="ml-1 md:ml-2 px-3 md:px-4 py-2 text-sm text-primary-foreground/70 hover:text-primary-foreground transition-all duration-300 rounded-xl"
+                title="Abmelden"
+              >
+                <LogOut className="h-5 w-5 md:hidden" strokeWidth={1.5} />
+                <span className="hidden md:inline">Abmelden</span>
+              </button>
+            ) : (
+              <Link
+                to="/anmelden"
+                className="ml-1 md:ml-2 px-3 md:px-4 py-2 text-sm text-primary-foreground/70 hover:text-primary-foreground transition-all duration-300 rounded-xl"
+              >
+                <User className="h-5 w-5 md:hidden" strokeWidth={1.5} />
+                <span className="hidden md:inline">Anmelden</span>
+              </Link>
+            )}
           </nav>
         </div>
       </div>
