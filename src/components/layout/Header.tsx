@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, User, LogOut } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
