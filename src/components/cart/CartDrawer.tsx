@@ -1,11 +1,48 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, Loader2 } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export function CartDrawer() {
   const { items, isOpen, setIsOpen, updateQuantity, removeItem, totalPrice, totalItems } = useCart();
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+
+  const handleCheckout = async () => {
+    setIsCheckingOut(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Bitte melde dich an, um zur Kasse zu gehen.");
+        setIsCheckingOut(false);
+        return;
+      }
+
+      const checkoutItems = items.map(({ listing, quantity }) => ({
+        listingId: listing.id,
+        quantity,
+      }));
+
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { items: checkoutItems },
+      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("Keine Checkout-URL erhalten");
+      }
+    } catch (err: any) {
+      console.error("Checkout error:", err);
+      toast.error("Fehler beim Starten des Checkouts. Bitte versuche es erneut.");
+    } finally {
+      setIsCheckingOut(false);
+    }
+  };
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
