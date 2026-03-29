@@ -1,8 +1,9 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/marketplace/ProductCard";
-import { mockListings, type Category } from "@/lib/mock-data";
+import { useActiveListings } from "@/hooks/useActiveListings";
+import type { Category } from "@/lib/mock-data";
 import {
   Select,
   SelectContent,
@@ -10,12 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Loader2 } from "lucide-react";
 
 const categoryOptions = [
   { value: "all", label: "Alle" },
   { value: "streaming-box", label: "Formuler" },
   { value: "receiver", label: "Octagon" },
   { value: "accessories", label: "Highlights" },
+  { value: "remote", label: "Fernbedienungen" },
 ];
 
 const sortOptions = [
@@ -28,44 +31,47 @@ const sortOptions = [
 const ShopPage = () => {
   const [searchParams] = useSearchParams();
   const initialCat = searchParams.get("category") as Category | null;
-
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCat || "all");
   const [sortBy, setSortBy] = useState("name-asc");
+  const { data: listings = [], isLoading } = useActiveListings();
 
   const filtered = useMemo(() => {
-    let results = [...mockListings];
+    let results = [...listings];
 
     if (selectedCategory !== "all") {
-      results = results.filter((l) => l.category === selectedCategory);
+      results = results.filter((listing) => listing.category === selectedCategory);
     }
 
     results.sort((a, b) => {
       switch (sortBy) {
-        case "name-asc": return a.title.localeCompare(b.title);
-        case "name-desc": return b.title.localeCompare(a.title);
-        case "price-asc": return a.price - b.price;
-        case "price-desc": return b.price - a.price;
-        default: return 0;
+        case "name-asc":
+          return a.title.localeCompare(b.title);
+        case "name-desc":
+          return b.title.localeCompare(a.title);
+        case "price-asc":
+          return a.price - b.price;
+        case "price-desc":
+          return b.price - a.price;
+        default:
+          return 0;
       }
     });
 
     return results;
-  }, [selectedCategory, sortBy]);
+  }, [listings, selectedCategory, sortBy]);
 
   return (
     <Layout>
       <div className="container py-6">
-        {/* Breadcrumb */}
         <div className="text-sm text-muted-foreground mb-8">
           <Link to="/" className="hover:text-foreground transition-signal">Start</Link>
           <span className="mx-2">/</span>
           <span className="text-foreground">Produkte</span>
         </div>
 
-        {/* Header with filters */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Produkte entdecken</h1>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap">
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1.5">Kategorien</p>
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
@@ -73,8 +79,8 @@ const ShopPage = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {categoryOptions.map(opt => (
-                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                  {categoryOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -86,8 +92,8 @@ const ShopPage = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {sortOptions.map(opt => (
-                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                  {sortOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -95,11 +101,14 @@ const ShopPage = () => {
           </div>
         </div>
 
-        {/* Product Grid — 4 columns like original */}
-        {filtered.length > 0 ? (
+        {isLoading ? (
+          <div className="flex items-center justify-center py-20 text-muted-foreground">
+            <Loader2 className="h-6 w-6 animate-spin" />
+          </div>
+        ) : filtered.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-            {filtered.map((listing, i) => (
-              <ProductCard key={listing.id} listing={listing} index={i} />
+            {filtered.map((listing, index) => (
+              <ProductCard key={listing.id} listing={listing} index={index} />
             ))}
           </div>
         ) : (
