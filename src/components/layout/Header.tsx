@@ -27,9 +27,9 @@ export function Header() {
           <Link to="/" className="flex items-center gap-2.5 group">
             <div className="relative">
               <img
-                src="/images/b-electronics-logo.webp"
+                src="/images/b-electronics-logo-nav.png"
                 alt="B.Electronics Logo"
-                className="h-8 w-8 md:h-9 md:w-9 object-contain rounded-lg transition-transform duration-300 group-hover:scale-105 brightness-0 invert"
+                className="h-8 w-8 md:h-9 md:w-9 object-contain transition-transform duration-300 group-hover:scale-105"
               />
             </div>
             <span className="text-sm md:text-base font-bold text-primary-foreground tracking-wide hidden sm:inline">
