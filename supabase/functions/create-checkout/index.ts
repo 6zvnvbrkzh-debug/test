@@ -8,9 +8,35 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+// Simple in-memory rate limiting per IP
+const ipRequests = new Map<string, number[]>();
+const RATE_LIMIT = 10;
+const RATE_WINDOW = 60_000;
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const times = (ipRequests.get(ip) || []).filter((t) => now - t < RATE_WINDOW);
+  if (times.length >= RATE_LIMIT) {
+    ipRequests.set(ip, times);
+    return false;
+  }
+  times.push(now);
+  ipRequests.set(ip, times);
+  return true;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Rate limiting
+  const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  if (!checkRateLimit(clientIp)) {
+    return new Response(
+      JSON.stringify({ error: "Zu viele Anfragen. Bitte warte einen Moment." }),
+      { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   }
 
   try {
@@ -32,13 +58,33 @@ serve(async (req) => {
       }
     }
 
-    const { items, successUrl, cancelUrl } = await req.json();
+    const body = await req.json();
+    const { items, successUrl, cancelUrl } = body;
 
-    if (!items || !Array.isArray(items) || items.length === 0) {
-      return new Response(JSON.stringify({ error: "No items provided" }), {
+    // Input validation
+    if (!items || !Array.isArray(items) || items.length === 0 || items.length > 50) {
+      return new Response(JSON.stringify({ error: "Ungültige Artikelliste" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+    }
+
+    // Validate each item
+    for (const item of items) {
+      if (
+        !item.listingId ||
+        typeof item.listingId !== "string" ||
+        !item.quantity ||
+        typeof item.quantity !== "number" ||
+        item.quantity < 1 ||
+        item.quantity > 100 ||
+        !Number.isInteger(item.quantity)
+      ) {
+        return new Response(JSON.stringify({ error: "Ungültiges Artikelformat" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
     }
 
     // Verify listings exist and get current prices from DB
@@ -50,10 +96,18 @@ serve(async (req) => {
       .eq("status", "ACTIVE");
 
     if (listingsError || !listings || listings.length === 0) {
-      return new Response(JSON.stringify({ error: "Invalid listings" }), {
+      return new Response(JSON.stringify({ error: "Ungültige Produkte" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+    }
+
+    // Ensure all requested listings were found
+    if (listings.length !== listingIds.length) {
+      return new Response(
+        JSON.stringify({ error: "Einige Produkte sind nicht mehr verfügbar" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
@@ -93,21 +147,18 @@ serve(async (req) => {
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
-      // For guests without an account, let Stripe collect the email
       customer_email: customerId ? undefined : userEmail,
       line_items: lineItems,
       mode: "payment",
-      // Collect shipping address for all orders
       shipping_address_collection: {
         allowed_countries: ["DE", "AT", "CH"],
       },
-      // Collect phone number
       phone_number_collection: {
         enabled: true,
       },
-      // Collect billing address
       billing_address_collection: "required",
-      success_url: successUrl || `${req.headers.get("origin")}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url:
+        successUrl || `${req.headers.get("origin")}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl || `${req.headers.get("origin")}/checkout/cancel`,
       metadata: {
         supabase_user_id: userId,
@@ -121,7 +172,7 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error("Checkout error:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: "Ein Fehler ist aufgetreten" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

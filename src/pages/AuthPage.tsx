@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -6,9 +6,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Mail, Lock, User, ArrowRight } from "lucide-react";
+import { Loader2, Mail, Lock, User, ArrowRight, Shield } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useEffect } from "react";
+import { HoneypotField } from "@/components/security/HoneypotField";
+import { useHoneypot } from "@/hooks/useHoneypot";
+
+// Simple client-side rate limiting
+const attempts = new Map<string, number[]>();
+const MAX_ATTEMPTS = 5;
+const WINDOW_MS = 60_000; // 1 minute
+
+function isRateLimited(key: string): boolean {
+  const now = Date.now();
+  const times = (attempts.get(key) || []).filter((t) => now - t < WINDOW_MS);
+  attempts.set(key, times);
+  if (times.length >= MAX_ATTEMPTS) return true;
+  times.push(now);
+  attempts.set(key, times);
+  return false;
+}
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -18,6 +34,10 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { honeypot, setHoneypot, isBot } = useHoneypot();
+
+  // Track form render time — bots submit instantly
+  const formLoadTime = useRef(Date.now());
 
   useEffect(() => {
     if (user) navigate("/", { replace: true });
@@ -25,6 +45,26 @@ export default function AuthPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Security check 1: Honeypot
+    if (isBot()) {
+      // Silently reject — don't inform the bot
+      toast.success(isLogin ? "Erfolgreich angemeldet!" : "Konto erstellt!");
+      return;
+    }
+
+    // Security check 2: Timing — reject if submitted in < 2 seconds
+    if (Date.now() - formLoadTime.current < 2000) {
+      toast.error("Bitte warte einen Moment und versuche es erneut.");
+      return;
+    }
+
+    // Security check 3: Client-side rate limiting
+    if (isRateLimited(email)) {
+      toast.error("Zu viele Versuche. Bitte warte eine Minute.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -70,6 +110,9 @@ export default function AuthPage() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Honeypot — invisible to real users */}
+            <HoneypotField value={honeypot} onChange={setHoneypot} />
+
             {!isLogin && (
               <div className="space-y-2">
                 <Label htmlFor="displayName">Name</Label>
@@ -132,11 +175,20 @@ export default function AuthPage() {
             </Button>
           </form>
 
+          {/* Security badge */}
+          <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+            <Shield className="h-3.5 w-3.5" />
+            <span>Geschützt durch mehrere Sicherheitsebenen</span>
+          </div>
+
           {/* Toggle */}
           <div className="text-center">
             <button
               type="button"
-              onClick={() => setIsLogin(!isLogin)}
+              onClick={() => {
+                setIsLogin(!isLogin);
+                formLoadTime.current = Date.now();
+              }}
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               {isLogin ? (
