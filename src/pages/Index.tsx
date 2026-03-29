@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Zap, Truck, ShieldCheck } from "lucide-react";
+import { ArrowRight, Zap, Truck, ShieldCheck, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/marketplace/ProductCard";
-import { mockListings } from "@/lib/mock-data";
+import { useActiveListings } from "@/hooks/useActiveListings";
 
 const trustBadges = [
   { icon: Zap, label: "Sofort lieferbar" },
@@ -13,11 +13,12 @@ const trustBadges = [
 ];
 
 const HomePage = () => {
-  const highlights = mockListings.filter(l => l.status === "ACTIVE").slice(0, 4);
+  const { data: listings = [], isLoading } = useActiveListings();
+  const highlights = listings.slice(0, 4);
+  const heroProduct = highlights[0];
 
   return (
     <Layout>
-      {/* Editorial Hero */}
       <section className="container pt-16 md:pt-24 pb-12 md:pb-20">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -46,8 +47,7 @@ const HomePage = () => {
           className="flex flex-col sm:flex-row items-start gap-6 md:gap-12"
         >
           <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-md">
-            Bei uns finden Sie Top-Geräte von Octagon und Formuler – 
-            schnelle Lieferung und persönlichen Service.
+            Bei uns finden Sie Top-Geräte von Octagon und Formuler – schnelle Lieferung und persönlichen Service.
           </p>
           <div className="flex items-center gap-3">
             <Link to="/produkte">
@@ -60,7 +60,6 @@ const HomePage = () => {
         </motion.div>
       </section>
 
-      {/* Hero Product Showcase */}
       <section className="container pb-16 md:pb-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -69,31 +68,36 @@ const HomePage = () => {
           className="relative rounded-2xl border border-border/40 bg-card/30 backdrop-blur-sm overflow-hidden"
         >
           <div className="grid md:grid-cols-2 gap-0">
-            {/* Image */}
             <div className="aspect-square md:aspect-auto md:min-h-[400px] lg:min-h-[500px] bg-gradient-to-br from-card to-surface-sunken flex items-center justify-center p-8 md:p-12">
-              <img
-                src="/images/hero-airpods-pro.webp"
-                alt="AirPods Pro 3"
-                className="w-full max-w-xs md:max-w-sm object-contain drop-shadow-2xl"
-              />
+              {heroProduct ? (
+                <img
+                  src={heroProduct.images[0] || "/placeholder.svg"}
+                  alt={heroProduct.title}
+                  className="w-full max-w-xs md:max-w-sm object-contain drop-shadow-2xl"
+                />
+              ) : (
+                <div className="flex items-center justify-center text-muted-foreground">
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                </div>
+              )}
             </div>
-            {/* Info */}
             <div className="flex flex-col justify-center p-8 md:p-12 lg:p-16">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-primary/15 text-primary border border-primary/20 mb-6 w-fit">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                Nur 1 Stück verfügbar
+                Jetzt verfügbar
               </span>
               <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">
-                AirPods Pro 3
+                {heroProduct?.title || "Top Produkt"}
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-6 max-w-sm">
-                Kabelloser Premium-Sound mit aktiver Geräuschunterdrückung und räumlichem Audio.
+                {heroProduct?.description || "Ausgewählte Streaming-Hardware für dein Setup."}
               </p>
               <div className="flex items-baseline gap-3 mb-8">
-                <span className="text-3xl font-bold font-mono-data">180,00 €</span>
-                <span className="text-lg text-muted-foreground line-through font-mono-data">239,00 €</span>
+                <span className="text-3xl font-bold font-mono-data">
+                  {heroProduct ? `${heroProduct.price.toFixed(2).replace(".", ",")} €` : "–"}
+                </span>
               </div>
-              <Link to="/produkt/1">
+              <Link to={heroProduct ? `/produkt/${heroProduct.id}` : "/produkte"}>
                 <Button size="lg" className="font-semibold press-scale transition-signal w-fit px-8">
                   Jetzt ansehen
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -104,7 +108,6 @@ const HomePage = () => {
         </motion.div>
       </section>
 
-      {/* Trust badges */}
       <section className="container pb-16 md:pb-20">
         <div className="flex items-center justify-center gap-8 md:gap-16">
           {trustBadges.map(({ icon: Icon, label }) => (
@@ -116,7 +119,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Highlights */}
       <section className="container pb-20 md:pb-28">
         <div className="flex items-end justify-between mb-10 md:mb-14">
           <div>
@@ -127,14 +129,19 @@ const HomePage = () => {
             Alle Produkte <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
           </Link>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {highlights.map((listing, i) => (
-            <ProductCard key={listing.id} listing={listing} index={i} />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-16 text-muted-foreground">
+            <Loader2 className="h-6 w-6 animate-spin" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {highlights.map((listing, index) => (
+              <ProductCard key={listing.id} listing={listing} index={index} />
+            ))}
+          </div>
+        )}
       </section>
 
-      {/* Editorial CTA */}
       <section className="container pb-20 md:pb-28">
         <Link to="/produkte" className="block group">
           <div className="rounded-2xl border border-border/40 bg-card/30 backdrop-blur-sm p-12 md:p-16 hover:border-primary/30 hover:shadow-[0_0_40px_-8px_hsl(var(--primary)/0.15)] transition-all duration-500">
