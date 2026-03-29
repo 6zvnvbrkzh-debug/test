@@ -1,6 +1,6 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0?target=deno";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -30,7 +30,6 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Rate limiting
   const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
   if (!checkRateLimit(clientIp)) {
     return new Response(
@@ -40,7 +39,8 @@ serve(async (req) => {
   }
 
   try {
-    const supabase = createClient(
+    // Service role client for DB queries
+    const adminClient = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
@@ -51,17 +51,22 @@ serve(async (req) => {
     const authHeader = req.headers.get("Authorization");
     if (authHeader?.startsWith("Bearer ")) {
       const token = authHeader.replace("Bearer ", "");
-      const { data: claimsData } = await supabase.auth.getClaims(token);
-      if (claimsData?.claims) {
-        userId = claimsData.claims.sub as string;
-        userEmail = claimsData.claims.email as string;
+      // Use anon client with user's token for auth
+      const userClient = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_ANON_KEY")!,
+        { global: { headers: { Authorization: authHeader } } }
+      );
+      const { data: { user }, error } = await userClient.auth.getUser(token);
+      if (user && !error) {
+        userId = user.id;
+        userEmail = user.email;
       }
     }
 
     const body = await req.json();
     const { items, successUrl, cancelUrl } = body;
 
-    // Input validation
     if (!items || !Array.isArray(items) || items.length === 0 || items.length > 50) {
       return new Response(JSON.stringify({ error: "Ungültige Artikelliste" }), {
         status: 400,
@@ -69,16 +74,11 @@ serve(async (req) => {
       });
     }
 
-    // Validate each item
     for (const item of items) {
       if (
-        !item.listingId ||
-        typeof item.listingId !== "string" ||
-        !item.quantity ||
-        typeof item.quantity !== "number" ||
-        item.quantity < 1 ||
-        item.quantity > 100 ||
-        !Number.isInteger(item.quantity)
+        !item.listingId || typeof item.listingId !== "string" ||
+        !item.quantity || typeof item.quantity !== "number" ||
+        item.quantity < 1 || item.quantity > 100 || !Number.isInteger(item.quantity)
       ) {
         return new Response(JSON.stringify({ error: "Ungültiges Artikelformat" }), {
           status: 400,
@@ -87,9 +87,8 @@ serve(async (req) => {
       }
     }
 
-    // Verify listings exist and get current prices from DB
     const listingIds = items.map((i: { listingId: string }) => i.listingId);
-    const { data: listings, error: listingsError } = await supabase
+    const { data: listings, error: listingsError } = await adminClient
       .from("listings")
       .select("id, title, price, images, status")
       .in("id", listingIds)
@@ -102,7 +101,6 @@ serve(async (req) => {
       });
     }
 
-    // Ensure all requested listings were found
     if (listings.length !== listingIds.length) {
       return new Response(
         JSON.stringify({ error: "Einige Produkte sind nicht mehr verfügbar" }),
@@ -114,7 +112,6 @@ serve(async (req) => {
       apiVersion: "2023-10-16",
     });
 
-    // If authenticated user, find or create Stripe customer
     let customerId: string | undefined;
     if (userEmail) {
       const customers = await stripe.customers.list({ email: userEmail, limit: 1 });
@@ -150,15 +147,10 @@ serve(async (req) => {
       customer_email: customerId ? undefined : userEmail,
       line_items: lineItems,
       mode: "payment",
-      shipping_address_collection: {
-        allowed_countries: ["DE", "AT", "CH"],
-      },
-      phone_number_collection: {
-        enabled: true,
-      },
+      shipping_address_collection: { allowed_countries: ["DE", "AT", "CH"] },
+      phone_number_collection: { enabled: true },
       billing_address_collection: "required",
-      success_url:
-        successUrl || `${req.headers.get("origin")}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: successUrl || `${req.headers.get("origin")}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl || `${req.headers.get("origin")}/checkout/cancel`,
       metadata: {
         supabase_user_id: userId,
