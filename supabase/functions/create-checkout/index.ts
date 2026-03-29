@@ -21,14 +21,14 @@ serve(async (req) => {
 
     // Try to get user from auth header, but don't require it
     let userId = "guest";
-    let email = "guest@test.com";
+    let userEmail: string | undefined;
     const authHeader = req.headers.get("Authorization");
     if (authHeader?.startsWith("Bearer ")) {
       const token = authHeader.replace("Bearer ", "");
       const { data: claimsData } = await supabase.auth.getClaims(token);
       if (claimsData?.claims) {
         userId = claimsData.claims.sub as string;
-        email = claimsData.claims.email as string;
+        userEmail = claimsData.claims.email as string;
       }
     }
 
@@ -60,18 +60,19 @@ serve(async (req) => {
       apiVersion: "2023-10-16",
     });
 
-    // Check if customer exists
-    const email = claimsData.claims.email as string;
-    const customers = await stripe.customers.list({ email, limit: 1 });
-    let customerId: string;
-    if (customers.data.length > 0) {
-      customerId = customers.data[0].id;
-    } else {
-      const customer = await stripe.customers.create({
-        email,
-        metadata: { supabase_user_id: userId },
-      });
-      customerId = customer.id;
+    // If authenticated user, find or create Stripe customer
+    let customerId: string | undefined;
+    if (userEmail) {
+      const customers = await stripe.customers.list({ email: userEmail, limit: 1 });
+      if (customers.data.length > 0) {
+        customerId = customers.data[0].id;
+      } else {
+        const customer = await stripe.customers.create({
+          email: userEmail,
+          metadata: { supabase_user_id: userId },
+        });
+        customerId = customer.id;
+      }
     }
 
     const lineItems = items.map((item: { listingId: string; quantity: number }) => {
@@ -92,8 +93,20 @@ serve(async (req) => {
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
+      // For guests without an account, let Stripe collect the email
+      customer_email: customerId ? undefined : userEmail,
       line_items: lineItems,
       mode: "payment",
+      // Collect shipping address for all orders
+      shipping_address_collection: {
+        allowed_countries: ["DE", "AT", "CH"],
+      },
+      // Collect phone number
+      phone_number_collection: {
+        enabled: true,
+      },
+      // Collect billing address
+      billing_address_collection: "required",
       success_url: successUrl || `${req.headers.get("origin")}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl || `${req.headers.get("origin")}/checkout/cancel`,
       metadata: {
