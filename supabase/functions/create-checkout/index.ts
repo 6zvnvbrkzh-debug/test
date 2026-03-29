@@ -150,8 +150,8 @@ serve(async (req) => {
       shipping_address_collection: { allowed_countries: ["DE", "AT", "CH"] },
       phone_number_collection: { enabled: true },
       billing_address_collection: "required",
-      success_url: successUrl || `${req.headers.get("origin")}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: cancelUrl || `${req.headers.get("origin")}/checkout/cancel`,
+      success_url: successUrl || `${req.headers.get("origin") || "https://signal-swap-spot.lovable.app"}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: cancelUrl || `${req.headers.get("origin") || "https://signal-swap-spot.lovable.app"}/checkout/cancel`,
       metadata: {
         supabase_user_id: userId,
         listing_ids: JSON.stringify(listingIds),
