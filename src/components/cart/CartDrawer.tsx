@@ -14,13 +14,6 @@ export function CartDrawer() {
   const handleCheckout = async () => {
     setIsCheckingOut(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast.error("Bitte melde dich an, um zur Kasse zu gehen.");
-        setIsCheckingOut(false);
-        return;
-      }
-
       const checkoutItems = items.map(({ listing, quantity }) => ({
         listingId: listing.id,
         quantity,
