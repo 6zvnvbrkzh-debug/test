@@ -32,20 +32,24 @@ interface ProductForm {
   title: string;
   description: string;
   price: string;
+  original_price: string;
   condition: string;
   status: string;
   category_id: string;
   images: string;
+  specs: string;
 }
 
 const emptyForm: ProductForm = {
   title: "",
   description: "",
   price: "",
+  original_price: "",
   condition: "NEW",
   status: "ACTIVE",
   category_id: "",
   images: "",
+  specs: "",
 };
 
 export default function AdminProducts() {
@@ -77,10 +81,27 @@ export default function AdminProducts() {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      const payload = {
+      let parsedSpecs: Record<string, string> = {};
+      if (form.specs.trim()) {
+        try {
+          // Try JSON first
+          parsedSpecs = JSON.parse(form.specs);
+        } catch {
+          // Parse key: value lines
+          form.specs.split("\n").forEach((line) => {
+            const [key, ...rest] = line.split(":");
+            if (key && rest.length) {
+              parsedSpecs[key.trim()] = rest.join(":").trim();
+            }
+          });
+        }
+      }
+
+      const payload: any = {
         title: form.title,
         description: form.description,
         price: parseFloat(form.price),
+        original_price: form.original_price ? parseFloat(form.original_price) : null,
         condition: form.condition as Listing["condition"],
         status: form.status as Listing["status"],
         category_id: form.category_id,
@@ -88,13 +109,13 @@ export default function AdminProducts() {
           .split("\n")
           .map((s) => s.trim())
           .filter(Boolean),
+        specs: Object.keys(parsedSpecs).length > 0 ? parsedSpecs : null,
       };
 
       if (editingId) {
         const { error } = await supabase.from("listings").update(payload).eq("id", editingId);
         if (error) throw error;
       } else {
-        // For admin-created listings, use the admin's own ID as seller
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) throw new Error("Nicht angemeldet");
         const { error } = await supabase.from("listings").insert({ ...payload, seller_id: user.id });
@@ -103,6 +124,7 @@ export default function AdminProducts() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-listings"] });
+      queryClient.invalidateQueries({ queryKey: ["active-listings"] });
       toast.success(editingId ? "Produkt aktualisiert" : "Produkt erstellt");
       closeDialog();
     },
@@ -116,6 +138,7 @@ export default function AdminProducts() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-listings"] });
+      queryClient.invalidateQueries({ queryKey: ["active-listings"] });
       toast.success("Produkt gelöscht");
     },
     onError: (err: any) => toast.error(err.message),
@@ -129,14 +152,21 @@ export default function AdminProducts() {
 
   const openEdit = (listing: any) => {
     setEditingId(listing.id);
+    const specsStr = listing.specs
+      ? typeof listing.specs === "object"
+        ? Object.entries(listing.specs).map(([k, v]) => `${k}: ${v}`).join("\n")
+        : JSON.stringify(listing.specs, null, 2)
+      : "";
     setForm({
       title: listing.title,
       description: listing.description,
       price: String(listing.price),
+      original_price: listing.original_price ? String(listing.original_price) : "",
       condition: listing.condition,
       status: listing.status,
       category_id: listing.category_id,
       images: (listing.images || []).join("\n"),
+      specs: specsStr,
     });
     setDialogOpen(true);
   };
@@ -151,6 +181,14 @@ export default function AdminProducts() {
     if (s === "ACTIVE") return "default";
     if (s === "SOLD") return "secondary";
     return "outline";
+  };
+
+  const hasDiscount = (listing: any) =>
+    listing.original_price && Number(listing.original_price) > Number(listing.price);
+
+  const discountPercent = (listing: any) => {
+    if (!hasDiscount(listing)) return 0;
+    return Math.round((1 - Number(listing.price) / Number(listing.original_price)) * 100);
   };
 
   return (
@@ -168,13 +206,15 @@ export default function AdminProducts() {
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
       ) : (
-        <div className="border rounded-lg overflow-hidden">
+        <div className="border rounded-lg overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Bild</TableHead>
                 <TableHead>Titel</TableHead>
                 <TableHead>Preis</TableHead>
+                <TableHead>UVP</TableHead>
+                <TableHead>Rabatt</TableHead>
                 <TableHead>Zustand</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Kategorie</TableHead>
@@ -199,6 +239,20 @@ export default function AdminProducts() {
                     {listing.title}
                   </TableCell>
                   <TableCell>{Number(listing.price).toFixed(2).replace(".", ",")} €</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {listing.original_price
+                      ? `${Number(listing.original_price).toFixed(2).replace(".", ",")} €`
+                      : "–"}
+                  </TableCell>
+                  <TableCell>
+                    {hasDiscount(listing) ? (
+                      <Badge variant="destructive" className="text-xs">
+                        -{discountPercent(listing)}%
+                      </Badge>
+                    ) : (
+                      "–"
+                    )}
+                  </TableCell>
                   <TableCell>
                     <Badge variant="outline">
                       {CONDITIONS.find((c) => c.value === listing.condition)?.label || listing.condition}
@@ -231,7 +285,7 @@ export default function AdminProducts() {
               ))}
               {listings?.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
                     Keine Produkte vorhanden
                   </TableCell>
                 </TableRow>
@@ -274,6 +328,19 @@ export default function AdminProducts() {
                 />
               </div>
               <div className="space-y-2">
+                <Label>UVP Preis (€)</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={form.original_price}
+                  onChange={(e) => setForm({ ...form, original_price: e.target.value })}
+                  placeholder="Optional"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
                 <Label>Zustand</Label>
                 <Select value={form.condition} onValueChange={(v) => setForm({ ...form, condition: v })}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
@@ -284,8 +351,6 @@ export default function AdminProducts() {
                   </SelectContent>
                 </Select>
               </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Status</Label>
                 <Select value={form.status} onValueChange={(v) => setForm({ ...form, status: v })}>
@@ -297,17 +362,17 @@ export default function AdminProducts() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2">
-                <Label>Kategorie</Label>
-                <Select value={form.category_id} onValueChange={(v) => setForm({ ...form, category_id: v })}>
-                  <SelectTrigger><SelectValue placeholder="Wählen..." /></SelectTrigger>
-                  <SelectContent>
-                    {categories?.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Kategorie</Label>
+              <Select value={form.category_id} onValueChange={(v) => setForm({ ...form, category_id: v })}>
+                <SelectTrigger><SelectValue placeholder="Wählen..." /></SelectTrigger>
+                <SelectContent>
+                  {categories?.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label>Bilder (URLs, eine pro Zeile)</Label>
@@ -316,6 +381,15 @@ export default function AdminProducts() {
                 onChange={(e) => setForm({ ...form, images: e.target.value })}
                 rows={3}
                 placeholder="https://example.com/bild1.jpg"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Technische Daten (Key: Value pro Zeile)</Label>
+              <Textarea
+                value={form.specs}
+                onChange={(e) => setForm({ ...form, specs: e.target.value })}
+                rows={4}
+                placeholder={"Auflösung: 4K UHD\nWLAN: Ja\nBluetooth: 5.0"}
               />
             </div>
           </div>
