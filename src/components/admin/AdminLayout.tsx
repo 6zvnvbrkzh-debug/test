@@ -20,6 +20,7 @@ const navItems = [
   { title: "Produkte", url: "/admin/produkte", icon: Package },
   { title: "Benutzer", url: "/admin/benutzer", icon: Users },
   { title: "Bestellungen", url: "/admin/bestellungen", icon: ShoppingCart },
+  { title: "Kategorien", url: "/admin/kategorien", icon: FolderOpen },
 ];
 
 export default function AdminLayout() {
