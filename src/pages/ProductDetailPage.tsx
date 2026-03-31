@@ -196,9 +196,9 @@ const ProductDetailPage = () => {
                     {quantity}
                   </span>
                   <button
-                    onClick={() => setQuantity((current) => current + 1)}
+                    onClick={() => setQuantity((current) => Math.min(listing.stock, current + 1))}
                     className="h-10 w-10 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
-                    disabled={isSold}
+                    disabled={isSold || quantity >= listing.stock}
                   >
                     <Plus className="h-3.5 w-3.5" />
                   </button>
