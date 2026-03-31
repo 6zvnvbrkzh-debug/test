@@ -104,6 +104,7 @@ export default function AdminProducts() {
         description: form.description,
         price: parseFloat(form.price),
         original_price: form.original_price ? parseFloat(form.original_price) : null,
+        stock: parseInt(form.stock) || 0,
         condition: form.condition as Listing["condition"],
         status: form.status as Listing["status"],
         category_id: form.category_id,
