@@ -129,6 +129,7 @@ export const mockListings: Listing[] = [
     sellerName: "B-Electronics",
     status: "SOLD",
     createdAt: "2026-03-15",
+    stock: 0,
   },
   {
     id: "7",
