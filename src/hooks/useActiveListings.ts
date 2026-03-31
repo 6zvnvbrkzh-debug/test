@@ -35,7 +35,7 @@ const mapListing = (row: any): Listing => {
     title: row.title,
     description: row.description,
     price: Number(row.price),
-    originalPrice: undefined,
+    originalPrice: row.original_price ? Number(row.original_price) : undefined,
     condition: row.condition,
     category: normalizeCategory(categoryData?.slug),
     images: row.images ?? [],
