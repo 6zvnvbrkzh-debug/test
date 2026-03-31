@@ -91,10 +91,6 @@ const HomePage = () => {
           <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Text */}
             <motion.div {...fadeUp(0)}>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-6">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                Neue Kollektion 2026
-              </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05] mb-5">
                 Premium Hardware
@@ -135,28 +131,17 @@ const HomePage = () => {
               </div>
 
               {/* Social proof */}
-              <div className="flex items-center gap-4 pt-6 border-t border-border/30">
-                <div className="flex -space-x-2.5">
-                  {["M", "S", "K", "A", "J"].map((letter, i) => (
-                    <div
-                      key={i}
-                      className="w-9 h-9 rounded-full bg-muted border-2 border-background flex items-center justify-center text-xs font-semibold text-muted-foreground"
-                    >
-                      {letter}
-                    </div>
+              <div className="flex items-center gap-2 pt-6 border-t border-border/30">
+                <div className="flex items-center gap-0.5">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <Star key={i} className="h-3.5 w-3.5 fill-primary text-primary" />
                   ))}
+                  <span className="text-xs font-semibold ml-1">4.9</span>
                 </div>
-                <div>
-                  <div className="flex items-center gap-0.5">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <Star key={i} className="h-3.5 w-3.5 fill-primary text-primary" />
-                    ))}
-                    <span className="text-xs font-semibold ml-1">4.9</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    500+ zufriedene Kunden
-                  </p>
-                </div>
+                <span className="text-xs text-muted-foreground">·</span>
+                <p className="text-xs text-muted-foreground">
+                  100+ zufriedene Kunden
+                </p>
               </div>
             </motion.div>
 
