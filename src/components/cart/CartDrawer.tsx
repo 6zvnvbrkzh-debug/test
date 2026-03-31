@@ -1,5 +1,6 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { Minus, Plus, Trash2, ShoppingBag, Loader2 } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { Link } from "react-router-dom";
@@ -141,11 +142,24 @@ export function CartDrawer() {
                   )}
                 </span>
               </div>
-              {totalPrice > 0 && totalPrice < 50 && (
-                <p className="text-xs text-muted-foreground">
-                  Noch {(50 - totalPrice).toFixed(2).replace(".", ",")} € bis zum kostenlosen Versand!
+              {/* Free shipping progress bar */}
+              <div className="space-y-1.5">
+                <Progress
+                  value={Math.min((totalPrice / 50) * 100, 100)}
+                  className="h-2"
+                />
+                <p className="text-xs text-muted-foreground text-center">
+                  {totalPrice >= 50 ? (
+                    <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                      ✓ Du erhältst kostenlosen Versand!
+                    </span>
+                  ) : (
+                    <>
+                      Noch <span className="font-semibold">{(50 - totalPrice).toFixed(2).replace(".", ",")} €</span> bis zum kostenlosen Versand
+                    </>
+                  )}
                 </p>
-              )}
+              </div>
               <div className="flex items-center justify-between border-t pt-2">
                 <span className="text-sm font-semibold">Gesamt</span>
                 <span className="text-lg font-bold">
