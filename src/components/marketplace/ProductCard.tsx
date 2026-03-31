@@ -101,8 +101,9 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
               {listing.price.toFixed(2).replace(".", ",")} €
             </span>
             {hasDiscount && (
-              <span className="text-xs text-muted-foreground/60 line-through font-mono-data">
-                {listing.originalPrice!.toFixed(2).replace(".", ",")} €
+              <span className="text-xs text-muted-foreground/60 font-mono-data">
+                <span className="font-sans mr-0.5">UVP</span>
+                <span className="line-through">{listing.originalPrice!.toFixed(2).replace(".", ",")} €</span>
               </span>
             )}
           </div>

@@ -157,8 +157,9 @@ const ProductDetailPage = () => {
                   {listing.price.toFixed(2).replace(".", ",")} €
                 </span>
                 {hasDiscount && (
-                  <span className="text-base text-muted-foreground line-through font-mono-data">
-                    {listing.originalPrice!.toFixed(2).replace(".", ",")} €
+                  <span className="text-base text-muted-foreground font-mono-data">
+                    <span className="font-sans mr-1">UVP</span>
+                    <span className="line-through">{listing.originalPrice!.toFixed(2).replace(".", ",")} €</span>
                   </span>
                 )}
               </div>
