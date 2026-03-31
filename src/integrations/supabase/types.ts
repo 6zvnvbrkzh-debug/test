@@ -138,6 +138,7 @@ export type Database = {
           seller_id: string
           specs: Json | null
           status: Database["public"]["Enums"]["listing_status"]
+          stock: number
           title: string
           updated_at: string
         }
@@ -153,6 +154,7 @@ export type Database = {
           seller_id: string
           specs?: Json | null
           status?: Database["public"]["Enums"]["listing_status"]
+          stock?: number
           title: string
           updated_at?: string
         }
@@ -168,6 +170,7 @@ export type Database = {
           seller_id?: string
           specs?: Json | null
           status?: Database["public"]["Enums"]["listing_status"]
+          stock?: number
           title?: string
           updated_at?: string
         }

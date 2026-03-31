@@ -17,6 +17,7 @@ export interface Listing {
   sellerAvatar?: string;
   status: ListingStatus;
   createdAt: string;
+  stock: number;
 }
 
 export const CATEGORIES: { value: Category; label: string }[] = [
@@ -48,6 +49,7 @@ export const mockListings: Listing[] = [
     sellerName: "B-Electronics",
     status: "ACTIVE",
     createdAt: "2026-03-15",
+    stock: 10,
   },
   {
     id: "2",
@@ -63,6 +65,7 @@ export const mockListings: Listing[] = [
     sellerName: "B-Electronics",
     status: "ACTIVE",
     createdAt: "2026-03-15",
+    stock: 5,
   },
   {
     id: "3",
@@ -78,6 +81,7 @@ export const mockListings: Listing[] = [
     sellerName: "B-Electronics",
     status: "ACTIVE",
     createdAt: "2026-03-15",
+    stock: 3,
   },
   {
     id: "4",
@@ -93,6 +97,7 @@ export const mockListings: Listing[] = [
     sellerName: "B-Electronics",
     status: "ACTIVE",
     createdAt: "2026-03-15",
+    stock: 7,
   },
   {
     id: "5",
@@ -108,6 +113,7 @@ export const mockListings: Listing[] = [
     sellerName: "B-Electronics",
     status: "ACTIVE",
     createdAt: "2026-03-15",
+    stock: 4,
   },
   {
     id: "6",
@@ -123,6 +129,7 @@ export const mockListings: Listing[] = [
     sellerName: "B-Electronics",
     status: "SOLD",
     createdAt: "2026-03-15",
+    stock: 0,
   },
   {
     id: "7",
@@ -138,6 +145,7 @@ export const mockListings: Listing[] = [
     sellerName: "B-Electronics",
     status: "SOLD",
     createdAt: "2026-03-15",
+    stock: 0,
   },
   {
     id: "8",
@@ -153,6 +161,7 @@ export const mockListings: Listing[] = [
     sellerName: "B-Electronics",
     status: "SOLD",
     createdAt: "2026-03-15",
+    stock: 0,
   },
   {
     id: "9",
@@ -168,5 +177,6 @@ export const mockListings: Listing[] = [
     sellerName: "B-Electronics",
     status: "ACTIVE",
     createdAt: "2026-03-15",
+    stock: 6,
   },
 ];

@@ -57,11 +57,12 @@ const ProductDetailPage = () => {
   }
 
   const specEntries = Object.entries(listing.specs);
-  const isSold = listing.status === "SOLD";
+  const isSold = listing.status === "SOLD" || listing.stock === 0;
   const hasDiscount = listing.originalPrice && listing.originalPrice > listing.price;
   const discountPercent = hasDiscount
     ? Math.round(((listing.originalPrice! - listing.price) / listing.originalPrice!) * 100)
     : 0;
+  const lowStock = listing.stock > 0 && listing.stock <= 3;
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i += 1) {
@@ -168,6 +169,16 @@ const ProductDetailPage = () => {
                   Du sparst {(listing.originalPrice! - listing.price).toFixed(2).replace(".", ",")} €
                 </p>
               )}
+              {lowStock && (
+                <p className="text-sm text-orange-500 font-medium mt-1">
+                  Nur noch {listing.stock} auf Lager!
+                </p>
+              )}
+              {listing.stock > 3 && (
+                <p className="text-sm text-green-600 font-medium mt-1">
+                  Auf Lager ({listing.stock} verfügbar)
+                </p>
+              )}
             </div>
 
             <div className="space-y-3">
@@ -185,9 +196,9 @@ const ProductDetailPage = () => {
                     {quantity}
                   </span>
                   <button
-                    onClick={() => setQuantity((current) => current + 1)}
+                    onClick={() => setQuantity((current) => Math.min(listing.stock, current + 1))}
                     className="h-10 w-10 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
-                    disabled={isSold}
+                    disabled={isSold || quantity >= listing.stock}
                   >
                     <Plus className="h-3.5 w-3.5" />
                   </button>

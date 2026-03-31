@@ -33,6 +33,7 @@ interface ProductForm {
   description: string;
   price: string;
   original_price: string;
+  stock: string;
   condition: string;
   status: string;
   category_id: string;
@@ -45,6 +46,7 @@ const emptyForm: ProductForm = {
   description: "",
   price: "",
   original_price: "",
+  stock: "0",
   condition: "NEW",
   status: "ACTIVE",
   category_id: "",
@@ -102,6 +104,7 @@ export default function AdminProducts() {
         description: form.description,
         price: parseFloat(form.price),
         original_price: form.original_price ? parseFloat(form.original_price) : null,
+        stock: parseInt(form.stock) || 0,
         condition: form.condition as Listing["condition"],
         status: form.status as Listing["status"],
         category_id: form.category_id,
@@ -162,6 +165,7 @@ export default function AdminProducts() {
       description: listing.description,
       price: String(listing.price),
       original_price: listing.original_price ? String(listing.original_price) : "",
+      stock: String(listing.stock ?? 0),
       condition: listing.condition,
       status: listing.status,
       category_id: listing.category_id,
@@ -215,6 +219,7 @@ export default function AdminProducts() {
                 <TableHead>Preis</TableHead>
                 <TableHead>UVP</TableHead>
                 <TableHead>Rabatt</TableHead>
+                <TableHead>Bestand</TableHead>
                 <TableHead>Zustand</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Kategorie</TableHead>
@@ -254,6 +259,11 @@ export default function AdminProducts() {
                     )}
                   </TableCell>
                   <TableCell>
+                    <span className={`font-mono text-sm ${(listing.stock ?? 0) === 0 ? 'text-destructive font-semibold' : (listing.stock ?? 0) <= 3 ? 'text-orange-500' : 'text-foreground'}`}>
+                      {listing.stock ?? 0}
+                    </span>
+                  </TableCell>
+                  <TableCell>
                     <Badge variant="outline">
                       {CONDITIONS.find((c) => c.value === listing.condition)?.label || listing.condition}
                     </Badge>
@@ -285,7 +295,7 @@ export default function AdminProducts() {
               ))}
               {listings?.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
                     Keine Produkte vorhanden
                   </TableCell>
                 </TableRow>
@@ -338,6 +348,15 @@ export default function AdminProducts() {
                   placeholder="Optional"
                 />
               </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Warenbestand</Label>
+              <Input
+                type="number"
+                min="0"
+                value={form.stock}
+                onChange={(e) => setForm({ ...form, stock: e.target.value })}
+              />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
