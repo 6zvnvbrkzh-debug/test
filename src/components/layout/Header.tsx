@@ -89,7 +89,7 @@ export function Header() {
             {user ? (
               <button
                 onClick={() => signOut()}
-                className="flex flex-col md:flex-row items-center gap-0.5 md:gap-0 px-4 py-1.5 md:py-2 md:px-4 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
+                className="flex flex-col md:flex-row items-center gap-1 md:gap-1.5 px-4 py-1.5 md:py-2 md:px-4 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
                 title="Abmelden"
               >
                 <LogOut className="h-5 w-5" strokeWidth={1.5} />
