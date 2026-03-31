@@ -135,7 +135,7 @@ export function CartDrawer() {
                 <span className="text-sm text-muted-foreground">Versand</span>
                 <span className="text-sm font-medium">
                   {totalPrice >= 50 ? (
-                    <span className="text-green-600">Kostenlos</span>
+                    <span className="text-emerald-600 dark:text-emerald-400">Kostenlos</span>
                   ) : (
                     "5,99 €"
                   )}
