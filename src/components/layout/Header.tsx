@@ -43,7 +43,7 @@ export function Header() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`relative flex flex-col md:flex-row items-center gap-0.5 md:gap-0 px-4 py-1.5 md:py-2 md:px-5 rounded-xl transition-all duration-300 ${
+                  className={`relative flex flex-col md:flex-row items-center gap-1 md:gap-1.5 px-4 py-1.5 md:py-2 md:px-5 rounded-xl transition-all duration-300 ${
                     active
                       ? "text-primary-foreground"
                       : "text-primary-foreground/60 hover:text-primary-foreground"
