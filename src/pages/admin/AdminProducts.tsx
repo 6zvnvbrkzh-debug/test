@@ -295,7 +295,7 @@ export default function AdminProducts() {
               ))}
               {listings?.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
                     Keine Produkte vorhanden
                   </TableCell>
                 </TableRow>
