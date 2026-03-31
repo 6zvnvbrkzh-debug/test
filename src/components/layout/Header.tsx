@@ -43,14 +43,14 @@ export function Header() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`relative flex flex-col md:flex-row items-center gap-0.5 md:gap-0 px-4 py-1.5 md:py-2 md:px-5 rounded-xl transition-all duration-300 ${
+                  className={`relative flex flex-col md:flex-row items-center gap-1 md:gap-1.5 px-4 py-1.5 md:py-2 md:px-5 rounded-xl transition-all duration-300 ${
                     active
                       ? "text-primary-foreground"
                       : "text-primary-foreground/60 hover:text-primary-foreground"
                   }`}
                 >
                   <item.icon className="h-5 w-5 md:hidden" strokeWidth={active ? 2.5 : 1.5} />
-                  <span className={`text-[10px] md:text-sm ${active ? "font-bold" : "font-medium"}`}>
+                  <span className={`text-[10px] md:text-sm mt-0.5 md:mt-0 ${active ? "font-bold" : "font-medium"}`}>
                     {item.label}
                   </span>
                   {active && (
@@ -67,10 +67,10 @@ export function Header() {
             {/* Cart */}
             <button
               onClick={() => setIsOpen(true)}
-              className="relative flex flex-col md:flex-row items-center gap-0.5 md:gap-0 px-4 py-1.5 md:py-2 md:px-5 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
+              className="relative flex flex-col md:flex-row items-center gap-1 md:gap-1.5 px-4 py-1.5 md:py-2 md:px-5 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
             >
               <ShoppingCart className="h-5 w-5" strokeWidth={1.5} />
-              <span className="text-[10px] md:text-sm font-medium">Warenkorb</span>
+              <span className="text-[10px] md:text-sm font-medium mt-0.5 md:mt-0">Warenkorb</span>
               <AnimatePresence>
                 {totalItems > 0 && (
                   <motion.span
@@ -89,19 +89,19 @@ export function Header() {
             {user ? (
               <button
                 onClick={() => signOut()}
-                className="flex flex-col md:flex-row items-center gap-0.5 md:gap-0 px-4 py-1.5 md:py-2 md:px-4 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
+                className="flex flex-col md:flex-row items-center gap-1 md:gap-1.5 px-4 py-1.5 md:py-2 md:px-4 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
                 title="Abmelden"
               >
                 <LogOut className="h-5 w-5" strokeWidth={1.5} />
-                <span className="text-[10px] md:text-sm font-medium">Abmelden</span>
+                <span className="text-[10px] md:text-sm font-medium mt-0.5 md:mt-0">Abmelden</span>
               </button>
             ) : (
               <Link
                 to="/anmelden"
-                className="flex flex-col md:flex-row items-center gap-0.5 md:gap-0 px-4 py-1.5 md:py-2 md:px-4 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
+                className="flex flex-col md:flex-row items-center gap-1 md:gap-1.5 px-4 py-1.5 md:py-2 md:px-4 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
               >
                 <User className="h-5 w-5" strokeWidth={1.5} />
-                <span className="text-[10px] md:text-sm font-medium">Konto</span>
+                <span className="text-[10px] md:text-sm font-medium mt-0.5 md:mt-0">Konto</span>
               </Link>
             )}
           </nav>
