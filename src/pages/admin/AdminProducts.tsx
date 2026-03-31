@@ -349,6 +349,15 @@ export default function AdminProducts() {
                 />
               </div>
             </div>
+            <div className="space-y-2">
+              <Label>Warenbestand</Label>
+              <Input
+                type="number"
+                min="0"
+                value={form.stock}
+                onChange={(e) => setForm({ ...form, stock: e.target.value })}
+              />
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Zustand</Label>
