@@ -165,6 +165,7 @@ export default function AdminProducts() {
       description: listing.description,
       price: String(listing.price),
       original_price: listing.original_price ? String(listing.original_price) : "",
+      stock: String(listing.stock ?? 0),
       condition: listing.condition,
       status: listing.status,
       category_id: listing.category_id,
