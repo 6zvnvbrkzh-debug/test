@@ -57,11 +57,12 @@ const ProductDetailPage = () => {
   }
 
   const specEntries = Object.entries(listing.specs);
-  const isSold = listing.status === "SOLD";
+  const isSold = listing.status === "SOLD" || listing.stock === 0;
   const hasDiscount = listing.originalPrice && listing.originalPrice > listing.price;
   const discountPercent = hasDiscount
     ? Math.round(((listing.originalPrice! - listing.price) / listing.originalPrice!) * 100)
     : 0;
+  const lowStock = listing.stock > 0 && listing.stock <= 3;
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i += 1) {
