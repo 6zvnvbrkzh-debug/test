@@ -11,7 +11,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Package, Users, LayoutDashboard, ArrowLeft, ShoppingCart } from "lucide-react";
+import { Package, Users, LayoutDashboard, ArrowLeft, ShoppingCart, FolderOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
