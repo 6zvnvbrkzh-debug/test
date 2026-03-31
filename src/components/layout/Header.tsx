@@ -93,7 +93,7 @@ export function Header() {
                 title="Abmelden"
               >
                 <LogOut className="h-5 w-5" strokeWidth={1.5} />
-                <span className="text-[10px] md:text-sm font-medium">Abmelden</span>
+                <span className="text-[10px] md:text-sm font-medium mt-0.5 md:mt-0">Abmelden</span>
               </button>
             ) : (
               <Link
