@@ -219,6 +219,7 @@ export default function AdminProducts() {
                 <TableHead>Preis</TableHead>
                 <TableHead>UVP</TableHead>
                 <TableHead>Rabatt</TableHead>
+                <TableHead>Bestand</TableHead>
                 <TableHead>Zustand</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Kategorie</TableHead>
