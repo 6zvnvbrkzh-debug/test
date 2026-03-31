@@ -107,6 +107,9 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
               </span>
             )}
           </div>
+          {!isSold && listing.stock > 0 && listing.stock <= 3 && (
+            <p className="text-[11px] text-orange-500 font-medium mt-0.5 px-0.5">Nur noch {listing.stock} verfügbar</p>
+          )}
         </div>
       </Link>
     </motion.div>
