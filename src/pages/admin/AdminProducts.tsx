@@ -33,6 +33,7 @@ interface ProductForm {
   description: string;
   price: string;
   original_price: string;
+  stock: string;
   condition: string;
   status: string;
   category_id: string;
@@ -45,6 +46,7 @@ const emptyForm: ProductForm = {
   description: "",
   price: "",
   original_price: "",
+  stock: "0",
   condition: "NEW",
   status: "ACTIVE",
   category_id: "",
