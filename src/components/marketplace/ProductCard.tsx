@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ShoppingCart, Eye } from "lucide-react";
+import { ShoppingCart, Eye, Flame } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import type { Listing } from "@/lib/mock-data";
@@ -16,32 +16,34 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
   const discountPercent = hasDiscount
     ? Math.round(((listing.originalPrice! - listing.price) / listing.originalPrice!) * 100)
     : 0;
+  const savings = hasDiscount ? (listing.originalPrice! - listing.price) : 0;
   const { addItem } = useCart();
+  const isLowStock = !isSold && listing.stock > 0 && listing.stock <= 3;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     addItem(listing);
-    toast.success(`${listing.title.slice(0, 40)}… hinzugefügt`);
+    toast.success(`${listing.title.slice(0, 40)}… zum Warenkorb hinzugefügt`);
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 14 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ delay: index * 0.05, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
     >
       <Link
         to={`/produkt/${listing.id}`}
         className={`group block ${isSold ? "pointer-events-auto" : ""}`}
       >
         {/* Image container */}
-        <div className="aspect-square bg-card rounded-xl relative overflow-hidden border border-border/60 mb-3 transition-all duration-500 group-hover:border-primary/20 group-hover:shadow-[0_4px_24px_-6px_hsl(var(--primary)/0.12)]">
+        <div className="aspect-square bg-card rounded-xl relative overflow-hidden border border-border/60 mb-3 transition-all duration-500 group-hover:border-primary/30 group-hover:shadow-[0_8px_32px_-8px_hsl(var(--primary)/0.15)]">
           {listing.images.length > 0 ? (
             <img
               src={listing.images[0]}
               alt={listing.title}
-              className={`absolute inset-0 w-full h-full object-contain p-6 transition-transform duration-700 ease-out ${
+              className={`absolute inset-0 w-full h-full object-contain p-5 transition-transform duration-700 ease-out ${
                 isSold ? "opacity-40 grayscale" : "group-hover:scale-110"
               }`}
               loading="lazy"
@@ -54,14 +56,20 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
             </div>
           )}
 
-          {/* Discount badge */}
-          {hasDiscount && !isSold && (
-            <div className="absolute top-2.5 left-2.5">
-              <span className="text-xs font-bold bg-primary text-primary-foreground px-2 py-1 rounded-md shadow-[0_2px_8px_hsl(var(--primary)/0.35)] flex items-center gap-1">
+          {/* Badges top-left */}
+          <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5">
+            {hasDiscount && !isSold && (
+              <span className="text-xs font-bold bg-primary text-primary-foreground px-2.5 py-1 rounded-md shadow-[0_2px_8px_hsl(var(--primary)/0.4)] flex items-center gap-1">
                 -{discountPercent}%
               </span>
-            </div>
-          )}
+            )}
+            {isLowStock && (
+              <span className="text-xs font-semibold bg-orange-500/90 text-white px-2 py-1 rounded-md flex items-center gap-1">
+                <Flame className="h-3 w-3" />
+                Nur {listing.stock}×
+              </span>
+            )}
+          </div>
 
           {/* Quick actions overlay */}
           {!isSold && (
@@ -69,13 +77,13 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
               <div className="flex gap-2">
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 flex items-center justify-center gap-1.5 h-9 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-lg hover:bg-primary/90 press-scale transition-all duration-200"
+                  className="flex-1 flex items-center justify-center gap-1.5 h-10 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-lg hover:bg-primary/90 press-scale transition-all duration-200"
                 >
-                  <ShoppingCart className="h-3.5 w-3.5" strokeWidth={2} />
+                  <ShoppingCart className="h-3.5 w-3.5" strokeWidth={2.5} />
                   In den Warenkorb
                 </button>
-                <span className="h-9 w-9 rounded-lg bg-card/80 backdrop-blur-sm border border-border/60 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
-                  <Eye className="h-3.5 w-3.5" strokeWidth={2} />
+                <span className="h-10 w-10 rounded-lg bg-card/90 backdrop-blur-sm border border-border/60 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
+                  <Eye className="h-4 w-4" strokeWidth={2} />
                 </span>
               </div>
             </div>
@@ -91,24 +99,29 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
           )}
         </div>
 
-        {/* Info */}
+        {/* Product info */}
         <div className="space-y-1.5 px-0.5">
           <h3 className="text-sm font-medium leading-snug line-clamp-2 group-hover:text-primary/90 transition-colors duration-300">
             {listing.title}
           </h3>
+
+          {/* Pricing */}
           <div className="flex items-baseline gap-2">
-            <span className="text-sm font-bold font-mono-data">
+            <span className="text-base font-bold font-mono-data">
               {listing.price.toFixed(2).replace(".", ",")} €
             </span>
             {hasDiscount && (
-              <span className="text-xs text-muted-foreground/60 font-mono-data">
-                <span className="font-sans mr-0.5">UVP</span>
-                <span className="line-through">{listing.originalPrice!.toFixed(2).replace(".", ",")} €</span>
+              <span className="text-xs text-muted-foreground/60 font-mono-data line-through">
+                {listing.originalPrice!.toFixed(2).replace(".", ",")} €
               </span>
             )}
           </div>
-          {!isSold && listing.stock > 0 && listing.stock <= 3 && (
-            <p className="text-[11px] text-orange-500 font-medium mt-0.5 px-0.5">Nur noch {listing.stock} verfügbar</p>
+
+          {/* Savings callout */}
+          {hasDiscount && !isSold && (
+            <p className="text-[11px] font-semibold text-primary">
+              Du sparst {savings.toFixed(2).replace(".", ",")} €
+            </p>
           )}
         </div>
       </Link>
