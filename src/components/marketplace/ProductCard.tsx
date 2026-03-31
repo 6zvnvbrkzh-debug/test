@@ -11,7 +11,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ listing, index = 0 }: ProductCardProps) {
-  const isSold = listing.status === "SOLD";
+  const isSold = listing.status === "SOLD" || listing.stock === 0;
   const hasDiscount = listing.originalPrice && listing.originalPrice > listing.price;
   const discountPercent = hasDiscount
     ? Math.round(((listing.originalPrice! - listing.price) / listing.originalPrice!) * 100)
