@@ -14,11 +14,10 @@ import {
 import { Loader2 } from "lucide-react";
 
 const categoryOptions = [
-  { value: "all", label: "Alle" },
-  { value: "streaming-box", label: "Formuler" },
-  { value: "receiver", label: "Octagon" },
-  { value: "accessories", label: "Highlights" },
-  { value: "remote", label: "Fernbedienungen" },
+  { value: "all", label: "Alle Produkte" },
+  { value: "streaming-box", label: "Streaming Boxen" },
+  { value: "receiver", label: "Receiver" },
+  { value: "accessories", label: "Zubehör" },
 ];
 
 const sortOptions = [
