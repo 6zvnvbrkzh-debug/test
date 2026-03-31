@@ -50,7 +50,7 @@ export function Header() {
                   }`}
                 >
                   <item.icon className="h-5 w-5 md:hidden" strokeWidth={active ? 2.5 : 1.5} />
-                  <span className={`text-[10px] md:text-sm ${active ? "font-bold" : "font-medium"}`}>
+                  <span className={`text-[10px] md:text-sm mt-0.5 md:mt-0 ${active ? "font-bold" : "font-medium"}`}>
                     {item.label}
                   </span>
                   {active && (
