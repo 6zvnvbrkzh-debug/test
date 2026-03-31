@@ -35,7 +35,7 @@ const mapListing = (row: any): Listing => {
     title: row.title,
     description: row.description,
     price: Number(row.price),
-    originalPrice: undefined,
+    originalPrice: row.original_price ? Number(row.original_price) : undefined,
     condition: row.condition,
     category: normalizeCategory(categoryData?.slug),
     images: row.images ?? [],
@@ -55,7 +55,7 @@ export function useActiveListings() {
       const { data, error } = await supabase
         .from("listings")
         .select(
-          "id, title, description, price, condition, images, specs, seller_id, status, created_at, categories(slug)"
+          "id, title, description, price, original_price, condition, images, specs, seller_id, status, created_at, categories(slug)"
         )
         .eq("status", "ACTIVE")
         .order("created_at", { ascending: false });

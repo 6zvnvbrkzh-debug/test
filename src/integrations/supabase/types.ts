@@ -133,6 +133,7 @@ export type Database = {
           description: string
           id: string
           images: string[] | null
+          original_price: number | null
           price: number
           seller_id: string
           specs: Json | null
@@ -147,6 +148,7 @@ export type Database = {
           description: string
           id?: string
           images?: string[] | null
+          original_price?: number | null
           price: number
           seller_id: string
           specs?: Json | null
@@ -161,6 +163,7 @@ export type Database = {
           description?: string
           id?: string
           images?: string[] | null
+          original_price?: number | null
           price?: number
           seller_id?: string
           specs?: Json | null
