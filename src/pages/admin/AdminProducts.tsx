@@ -259,6 +259,11 @@ export default function AdminProducts() {
                     )}
                   </TableCell>
                   <TableCell>
+                    <span className={`font-mono text-sm ${(listing.stock ?? 0) === 0 ? 'text-destructive font-semibold' : (listing.stock ?? 0) <= 3 ? 'text-orange-500' : 'text-foreground'}`}>
+                      {listing.stock ?? 0}
+                    </span>
+                  </TableCell>
+                  <TableCell>
                     <Badge variant="outline">
                       {CONDITIONS.find((c) => c.value === listing.condition)?.label || listing.condition}
                     </Badge>
