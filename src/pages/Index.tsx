@@ -91,10 +91,6 @@ const HomePage = () => {
           <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Text */}
             <motion.div {...fadeUp(0)}>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-6">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                Neue Kollektion 2026
-              </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05] mb-5">
                 Premium Hardware
