@@ -17,6 +17,7 @@ export interface Listing {
   sellerAvatar?: string;
   status: ListingStatus;
   createdAt: string;
+  stock: number;
 }
 
 export const CATEGORIES: { value: Category; label: string }[] = [

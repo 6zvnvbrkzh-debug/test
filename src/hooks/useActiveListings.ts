@@ -56,7 +56,7 @@ export function useActiveListings() {
       const { data, error } = await supabase
         .from("listings")
         .select(
-          "id, title, description, price, original_price, condition, images, specs, seller_id, status, created_at, categories(slug)"
+          "id, title, description, price, original_price, stock, condition, images, specs, seller_id, status, created_at, categories(slug)"
         )
         .eq("status", "ACTIVE")
         .order("created_at", { ascending: false });
