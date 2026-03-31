@@ -45,6 +45,7 @@ const mapListing = (row: any): Listing => {
     sellerAvatar: undefined,
     status: row.status,
     createdAt: row.created_at,
+    stock: row.stock ?? 0,
   };
 };
 
