@@ -129,9 +129,29 @@ export function CartDrawer() {
             <div className="border-t pt-4 space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Zwischensumme</span>
-                <span className="text-lg font-bold">{totalPrice.toFixed(2).replace(".", ",")} €</span>
+                <span className="text-sm font-medium">{totalPrice.toFixed(2).replace(".", ",")} €</span>
               </div>
-              <p className="text-xs text-muted-foreground">Versandkosten werden an der Kasse berechnet.</p>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Versand</span>
+                <span className="text-sm font-medium">
+                  {totalPrice >= 50 ? (
+                    <span className="text-green-600">Kostenlos</span>
+                  ) : (
+                    "5,99 €"
+                  )}
+                </span>
+              </div>
+              {totalPrice > 0 && totalPrice < 50 && (
+                <p className="text-xs text-muted-foreground">
+                  Noch {(50 - totalPrice).toFixed(2).replace(".", ",")} € bis zum kostenlosen Versand!
+                </p>
+              )}
+              <div className="flex items-center justify-between border-t pt-2">
+                <span className="text-sm font-semibold">Gesamt</span>
+                <span className="text-lg font-bold">
+                  {(totalPrice + (totalPrice >= 50 ? 0 : 5.99)).toFixed(2).replace(".", ",")} €
+                </span>
+              </div>
               <Button
                 className="w-full font-semibold press-scale transition-signal"
                 size="lg"

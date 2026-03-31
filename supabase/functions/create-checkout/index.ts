@@ -147,10 +147,34 @@ serve(async (req) => {
 
     const origin = req.headers.get("origin") || "https://signal-swap-spot.lovable.app";
 
+    // Calculate subtotal to determine shipping
+    const subtotal = items.reduce((sum: number, item: { listingId: string; quantity: number }) => {
+      const listing = listings.find((entry) => entry.id === item.listingId);
+      return sum + (listing ? Number(listing.price) * item.quantity : 0);
+    }, 0);
+
+    const shippingCost = subtotal >= 50 ? 0 : 5.99;
+
+    // Add shipping line item if applicable
+    const allLineItems = [...lineItems];
+    if (shippingCost > 0) {
+      allLineItems.push({
+        price_data: {
+          currency: "eur",
+          product_data: {
+            name: "Versandkosten",
+            images: [],
+          },
+          unit_amount: Math.round(shippingCost * 100),
+        },
+        quantity: 1,
+      });
+    }
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : userEmail,
-      line_items: lineItems,
+      line_items: allLineItems,
       mode: "payment",
       shipping_address_collection: { allowed_countries: ["DE", "AT", "CH"] },
       billing_address_collection: "required",
