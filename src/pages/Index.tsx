@@ -17,6 +17,7 @@ const categories = [
 ];
 
 const trustItems = [
+  { icon: Zap, title: "Blitzschneller Versand", desc: "Bis 14 Uhr bestellt, nächster Tag versendet" },
   { icon: Truck, title: "Kostenloser Versand", desc: "Ab 50€ Bestellwert" },
   { icon: ShieldCheck, title: "2 Jahre Garantie", desc: "Auf alle Produkte" },
   { icon: RotateCcw, title: "30 Tage Rückgabe", desc: "Kostenlos & einfach" },
