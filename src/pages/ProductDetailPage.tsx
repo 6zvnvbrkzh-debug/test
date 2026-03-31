@@ -169,6 +169,16 @@ const ProductDetailPage = () => {
                   Du sparst {(listing.originalPrice! - listing.price).toFixed(2).replace(".", ",")} €
                 </p>
               )}
+              {lowStock && (
+                <p className="text-sm text-orange-500 font-medium mt-1">
+                  Nur noch {listing.stock} auf Lager!
+                </p>
+              )}
+              {listing.stock > 3 && (
+                <p className="text-sm text-green-600 font-medium mt-1">
+                  Auf Lager ({listing.stock} verfügbar)
+                </p>
+              )}
             </div>
 
             <div className="space-y-3">
