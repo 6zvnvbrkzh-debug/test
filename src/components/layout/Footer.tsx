@@ -25,7 +25,7 @@ export function Footer() {
             <Link to="/" className="inline-flex items-center gap-2.5 group">
               <img
                 src="/images/b-electronics-logo.webp"
-                alt="B.Electronics Logo"
+                alt="Barbato Electronics Logo"
                 className="h-9 w-9 object-contain rounded-lg"
               />
               <span className="text-sm font-bold tracking-wide">B.Electronics</span>
