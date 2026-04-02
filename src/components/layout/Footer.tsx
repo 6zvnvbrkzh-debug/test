@@ -102,8 +102,13 @@ export function Footer() {
             href="https://webstudiocg.de"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors group"
+            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors group"
           >
+            <img
+              src="/images/webstudio-cg-logo.png"
+              alt="Webstudio CG Logo"
+              className="h-6 w-auto object-contain"
+            />
             <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">
               Designed by
             </span>
