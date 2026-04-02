@@ -96,7 +96,7 @@ export function Footer() {
       <div className="border-t border-border/20">
         <div className="container py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-xs text-muted-foreground/50">
-            © {new Date().getFullYear()} B.Electronics — Alle Rechte vorbehalten
+            © {new Date().getFullYear()} Barbato Electronics — Alle Rechte vorbehalten
           </p>
           <span className="text-[10px] text-muted-foreground/30 uppercase tracking-widest">
             Made in Germany
