@@ -25,10 +25,10 @@ export function Footer() {
             <Link to="/" className="inline-flex items-center gap-2.5 group">
               <img
                 src="/images/b-electronics-logo.webp"
-                alt="B.Electronics Logo"
+                alt="Barbato Electronics Logo"
                 className="h-9 w-9 object-contain rounded-lg"
               />
-              <span className="text-sm font-bold tracking-wide">B.Electronics</span>
+              <span className="text-sm font-bold tracking-wide">Barbato Electronics</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
               Dein Fachhändler für Streaming-Hardware und IPTV-Receiver. Top-Marken, schneller Versand.
@@ -96,7 +96,7 @@ export function Footer() {
       <div className="border-t border-border/20">
         <div className="container py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-xs text-muted-foreground/50">
-            © {new Date().getFullYear()} B.Electronics — Alle Rechte vorbehalten
+            © {new Date().getFullYear()} Barbato Electronics — Alle Rechte vorbehalten
           </p>
           <span className="text-[10px] text-muted-foreground/30 uppercase tracking-widest">
             Made in Germany

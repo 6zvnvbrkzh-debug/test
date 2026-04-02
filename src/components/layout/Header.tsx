@@ -31,7 +31,7 @@ export function Header() {
               className="h-8 w-8 object-contain transition-transform duration-300 group-hover:scale-105"
             />
             <span className="text-sm font-bold text-primary-foreground tracking-wide">
-              B.Electronics
+              Barbato Electronics
             </span>
           </Link>
 

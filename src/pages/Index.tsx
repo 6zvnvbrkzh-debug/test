@@ -357,7 +357,7 @@ const HomePage = () => {
       <section className="bg-surface-sunken border-y border-border/30">
         <div className="container py-14 md:py-20">
           <motion.div {...fadeUp(0.05)} className="text-center mb-10">
-            <p className="text-xs text-muted-foreground tracking-widest uppercase mb-2">Warum B.Electronics?</p>
+            <p className="text-xs text-muted-foreground tracking-widest uppercase mb-2"><p className="text-xs text-muted-foreground tracking-widest uppercase mb-2">Warum Barbato Electronics?</p></p>
             <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Dein Vorteil bei uns</h2>
           </motion.div>
 
