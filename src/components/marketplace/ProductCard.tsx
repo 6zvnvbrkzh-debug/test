@@ -48,8 +48,8 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
                 </span>
               )}
               {isLowStock && (
-                <span className="text-[10px] font-semibold uppercase tracking-wider bg-orange-500/90 text-white px-2 py-0.5 rounded-full flex items-center gap-1">
-                  <Flame className="h-2.5 w-2.5" />
+                <span className="text-[11px] font-semibold uppercase tracking-wide bg-orange-500/90 text-white px-2.5 py-1 rounded-full flex items-center gap-1.5 whitespace-nowrap">
+                  <Flame className="h-3 w-3" />
                   Nur {listing.stock}×
                 </span>
               )}
