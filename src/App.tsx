@@ -32,6 +32,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <CartProvider>
+            <ScrollToTop />
             <CartDrawer />
             <Routes>
               <Route path="/" element={<Index />} />
