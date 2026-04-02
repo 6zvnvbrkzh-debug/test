@@ -94,13 +94,24 @@ export function Footer() {
       </div>
 
       <div className="border-t border-border/20">
-        <div className="container py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div className="container py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground/50">
             © {new Date().getFullYear()} Barbato Electronics — Alle Rechte vorbehalten
           </p>
-          <span className="text-[10px] text-muted-foreground/30 uppercase tracking-widest">
-            Made in Germany
-          </span>
+          <a
+            href="https://webstudiocg.de"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors group"
+          >
+            <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+              Designed by
+            </span>
+            <span className="text-xs font-bold text-primary group-hover:text-primary/80 transition-colors">
+              Webstudio CG
+            </span>
+            <ArrowUpRight className="h-3 w-3 text-primary/60 group-hover:text-primary transition-colors" />
+          </a>
         </div>
       </div>
     </footer>
