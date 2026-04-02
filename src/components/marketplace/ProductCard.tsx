@@ -103,12 +103,12 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
 
             <div className="flex items-end justify-between">
               <div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-lg font-bold tracking-tight font-mono-data">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-lg font-bold tracking-tight font-mono-data whitespace-nowrap">
                     {listing.price.toFixed(2).replace(".", ",")} €
                   </span>
                   {hasDiscount && (
-                    <span className="text-[11px] text-muted-foreground/50 font-mono-data line-through">
+                    <span className="text-[11px] text-muted-foreground/50 font-mono-data line-through whitespace-nowrap">
                       {listing.originalPrice!.toFixed(2).replace(".", ",")} €
                     </span>
                   )}
