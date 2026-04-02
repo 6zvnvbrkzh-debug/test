@@ -20,8 +20,8 @@ export function Header() {
   };
 
   return (
-    <header className="fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom)]">
-      <div className="mx-3 md:mx-8 mb-3 md:mb-6">
+    <header className="fixed top-0 left-0 right-0 z-50 pt-[env(safe-area-inset-top)]">
+      <div className="mx-3 md:mx-8 mt-3 md:mt-6">
         <div className="flex items-center justify-between rounded-2xl bg-primary/75 backdrop-blur-2xl backdrop-saturate-150 px-2 py-2 md:px-8 md:py-3.5 shadow-[0_8px_40px_-8px_hsl(var(--primary)/0.4)] border border-primary/30">
           {/* Logo — desktop only */}
           <Link to="/" className="hidden md:flex items-center gap-2.5 group">
