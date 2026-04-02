@@ -64,19 +64,21 @@ const HomePage = () => {
       {/* ─── ANNOUNCEMENT BAR ─── */}
       {(discountProducts.length > 0 || lowStockCount > 0) && (
         <div className="bg-primary text-primary-foreground">
-          <div className="container py-2 flex items-center justify-center gap-2 text-xs md:text-sm font-medium">
-            <Zap className="h-3.5 w-3.5" />
-            {discountProducts.length > 0 ? (
-              <span>
-                🔥 {discountProducts.length} Produkte im Sale — bis zu{" "}
-                <span className="font-bold">{maxDiscount}% Rabatt</span>
-              </span>
-            ) : (
-              <span>⚡ {lowStockCount} Produkte fast ausverkauft — jetzt zugreifen!</span>
-            )}
+          <div className="container py-2.5 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-xs md:text-sm font-medium text-center">
+            <div className="flex items-center gap-1.5">
+              <Zap className="h-3.5 w-3.5 shrink-0" />
+              {discountProducts.length > 0 ? (
+                <span>
+                  🔥 {discountProducts.length} Produkte im Sale — bis zu{" "}
+                  <span className="font-bold">{maxDiscount}% Rabatt</span>
+                </span>
+              ) : (
+                <span>⚡ {lowStockCount} Produkte fast ausverkauft!</span>
+              )}
+            </div>
             <Link
               to="/produkte"
-              className="underline underline-offset-2 hover:no-underline ml-1"
+              className="underline underline-offset-2 hover:no-underline"
             >
               Jetzt shoppen →
             </Link>

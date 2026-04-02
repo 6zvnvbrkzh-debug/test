@@ -110,7 +110,7 @@ export function Header() {
             ) : (
               <Link
                 to="/anmelden"
-                className="flex flex-col md:flex-row items-center gap-1 md:gap-1.5 px-4 py-1.5 md:py-2 md:px-4 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
+                className="flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-3 py-1.5 md:py-2 md:px-4 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
               >
                 <User className="h-5 w-5" strokeWidth={1.5} />
                 <span className="text-[10px] md:text-sm font-medium mt-0.5 md:mt-0">Konto</span>
