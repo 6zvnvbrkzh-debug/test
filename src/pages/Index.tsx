@@ -199,15 +199,15 @@ const HomePage = () => {
       {/* ─── TRUST BADGES ─── */}
       <section className="border-y border-border/30 bg-surface-sunken">
         <div className="container py-6 md:py-8">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 md:gap-6">
             {trustItems.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="flex items-center gap-3">
+              <div key={title} className="flex items-center gap-3 p-3 sm:p-0 rounded-lg sm:rounded-none bg-card/50 sm:bg-transparent">
                 <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                   <Icon className="h-5 w-5 text-primary" strokeWidth={2} />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="text-sm font-semibold leading-tight">{title}</p>
-                  <p className="text-xs text-muted-foreground">{desc}</p>
+                  <p className="text-xs text-muted-foreground leading-snug">{desc}</p>
                 </div>
               </div>
             ))}
