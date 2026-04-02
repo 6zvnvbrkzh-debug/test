@@ -94,29 +94,31 @@ export function Footer() {
       </div>
 
       <div className="border-t border-border/20">
-        <div className="container py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-muted-foreground/50">
-            © {new Date().getFullYear()} Barbato Electronics — Alle Rechte vorbehalten
-          </p>
+        <div className="container py-6 flex flex-col items-center gap-4">
           <a
             href="https://webstudiocg.de"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors group"
+            className="inline-flex flex-col items-center gap-3 px-8 py-4 rounded-xl bg-primary/5 hover:bg-primary/10 border border-primary/10 hover:border-primary/20 transition-all group"
           >
             <img
-              src="/images/webstudio-cg-logo.png"
+              src="/images/webstudio-cg-logo-red.png"
               alt="Webstudio CG Logo"
-              className="h-6 w-auto object-contain"
+              className="h-10 w-auto object-contain"
             />
-            <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-              Designed by
-            </span>
-            <span className="text-xs font-bold text-primary group-hover:text-primary/80 transition-colors">
-              Webstudio CG
-            </span>
-            <ArrowUpRight className="h-3 w-3 text-primary/60 group-hover:text-primary transition-colors" />
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                Designed by
+              </span>
+              <span className="text-sm font-bold text-primary group-hover:text-primary/80 transition-colors">
+                Webstudio CG
+              </span>
+              <ArrowUpRight className="h-3.5 w-3.5 text-primary/60 group-hover:text-primary transition-colors" />
+            </div>
           </a>
+          <p className="text-xs text-muted-foreground/50">
+            © {new Date().getFullYear()} Barbato Electronics — Alle Rechte vorbehalten
+          </p>
         </div>
       </div>
     </footer>
