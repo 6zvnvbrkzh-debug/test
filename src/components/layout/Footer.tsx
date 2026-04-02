@@ -19,9 +19,9 @@ export function Footer() {
   return (
     <footer className="border-t border-border/30">
       <div className="container py-10 md:py-14">
-        <div className="grid grid-cols-2 md:grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-8 sm:gap-8">
           {/* Brand */}
-          <div className="col-span-2 md:col-span-5 space-y-4">
+          <div className="sm:col-span-2 md:col-span-5 space-y-4">
             <Link to="/" className="inline-flex items-center gap-2.5 group">
               <img
                 src="/images/b-electronics-logo.webp"
