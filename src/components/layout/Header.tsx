@@ -48,7 +48,7 @@ export function Header() {
           </Link>
 
           {/* Mobile: icon nav spanning full width */}
-          <nav className="flex items-center justify-around w-full md:w-auto md:justify-end md:gap-1">
+          <nav className="flex items-center justify-evenly w-full md:w-auto md:justify-end md:gap-1">
             {mobileNav.map((item) => {
               const active = isActive(item.to);
               return (
