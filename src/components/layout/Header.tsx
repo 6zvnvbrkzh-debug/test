@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ShoppingCart, User, LogOut, Home, Store } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
@@ -13,6 +14,13 @@ export function Header() {
   const location = useLocation();
   const { totalItems, setIsOpen } = useCart();
   const { user, signOut } = useAuth();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const isActive = (to: string) => {
     if (to === "/") return location.pathname === "/";
@@ -21,16 +29,20 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 pt-[env(safe-area-inset-top)]">
-      <div className="mx-3 md:mx-8 mt-3 md:mt-6">
-        <div className="flex items-center justify-between rounded-2xl bg-primary/75 backdrop-blur-2xl backdrop-saturate-150 px-2 py-2 md:px-8 md:py-3.5 shadow-[0_8px_40px_-8px_hsl(var(--primary)/0.4)] border border-primary/30">
+      <div className={`transition-all duration-500 ease-out ${scrolled ? "mx-2 md:mx-6 mt-2 md:mt-3" : "mx-3 md:mx-8 mt-3 md:mt-6"}`}>
+        <div className={`flex items-center justify-between rounded-2xl bg-primary/75 backdrop-blur-2xl backdrop-saturate-150 border border-primary/30 transition-all duration-500 ease-out ${
+          scrolled
+            ? "px-2 py-1.5 md:px-6 md:py-2.5 shadow-[0_4px_20px_-4px_hsl(var(--primary)/0.3)]"
+            : "px-2 py-2 md:px-8 md:py-3.5 shadow-[0_8px_40px_-8px_hsl(var(--primary)/0.4)]"
+        }`}>
           {/* Logo — desktop only */}
           <Link to="/" className="hidden md:flex items-center gap-2.5 group">
             <img
               src="/images/b-electronics-logo.webp"
-              alt="B.Electronics Logo"
-              className="h-8 w-8 object-contain transition-transform duration-300 group-hover:scale-105"
+              alt="Barbato Electronics Logo"
+              className={`object-contain transition-all duration-500 ease-out group-hover:scale-105 ${scrolled ? "h-8 w-8" : "h-10 w-10"}`}
             />
-            <span className="text-sm font-bold text-primary-foreground tracking-wide">
+            <span className={`font-bold text-primary-foreground tracking-wide transition-all duration-500 ${scrolled ? "text-sm" : "text-base"}`}>
               Barbato Electronics
             </span>
           </Link>
