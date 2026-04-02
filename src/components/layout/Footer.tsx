@@ -28,7 +28,7 @@ export function Footer() {
                 alt="Barbato Electronics Logo"
                 className="h-9 w-9 object-contain rounded-lg"
               />
-              <span className="text-sm font-bold tracking-wide">B.Electronics</span>
+              <span className="text-sm font-bold tracking-wide">Barbato Electronics</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
               Dein Fachhändler für Streaming-Hardware und IPTV-Receiver. Top-Marken, schneller Versand.
