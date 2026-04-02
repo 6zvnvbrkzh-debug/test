@@ -114,7 +114,7 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
                   )}
                 </div>
                 {hasDiscount && !isSold && (
-                  <p className="text-[10px] font-semibold text-primary mt-0.5">
+                  <p className="text-[10px] font-semibold text-primary mt-0.5 whitespace-nowrap">
                     Spare {savings.toFixed(2).replace(".", ",")} €
                   </p>
                 )}
