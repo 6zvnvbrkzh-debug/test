@@ -393,8 +393,29 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* ─── FINAL CTA ─── */}
+      <section className="container py-16 md:py-24">
+        <motion.div {...fadeUp(0.05)} className="text-center">
+          <h2 className="text-2xl md:text-4xl font-bold tracking-tight mb-4">
+            Bereit für dein neues Setup?
+          </h2>
+          <p className="text-muted-foreground max-w-md mx-auto mb-8">
+            Entdecke unser gesamtes Sortiment und finde das perfekte Streaming-Gerät für dich.
+          </p>
+          <Link to="/produkte">
+            <Button
+              size="lg"
+              className="font-semibold press-scale transition-signal px-10 h-12 text-base shadow-[0_0_32px_-4px_hsl(var(--primary)/0.4)]"
+            >
+              Alle Produkte entdecken
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
+        </motion.div>
+      </section>
+
       {/* ─── TELEGRAM CTA ─── */}
-      <section className="container pb-8 md:pb-12">
+      <section className="container pb-8 md:pb-16">
         <motion.div {...fadeUp(0.05)}>
           <a
             href="https://t.me/bElectronicsshops"
@@ -425,27 +446,6 @@ const HomePage = () => {
               </div>
             </div>
           </a>
-        </motion.div>
-      </section>
-
-      {/* ─── FINAL CTA ─── */}
-      <section className="container py-16 md:py-24">
-        <motion.div {...fadeUp(0.05)} className="text-center">
-          <h2 className="text-2xl md:text-4xl font-bold tracking-tight mb-4">
-            Bereit für dein neues Setup?
-          </h2>
-          <p className="text-muted-foreground max-w-md mx-auto mb-8">
-            Entdecke unser gesamtes Sortiment und finde das perfekte Streaming-Gerät für dich.
-          </p>
-          <Link to="/produkte">
-            <Button
-              size="lg"
-              className="font-semibold press-scale transition-signal px-10 h-12 text-base shadow-[0_0_32px_-4px_hsl(var(--primary)/0.4)]"
-            >
-              Alle Produkte entdecken
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
         </motion.div>
       </section>
     </Layout>
