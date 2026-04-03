@@ -429,7 +429,7 @@ const HomePage = () => {
       </section>
 
       {/* ─── FINAL CTA ─── */}
-      <section className="container py-16 md:py-24">
+      <section className="container py-8 md:py-12">
         <motion.div {...fadeUp(0.05)} className="text-center">
           <h2 className="text-2xl md:text-4xl font-bold tracking-tight mb-4">
             Bereit für dein neues Setup?
