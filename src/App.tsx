@@ -46,6 +46,9 @@ const App = () => (
               <Route path="/checkout/cancel" element={<CheckoutCancel />} />
               <Route path="/anmelden" element={<AuthPage />} />
               <Route path="/impressum" element={<ImpressumPage />} />
+              <Route path="/datenschutz" element={<DatenschutzPage />} />
+              <Route path="/agb" element={<AGBPage />} />
+              <Route path="/widerrufsrecht" element={<WiderrufsrechtPage />} />
 
               {/* Admin routes */}
               <Route
