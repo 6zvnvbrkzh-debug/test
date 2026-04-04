@@ -1,5 +1,5 @@
 export type Condition = "NEW" | "OPEN_BOX" | "USED" | "FOR_PARTS";
-export type Category = "streaming-box" | "receiver" | "accessories" | "remote";
+export type Category = "formuler-geraete" | "octagon-geraete" | "zubehoer" | "highlights";
 export type ListingStatus = "ACTIVE" | "SOLD" | "ARCHIVED";
 
 export interface Listing {
