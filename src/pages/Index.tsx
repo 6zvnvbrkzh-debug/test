@@ -9,6 +9,49 @@ import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/marketplace/ProductCard";
 import { useActiveListings } from "@/hooks/useActiveListings";
+import { SEOHead } from "@/components/SEOHead";
+
+const homepageJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://b-electronics.shop/#organization",
+      name: "Barbato Electronics",
+      url: "https://b-electronics.shop",
+      logo: "https://b-electronics.shop/images/b-electronics-logo.webp",
+      contactPoint: {
+        "@type": "ContactPoint",
+        telephone: "+49-176-22551230",
+        contactType: "customer service",
+        availableLanguage: "German",
+      },
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Ulrichstraße 29",
+        addressLocality: "Göppingen",
+        postalCode: "73033",
+        addressCountry: "DE",
+      },
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://b-electronics.shop/#website",
+      url: "https://b-electronics.shop",
+      name: "Barbato Electronics",
+      publisher: { "@id": "https://b-electronics.shop/#organization" },
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://b-electronics.shop/#webpage",
+      url: "https://b-electronics.shop",
+      name: "Barbato Electronics – Streaming-Hardware & IPTV-Receiver kaufen",
+      isPartOf: { "@id": "https://b-electronics.shop/#website" },
+      about: { "@id": "https://b-electronics.shop/#organization" },
+      description: "Dein Fachhändler für Streaming Boxen, IPTV-Receiver & Zubehör. Top-Marken, schneller Versand & 2 Jahre Garantie.",
+    },
+  ],
+};
 
 const categories = [
   { slug: "streaming-box", label: "Streaming Boxen", emoji: "📺", desc: "IPTV & OTT Geräte", count: 0 },
