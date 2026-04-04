@@ -170,7 +170,7 @@ export const mockListings: Listing[] = [
     price: 90.00,
     originalPrice: 109.00,
     condition: "NEW",
-    category: "streaming-box",
+    category: "octagon-geraete",
     images: ["https://images.sumup.com/img_6BMW34P5MR81X9ET1T4Q5H2KR1/image.png"],
     specs: { Auflösung: "4K UHD", HDR: "HDR10+", WLAN: "5G WiFi", Bluetooth: "Ja", Farbe: "Weiß", Typ: "Android TV Streaming Box" },
     sellerId: "b-electronics",
