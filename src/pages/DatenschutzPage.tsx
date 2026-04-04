@@ -47,7 +47,7 @@ const DatenschutzPage = () => {
               Ulrichstraße 29<br />
               73033 Göppingen<br />
               Deutschland<br />
-              E-Mail: info@barbato-electronics.de<br />
+              E-Mail: info@b-electronics.shop<br />
               Telefon: +49 176 22551230
             </p>
 
