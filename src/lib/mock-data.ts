@@ -42,7 +42,7 @@ export const mockListings: Listing[] = [
     price: 180.00,
     originalPrice: 239.00,
     condition: "NEW",
-    category: "accessories",
+    category: "zubehoer",
     images: ["https://images.sumup.com/img_0F8QDCRY0Q9Q9B9DJK33X86ADB/image.png"],
     specs: { Typ: "In-Ear Kopfhörer", Anschluss: "USB-C", Features: "ANC, Transparenzmodus, Räumliches Audio", Marke: "Apple" },
     sellerId: "b-electronics",
