@@ -3,9 +3,9 @@ import { Mail, MapPin, ArrowUpRight } from "lucide-react";
 
 const shopLinks = [
   { label: "Alle Produkte", to: "/produkte" },
-  { label: "Streaming Boxen", to: "/produkte?category=streaming-box" },
-  { label: "Receiver", to: "/produkte?category=receiver" },
-  { label: "Zubehör", to: "/produkte?category=accessories" },
+  { label: "Formuler Geräte", to: "/produkte?category=formuler-geraete" },
+  { label: "Octagon Geräte", to: "/produkte?category=octagon-geraete" },
+  { label: "Zubehör", to: "/produkte?category=zubehoer" },
 ];
 
 const legalLinks = [

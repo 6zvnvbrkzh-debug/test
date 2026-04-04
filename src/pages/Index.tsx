@@ -54,9 +54,9 @@ const homepageJsonLd = {
 };
 
 const categories = [
-  { slug: "streaming-box", label: "Streaming Boxen", emoji: "📺", desc: "IPTV & OTT Geräte", count: 0 },
-  { slug: "receiver", label: "Receiver", emoji: "📡", desc: "SAT & Kabel Receiver", count: 0 },
-  { slug: "accessories", label: "Zubehör", emoji: "🔌", desc: "Kabel, Fernbedienungen & mehr", count: 0 },
+  { slug: "formuler-geraete", label: "Formuler Geräte", emoji: "📺", desc: "OTT Medien Player & Streaming Boxen", count: 0 },
+  { slug: "octagon-geraete", label: "Octagon Geräte", emoji: "📡", desc: "IPTV-Receiver & Streaming Boxen", count: 0 },
+  { slug: "zubehoer", label: "Zubehör", emoji: "🔌", desc: "Kopfhörer, Kabel & mehr", count: 0 },
 ];
 
 const trustItems = [

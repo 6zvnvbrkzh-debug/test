@@ -3,8 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 import type { Category, Listing } from "@/lib/mock-data";
 
-const FALLBACK_CATEGORY: Category = "accessories";
-const VALID_CATEGORIES: Category[] = ["streaming-box", "receiver", "accessories", "remote"];
+const FALLBACK_CATEGORY: Category = "zubehoer";
+const VALID_CATEGORIES: Category[] = ["formuler-geraete", "octagon-geraete", "zubehoer", "highlights"];
 
 const normalizeCategory = (slug?: string | null): Category => {
   if (slug && VALID_CATEGORIES.includes(slug as Category)) {

@@ -1,5 +1,5 @@
 export type Condition = "NEW" | "OPEN_BOX" | "USED" | "FOR_PARTS";
-export type Category = "streaming-box" | "receiver" | "accessories" | "remote";
+export type Category = "formuler-geraete" | "octagon-geraete" | "zubehoer" | "highlights";
 export type ListingStatus = "ACTIVE" | "SOLD" | "ARCHIVED";
 
 export interface Listing {
@@ -21,10 +21,10 @@ export interface Listing {
 }
 
 export const CATEGORIES: { value: Category; label: string }[] = [
-  { value: "streaming-box", label: "Streaming Boxen" },
-  { value: "receiver", label: "Receiver" },
-  { value: "accessories", label: "Zubehör" },
-  { value: "remote", label: "Fernbedienungen" },
+  { value: "formuler-geraete", label: "Formuler Geräte" },
+  { value: "octagon-geraete", label: "Octagon Geräte" },
+  { value: "zubehoer", label: "Zubehör" },
+  { value: "highlights", label: "Highlights" },
 ];
 
 export const CONDITIONS: { value: Condition; label: string }[] = [
@@ -42,7 +42,7 @@ export const mockListings: Listing[] = [
     price: 180.00,
     originalPrice: 239.00,
     condition: "NEW",
-    category: "accessories",
+    category: "zubehoer",
     images: ["https://images.sumup.com/img_0F8QDCRY0Q9Q9B9DJK33X86ADB/image.png"],
     specs: { Typ: "In-Ear Kopfhörer", Anschluss: "USB-C", Features: "ANC, Transparenzmodus, Räumliches Audio", Marke: "Apple" },
     sellerId: "b-electronics",
@@ -58,7 +58,7 @@ export const mockListings: Listing[] = [
     price: 137.00,
     originalPrice: 155.00,
     condition: "NEW",
-    category: "streaming-box",
+    category: "formuler-geraete",
     images: ["https://images.sumup.com/img_10ZBR20YJ28JGA2YSYAVJX781P/image.png"],
     specs: { Betriebssystem: "Android 11", RAM: "2GB", Speicher: "16GB Flash", Fernbedienung: "BT1-Edition", Typ: "OTT Medien Player" },
     sellerId: "b-electronics",
@@ -74,7 +74,7 @@ export const mockListings: Listing[] = [
     price: 157.00,
     originalPrice: 179.00,
     condition: "NEW",
-    category: "streaming-box",
+    category: "formuler-geraete",
     images: ["https://images.sumup.com/img_0AGD4R8C859KA8AJ40BRJV33G4/image.png"],
     specs: { Betriebssystem: "Android 11", RAM: "4GB", Speicher: "32GB Flash", Fernbedienung: "BT1-Edition", Typ: "OTT Medien Player" },
     sellerId: "b-electronics",
@@ -90,7 +90,7 @@ export const mockListings: Listing[] = [
     price: 198.00,
     originalPrice: 209.00,
     condition: "NEW",
-    category: "streaming-box",
+    category: "formuler-geraete",
     images: ["https://images.sumup.com/img_5B8VCH0EY58FM816Y0FD7RXVCE/image.png"],
     specs: { Betriebssystem: "Android 12", RAM: "4GB DDR4", Speicher: "128GB Flash", Fernbedienung: "BT3", Typ: "OTT Medien Player" },
     sellerId: "b-electronics",
@@ -106,7 +106,7 @@ export const mockListings: Listing[] = [
     price: 114.00,
     originalPrice: 124.00,
     condition: "NEW",
-    category: "streaming-box",
+    category: "formuler-geraete",
     images: ["https://images.sumup.com/img_7BKND0YBB88YGBP31NWMEA8JHX/image.png"],
     specs: { Betriebssystem: "Android 12", RAM: "2GB", Speicher: "8GB Flash", Auflösung: "4K", Fernbedienung: "BT", Typ: "Multimedia Box" },
     sellerId: "b-electronics",
@@ -122,7 +122,7 @@ export const mockListings: Listing[] = [
     price: 70.00,
     originalPrice: 79.99,
     condition: "NEW",
-    category: "streaming-box",
+    category: "octagon-geraete",
     images: ["https://images.sumup.com/img_4F72QHC1TA8BVSG35RM0FTJ348/image.png"],
     specs: { Auflösung: "4K UHD", HDR: "HDR10+", WLAN: "5G", Bluetooth: "Ja", Typ: "Android TV Stick" },
     sellerId: "b-electronics",
@@ -138,7 +138,7 @@ export const mockListings: Listing[] = [
     price: 100.00,
     originalPrice: 119.00,
     condition: "NEW",
-    category: "receiver",
+    category: "octagon-geraete",
     images: ["https://images.sumup.com/img_4W7H172NSW962VMJGF853PQBZ6/image.png"],
     specs: { Auflösung: "4K UHD", Betriebssystem: "Android 11", Typ: "IPTV-Receiver", Marke: "Octagon" },
     sellerId: "b-electronics",
@@ -154,7 +154,7 @@ export const mockListings: Listing[] = [
     price: 120.00,
     originalPrice: 149.00,
     condition: "NEW",
-    category: "receiver",
+    category: "octagon-geraete",
     images: ["https://images.sumup.com/img_300X6J2MTK8ZFRJDANVSDQPYNX/image.png"],
     specs: { Auflösung: "8K", Betriebssystem: "Android", Typ: "IPTV-Box", Marke: "Octagon" },
     sellerId: "b-electronics",
@@ -170,7 +170,7 @@ export const mockListings: Listing[] = [
     price: 90.00,
     originalPrice: 109.00,
     condition: "NEW",
-    category: "streaming-box",
+    category: "octagon-geraete",
     images: ["https://images.sumup.com/img_6BMW34P5MR81X9ET1T4Q5H2KR1/image.png"],
     specs: { Auflösung: "4K UHD", HDR: "HDR10+", WLAN: "5G WiFi", Bluetooth: "Ja", Farbe: "Weiß", Typ: "Android TV Streaming Box" },
     sellerId: "b-electronics",
