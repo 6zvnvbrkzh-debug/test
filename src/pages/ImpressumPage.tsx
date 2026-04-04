@@ -62,9 +62,10 @@ const infoCards = [
     title: "Sprechzeiten",
     content: (
       <div className="text-muted-foreground space-y-1">
-        <p>Mo – Fr: 09:00 – 18:00 Uhr</p>
-        <p>Sa: 10:00 – 14:00 Uhr</p>
-        <p>So: Geschlossen</p>
+        <p>Mo – Do: 09:00 – 20:00 Uhr</p>
+        <p>Fr: 09:00 – 21:00 Uhr</p>
+        <p>Sa: 10:00 – 21:00 Uhr</p>
+        <p>So: 10:00 – 20:00 Uhr</p>
       </div>
     ),
   },
