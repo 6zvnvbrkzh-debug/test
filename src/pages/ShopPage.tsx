@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
+import { SEOHead } from "@/components/SEOHead";
 import { ProductCard } from "@/components/marketplace/ProductCard";
 import { useActiveListings } from "@/hooks/useActiveListings";
 import type { Category } from "@/lib/mock-data";
