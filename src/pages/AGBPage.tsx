@@ -140,13 +140,7 @@ const AGBPage = () => {
 
             <h2>§ 11 Streitbeilegung</h2>
             <p>
-              (1) Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:{" "}
-              <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                https://ec.europa.eu/consumers/odr
-              </a>.
-            </p>
-            <p>
-              (2) Wir sind weder verpflichtet noch bereit, an einem Streitbeilegungsverfahren vor einer
+              (1) Wir sind weder verpflichtet noch bereit, an einem Streitbeilegungsverfahren vor einer
               Verbraucherschlichtungsstelle teilzunehmen.
             </p>
 
