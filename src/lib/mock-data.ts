@@ -154,7 +154,7 @@ export const mockListings: Listing[] = [
     price: 120.00,
     originalPrice: 149.00,
     condition: "NEW",
-    category: "receiver",
+    category: "octagon-geraete",
     images: ["https://images.sumup.com/img_300X6J2MTK8ZFRJDANVSDQPYNX/image.png"],
     specs: { Auflösung: "8K", Betriebssystem: "Android", Typ: "IPTV-Box", Marke: "Octagon" },
     sellerId: "b-electronics",
