@@ -7,6 +7,7 @@ import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/marketplace/ProductCard";
 import { useCart } from "@/contexts/CartContext";
 import { useActiveListings } from "@/hooks/useActiveListings";
+import { SEOHead } from "@/components/SEOHead";
 import { toast } from "sonner";
 
 const conditionLabels: Record<string, string> = {
