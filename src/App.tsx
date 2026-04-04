@@ -15,6 +15,7 @@ import CheckoutSuccess from "./pages/CheckoutSuccess";
 import CheckoutCancel from "./pages/CheckoutCancel";
 import AuthPage from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
+import ImpressumPage from "./pages/ImpressumPage";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
