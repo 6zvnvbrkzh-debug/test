@@ -21,10 +21,10 @@ export interface Listing {
 }
 
 export const CATEGORIES: { value: Category; label: string }[] = [
-  { value: "streaming-box", label: "Streaming Boxen" },
-  { value: "receiver", label: "Receiver" },
-  { value: "accessories", label: "Zubehör" },
-  { value: "remote", label: "Fernbedienungen" },
+  { value: "formuler-geraete", label: "Formuler Geräte" },
+  { value: "octagon-geraete", label: "Octagon Geräte" },
+  { value: "zubehoer", label: "Zubehör" },
+  { value: "highlights", label: "Highlights" },
 ];
 
 export const CONDITIONS: { value: Condition; label: string }[] = [
