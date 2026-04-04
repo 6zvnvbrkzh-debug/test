@@ -42,6 +42,7 @@ const App = () => (
               <Route path="/checkout/success" element={<CheckoutSuccess />} />
               <Route path="/checkout/cancel" element={<CheckoutCancel />} />
               <Route path="/anmelden" element={<AuthPage />} />
+              <Route path="/impressum" element={<ImpressumPage />} />
 
               {/* Admin routes */}
               <Route
