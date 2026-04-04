@@ -90,7 +90,7 @@ export const mockListings: Listing[] = [
     price: 198.00,
     originalPrice: 209.00,
     condition: "NEW",
-    category: "streaming-box",
+    category: "formuler-geraete",
     images: ["https://images.sumup.com/img_5B8VCH0EY58FM816Y0FD7RXVCE/image.png"],
     specs: { Betriebssystem: "Android 12", RAM: "4GB DDR4", Speicher: "128GB Flash", Fernbedienung: "BT3", Typ: "OTT Medien Player" },
     sellerId: "b-electronics",
