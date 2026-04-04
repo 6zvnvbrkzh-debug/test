@@ -106,7 +106,7 @@ export const mockListings: Listing[] = [
     price: 114.00,
     originalPrice: 124.00,
     condition: "NEW",
-    category: "streaming-box",
+    category: "formuler-geraete",
     images: ["https://images.sumup.com/img_7BKND0YBB88YGBP31NWMEA8JHX/image.png"],
     specs: { Betriebssystem: "Android 12", RAM: "2GB", Speicher: "8GB Flash", Auflösung: "4K", Fernbedienung: "BT", Typ: "Multimedia Box" },
     sellerId: "b-electronics",
