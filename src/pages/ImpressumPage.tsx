@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Building2, Phone, Mail, User, Clock, FileText, Shield, Link2, Copyright, Scale, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Building2, Phone, User, Clock, FileText, Shield, Link2, Copyright, AlertTriangle } from "lucide-react";
 import { motion } from "framer-motion";
 
 const fadeUp = {
@@ -13,6 +13,83 @@ const fadeUp = {
     transition: { delay: i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
   }),
 };
+
+const infoCards = [
+  {
+    icon: Building2,
+    title: "Unternehmen",
+    content: (
+      <p className="text-muted-foreground">
+        Barbato Electronics<br />
+        Musterstraße 123<br />
+        12345 Musterstadt<br />
+        Deutschland
+      </p>
+    ),
+  },
+  {
+    icon: Phone,
+    title: "Kontakt",
+    content: (
+      <div className="text-muted-foreground space-y-1">
+        <p>
+          Telefon:{" "}
+          <a href="tel:+491234567890" className="text-primary hover:underline">
+            +49 123 456 7890
+          </a>
+        </p>
+        <p>
+          E-Mail:{" "}
+          <a href="mailto:info@barbato-electronics.de" className="text-primary hover:underline">
+            info@barbato-electronics.de
+          </a>
+        </p>
+      </div>
+    ),
+  },
+  {
+    icon: User,
+    title: "Vertreten durch",
+    content: (
+      <p className="text-muted-foreground">
+        Max Mustermann<br />
+        Geschäftsführer
+      </p>
+    ),
+  },
+  {
+    icon: Clock,
+    title: "Sprechzeiten",
+    content: (
+      <div className="text-muted-foreground space-y-1">
+        <p>Mo – Fr: 09:00 – 18:00 Uhr</p>
+        <p>Sa: 10:00 – 14:00 Uhr</p>
+        <p>So: Geschlossen</p>
+      </div>
+    ),
+  },
+  {
+    icon: FileText,
+    title: "Umsatzsteuer-ID",
+    content: (
+      <p className="text-muted-foreground">
+        Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz:<br />
+        DE 123 456 789
+      </p>
+    ),
+  },
+  {
+    icon: Shield,
+    title: "Verantwortlich für den Inhalt",
+    content: (
+      <p className="text-muted-foreground">
+        Max Mustermann<br />
+        Musterstraße 123<br />
+        12345 Musterstadt
+      </p>
+    ),
+  },
+];
 
 const ImpressumPage = () => {
   return (
@@ -47,143 +124,28 @@ const ImpressumPage = () => {
       <div className="container max-w-5xl py-12 md:py-16 space-y-8">
         {/* Info Cards – 2×3 Grid */}
         <motion.div
-          className="grid md:grid-cols-2 gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
           initial="hidden" animate="visible"
           variants={{ visible: { transition: { staggerChildren: 0.1, delayChildren: 0.3 } } }}
         >
-          {/* Unternehmen */}
-          <motion.div variants={fadeUp} custom={0} className="h-full">
-            <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow h-full">
-              <CardContent className="p-6 h-full">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <Building2 className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg mb-2">Unternehmen</h3>
-                    <p className="text-muted-foreground">
-                      Barbato Electronics<br />
-                      Musterstraße 123<br />
-                      12345 Musterstadt<br />
-                      Deutschland
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Kontakt */}
-          <motion.div variants={fadeUp} custom={1} className="h-full">
-            <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow h-full">
-              <CardContent className="p-6 h-full">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <Phone className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg mb-2">Kontakt</h3>
-                    <div className="text-muted-foreground space-y-1">
-                      <p>
-                        Telefon:{" "}
-                        <a href="tel:+491234567890" className="text-primary hover:underline">
-                          +49 123 456 7890
-                        </a>
-                      </p>
-                      <p>
-                        E-Mail:{" "}
-                        <a href="mailto:info@barbato-electronics.de" className="text-primary hover:underline">
-                          info@barbato-electronics.de
-                        </a>
-                      </p>
+          {infoCards.map((card, i) => {
+            const Icon = card.icon;
+            return (
+              <motion.div key={card.title} variants={fadeUp} custom={i} className="h-full">
+                <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow h-full">
+                  <CardContent className="p-6 h-full flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <Icon className="h-5 w-5 text-primary" />
                     </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Vertreten durch */}
-          <motion.div variants={fadeUp} custom={2} className="h-full">
-            <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow h-full">
-              <CardContent className="p-6 h-full">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <User className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg mb-2">Vertreten durch</h3>
-                    <p className="text-muted-foreground">
-                      Max Mustermann<br />
-                      Geschäftsführer
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Sprechzeiten */}
-          <motion.div variants={fadeUp} custom={3} className="h-full">
-            <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow h-full">
-              <CardContent className="p-6 h-full">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <Clock className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg mb-2">Sprechzeiten</h3>
-                    <div className="text-muted-foreground space-y-1">
-                      <p>Mo – Fr: 09:00 – 18:00 Uhr</p>
-                      <p>Sa: 10:00 – 14:00 Uhr</p>
-                      <p>So: Geschlossen</p>
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-lg mb-2">{card.title}</h3>
+                      {card.content}
                     </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Umsatzsteuer-ID */}
-          <motion.div variants={fadeUp} custom={4} className="h-full">
-            <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow h-full">
-              <CardContent className="p-6 h-full">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <FileText className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg mb-2">Umsatzsteuer-ID</h3>
-                    <p className="text-muted-foreground">
-                      Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz:<br />
-                      DE 123 456 789
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Verantwortlich */}
-          <motion.div variants={fadeUp} custom={5} className="h-full">
-            <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow h-full">
-              <CardContent className="p-6 h-full">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <Shield className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg mb-2">Verantwortlich für den Inhalt</h3>
-                    <p className="text-muted-foreground">
-                      Max Mustermann<br />
-                      Musterstraße 123<br />
-                      12345 Musterstadt
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            );
+          })}
         </motion.div>
 
         {/* Haftungsausschluss */}
@@ -236,7 +198,6 @@ const ImpressumPage = () => {
             </div>
           </CardContent>
         </Card>
-
       </div>
     </div>
   );
