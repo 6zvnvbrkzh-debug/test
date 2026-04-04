@@ -54,6 +54,7 @@ const homepageJsonLd = {
 };
 
 const categories = [
+  { slug: "highlights", label: "Highlights", emoji: "⭐", desc: "Unsere Top-Empfehlungen", count: 0 },
   { slug: "formuler-geraete", label: "Formuler Geräte", emoji: "📺", desc: "OTT Medien Player & Streaming Boxen", count: 0 },
   { slug: "octagon-geraete", label: "Octagon Geräte", emoji: "📡", desc: "IPTV-Receiver & Streaming Boxen", count: 0 },
   { slug: "zubehoer", label: "Zubehör", emoji: "🔌", desc: "Kopfhörer, Kabel & mehr", count: 0 },

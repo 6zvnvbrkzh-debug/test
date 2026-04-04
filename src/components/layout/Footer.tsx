@@ -3,6 +3,7 @@ import { Mail, MapPin, ArrowUpRight } from "lucide-react";
 
 const shopLinks = [
   { label: "Alle Produkte", to: "/produkte" },
+  { label: "Highlights", to: "/produkte?category=highlights" },
   { label: "Formuler Geräte", to: "/produkte?category=formuler-geraete" },
   { label: "Octagon Geräte", to: "/produkte?category=octagon-geraete" },
   { label: "Zubehör", to: "/produkte?category=zubehoer" },
