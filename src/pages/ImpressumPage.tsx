@@ -83,7 +83,7 @@ const ImpressumPage = () => {
                   </div>
                   <div>
                     <h3 className="font-bold text-lg mb-2">Kontakt</h3>
-                    <div className="text-muted-foreground space-y-1">
+                    <div className="text-muted-foreground space-y-1 pb-[43px]">
                       <p>
                         Telefon:{" "}
                         <a href="tel:+491234567890" className="text-primary hover:underline">
@@ -102,12 +102,12 @@ const ImpressumPage = () => {
               </CardContent>
             </Card>
           </motion.div>
-
+...
           {/* Vertreten durch */}
           <motion.div variants={fadeUp} custom={2}>
             <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-start gap-4">
+              <CardContent className="p-6 py-[24px] my-0">
+                <div className="flex items-start gap-4 py-[16px]">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                     <User className="h-5 w-5 text-primary" />
                   </div>
