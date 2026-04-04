@@ -96,7 +96,7 @@ const infoCards = [
 const ImpressumPage = () => {
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
+      <SEOHead title="Impressum" description="Impressum und Anbieterkennzeichnung von Barbato Electronics gemäß § 5 TMG." canonical="/impressum" />
       <div className="bg-gradient-to-br from-primary to-primary/80 py-16 md:py-24">
         <div className="container max-w-5xl text-center">
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}>

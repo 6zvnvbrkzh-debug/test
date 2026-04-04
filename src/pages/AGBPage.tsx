@@ -16,6 +16,7 @@ const fadeUp = {
 const AGBPage = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Allgemeine Geschäftsbedingungen" description="AGB von Barbato Electronics – Allgemeine Geschäftsbedingungen für Bestellungen in unserem Online-Shop." canonical="/agb" />
       <div className="bg-gradient-to-br from-primary to-primary/80 py-16 md:py-24">
         <div className="container max-w-5xl text-center">
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}>
