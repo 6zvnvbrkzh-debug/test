@@ -10,9 +10,9 @@ const shopLinks = [
 
 const legalLinks = [
   { label: "Impressum", to: "/impressum" },
-  { label: "AGB", to: "#" },
-  { label: "Datenschutz", to: "#" },
-  { label: "Widerrufsrecht", to: "#" },
+  { label: "AGB", to: "/agb" },
+  { label: "Datenschutz", to: "/datenschutz" },
+  { label: "Widerrufsrecht", to: "/widerrufsrecht" },
 ];
 
 export function Footer() {

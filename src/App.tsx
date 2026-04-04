@@ -16,6 +16,9 @@ import CheckoutCancel from "./pages/CheckoutCancel";
 import AuthPage from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
 import ImpressumPage from "./pages/ImpressumPage";
+import DatenschutzPage from "./pages/DatenschutzPage";
+import AGBPage from "./pages/AGBPage";
+import WiderrufsrechtPage from "./pages/WiderrufsrechtPage";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
@@ -43,6 +46,9 @@ const App = () => (
               <Route path="/checkout/cancel" element={<CheckoutCancel />} />
               <Route path="/anmelden" element={<AuthPage />} />
               <Route path="/impressum" element={<ImpressumPage />} />
+              <Route path="/datenschutz" element={<DatenschutzPage />} />
+              <Route path="/agb" element={<AGBPage />} />
+              <Route path="/widerrufsrecht" element={<WiderrufsrechtPage />} />
 
               {/* Admin routes */}
               <Route
