@@ -115,7 +115,7 @@ const WiderrufsrechtPage = () => {
                 Petros Barbato Manousos<br />
                 Ulrichstraße 29<br />
                 73033 Göppingen<br />
-                E-Mail: info@barbato-electronics.de
+                E-Mail: info@b-electronics.shop
               </p>
               <p>
                 Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden
