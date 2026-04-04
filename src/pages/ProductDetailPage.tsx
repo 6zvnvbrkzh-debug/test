@@ -74,8 +74,30 @@ const ProductDetailPage = () => {
     setTimeout(() => setAddedToCart(false), 2000);
   };
 
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: listing.title,
+    description: listing.description,
+    image: listing.images?.[0],
+    offers: {
+      "@type": "Offer",
+      price: listing.price,
+      priceCurrency: "EUR",
+      availability: isSold ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+      seller: { "@type": "Organization", name: "Barbato Electronics" },
+    },
+  };
+
   return (
     <Layout>
+      <SEOHead
+        title={listing.title}
+        description={listing.description.slice(0, 155)}
+        canonical={`/produkt/${listing.id}`}
+        type="product"
+        jsonLd={productJsonLd}
+      />
       <div className="container py-6">
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
           <Link to="/produkte" className="inline-flex items-center gap-1 hover:text-foreground transition-colors">

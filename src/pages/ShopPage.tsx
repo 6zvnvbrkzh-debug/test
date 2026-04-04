@@ -76,6 +76,11 @@ const ShopPage = () => {
 
   return (
     <Layout>
+      <SEOHead
+        title="Shop – Alle Produkte"
+        description="Entdecke Streaming Boxen, IPTV-Receiver & Zubehör. Günstige Preise, schneller Versand aus Deutschland & 2 Jahre Garantie."
+        canonical="/produkte"
+      />
       {/* Trust bar */}
       <div className="border-b border-border/40 bg-surface-sunken">
         <div className="container py-3">
