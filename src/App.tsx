@@ -39,6 +39,7 @@ const App = () => (
           <CartProvider>
             <ScrollToTop />
             <CartDrawer />
+            <CookieBanner />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/produkte" element={<ShopPage />} />
