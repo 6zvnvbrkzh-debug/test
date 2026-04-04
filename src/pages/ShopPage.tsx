@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
+import { SEOHead } from "@/components/SEOHead";
 import { ProductCard } from "@/components/marketplace/ProductCard";
 import { useActiveListings } from "@/hooks/useActiveListings";
 import type { Category } from "@/lib/mock-data";
@@ -75,6 +76,11 @@ const ShopPage = () => {
 
   return (
     <Layout>
+      <SEOHead
+        title="Shop – Alle Produkte"
+        description="Entdecke Streaming Boxen, IPTV-Receiver & Zubehör. Günstige Preise, schneller Versand aus Deutschland & 2 Jahre Garantie."
+        canonical="/produkte"
+      />
       {/* Trust bar */}
       <div className="border-b border-border/40 bg-surface-sunken">
         <div className="container py-3">

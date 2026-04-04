@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, FileText } from "lucide-react";
 import { motion } from "framer-motion";
+import { SEOHead } from "@/components/SEOHead";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20, filter: "blur(8px)" },
@@ -15,6 +16,7 @@ const fadeUp = {
 const AGBPage = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Allgemeine Geschäftsbedingungen" description="AGB von Barbato Electronics – Allgemeine Geschäftsbedingungen für Bestellungen in unserem Online-Shop." canonical="/agb" />
       <div className="bg-gradient-to-br from-primary to-primary/80 py-16 md:py-24">
         <div className="container max-w-5xl text-center">
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}>
