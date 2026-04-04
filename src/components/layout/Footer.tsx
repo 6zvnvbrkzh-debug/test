@@ -9,7 +9,7 @@ const shopLinks = [
 ];
 
 const legalLinks = [
-  { label: "Impressum", to: "#" },
+  { label: "Impressum", to: "/impressum" },
   { label: "AGB", to: "#" },
   { label: "Datenschutz", to: "#" },
   { label: "Widerrufsrecht", to: "#" },
