@@ -93,7 +93,7 @@ export function Footer() {
           <div className="md:col-span-2">
             <h4 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">Service</h4>
             <ul className="space-y-2.5 text-sm text-muted-foreground">
-              <li>Mo–Fr, 9–17 Uhr</li>
+              <li>Mo–Do 9–20, Fr 9–21, Sa 10–21, So 10–20</li>
               <li>1–2 Werktage Lieferzeit</li>
               <li>2 Jahre Garantie</li>
               <li>30 Tage Rückgabe</li>
