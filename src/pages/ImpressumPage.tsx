@@ -234,11 +234,6 @@ const ImpressumPage = () => {
           </CardContent>
         </Card>
 
-        {/* Streitschlichtung */}
-        <Card className="border-border/50 shadow-lg mt-8">
-          <CardContent className="p-8 py-0 px-0">
-          </CardContent>
-        </Card>
       </div>
     </div>
   );
