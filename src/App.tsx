@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "@/contexts/CartContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartDrawer } from "@/components/cart/CartDrawer";
+import { CookieBanner } from "@/components/CookieBanner";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import Index from "./pages/Index";
 import ShopPage from "./pages/ShopPage";
@@ -38,6 +39,7 @@ const App = () => (
           <CartProvider>
             <ScrollToTop />
             <CartDrawer />
+            <CookieBanner />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/produkte" element={<ShopPage />} />
