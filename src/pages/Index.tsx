@@ -104,6 +104,12 @@ const HomePage = () => {
 
   return (
     <Layout>
+      <SEOHead
+        title="Streaming-Hardware & IPTV-Receiver kaufen"
+        description="Dein Fachhändler für Streaming Boxen, IPTV-Receiver & Zubehör. Top-Marken wie Formuler, schneller Versand aus Deutschland & 2 Jahre Garantie."
+        canonical="/"
+        jsonLd={homepageJsonLd}
+      />
       {/* ─── ANNOUNCEMENT BAR ─── */}
       {(discountProducts.length > 0 || lowStockCount > 0) && (
         <div className="bg-primary text-primary-foreground">
