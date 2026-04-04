@@ -21,8 +21,8 @@ const infoCards = [
     content: (
       <p className="text-muted-foreground">
         Barbato Electronics<br />
-        Musterstraße 123<br />
-        12345 Musterstadt<br />
+        Ulrichstraße 29<br />
+        73033 Göppingen<br />
         Deutschland
       </p>
     ),
@@ -34,8 +34,8 @@ const infoCards = [
       <div className="text-muted-foreground space-y-1">
         <p>
           Telefon:{" "}
-          <a href="tel:+491234567890" className="text-primary hover:underline">
-            +49 123 456 7890
+          <a href="tel:+4917622551230" className="text-primary hover:underline">
+            +49 176 22551230
           </a>
         </p>
         <p>
@@ -52,7 +52,7 @@ const infoCards = [
     title: "Vertreten durch",
     content: (
       <p className="text-muted-foreground">
-        Max Mustermann<br />
+        Petros Barbato Manousos<br />
         Geschäftsführer
       </p>
     ),
@@ -74,7 +74,7 @@ const infoCards = [
     content: (
       <p className="text-muted-foreground">
         Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz:<br />
-        DE 123 456 789
+        Nicht Vorhanden Kleinunternehmerregelung
       </p>
     ),
   },
@@ -83,9 +83,9 @@ const infoCards = [
     title: "Verantwortlich für den Inhalt",
     content: (
       <p className="text-muted-foreground">
-        Max Mustermann<br />
-        Musterstraße 123<br />
-        12345 Musterstadt
+        Petros Barbato Manousos<br />
+        Kemptenerstraße 11<br />
+        89079 Ulm
       </p>
     ),
   },
