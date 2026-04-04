@@ -99,7 +99,7 @@ const ImpressumPage = () => {
         <div className="container max-w-5xl text-center">
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}>
             <Link to="/">
-              <Button variant="outline" className="mb-8 border-primary-foreground/30 text-primary-foreground hover:text-primary-foreground bg-primary">
+              <Button variant="outline" className="mb-8 border-primary-foreground/30 text-primary-foreground hover:text-primary-foreground bg-primary hover:bg-primary/90">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Zurück zur Startseite
               </Button>
