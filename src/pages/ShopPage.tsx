@@ -17,6 +17,7 @@ import { Loader2, Truck, ShieldCheck, RotateCcw, Flame, SlidersHorizontal } from
 
 const categoryOptions = [
   { value: "all", label: "Alle Produkte", emoji: "🔥" },
+  { value: "highlights", label: "Highlights", emoji: "⭐" },
   { value: "formuler-geraete", label: "Formuler Geräte", emoji: "📺" },
   { value: "octagon-geraete", label: "Octagon Geräte", emoji: "📡" },
   { value: "zubehoer", label: "Zubehör", emoji: "🔌" },
