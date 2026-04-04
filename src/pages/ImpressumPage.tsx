@@ -45,16 +45,16 @@ const ImpressumPage = () => {
 
       {/* Content */}
       <div className="container max-w-5xl py-12 md:py-16 space-y-8">
-        {/* Primary Info Cards */}
+        {/* Info Cards – 2×3 Grid */}
         <motion.div
           className="grid md:grid-cols-2 gap-6"
           initial="hidden" animate="visible"
           variants={{ visible: { transition: { staggerChildren: 0.1, delayChildren: 0.3 } } }}
         >
           {/* Unternehmen */}
-          <motion.div variants={fadeUp} custom={0}>
-            <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-6">
+          <motion.div variants={fadeUp} custom={0} className="h-full">
+            <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow h-full">
+              <CardContent className="p-6 h-full">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                     <Building2 className="h-5 w-5 text-primary" />
@@ -74,16 +74,16 @@ const ImpressumPage = () => {
           </motion.div>
 
           {/* Kontakt */}
-          <motion.div variants={fadeUp} custom={1}>
-            <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-6">
+          <motion.div variants={fadeUp} custom={1} className="h-full">
+            <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow h-full">
+              <CardContent className="p-6 h-full">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                     <Phone className="h-5 w-5 text-primary" />
                   </div>
                   <div>
                     <h3 className="font-bold text-lg mb-2">Kontakt</h3>
-                    <div className="text-muted-foreground space-y-1 pb-[43px]">
+                    <div className="text-muted-foreground space-y-1">
                       <p>
                         Telefon:{" "}
                         <a href="tel:+491234567890" className="text-primary hover:underline">
@@ -102,12 +102,12 @@ const ImpressumPage = () => {
               </CardContent>
             </Card>
           </motion.div>
-...
+
           {/* Vertreten durch */}
-          <motion.div variants={fadeUp} custom={2}>
-            <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-6 py-[24px] my-0">
-                <div className="flex items-start gap-4 py-[16px]">
+          <motion.div variants={fadeUp} custom={2} className="h-full">
+            <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow h-full">
+              <CardContent className="p-6 h-full">
+                <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                     <User className="h-5 w-5 text-primary" />
                   </div>
@@ -124,9 +124,9 @@ const ImpressumPage = () => {
           </motion.div>
 
           {/* Sprechzeiten */}
-          <motion.div variants={fadeUp} custom={3}>
-            <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-6">
+          <motion.div variants={fadeUp} custom={3} className="h-full">
+            <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow h-full">
+              <CardContent className="p-6 h-full">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                     <Clock className="h-5 w-5 text-primary" />
@@ -143,45 +143,48 @@ const ImpressumPage = () => {
               </CardContent>
             </Card>
           </motion.div>
+
+          {/* Umsatzsteuer-ID */}
+          <motion.div variants={fadeUp} custom={4} className="h-full">
+            <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow h-full">
+              <CardContent className="p-6 h-full">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <FileText className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg mb-2">Umsatzsteuer-ID</h3>
+                    <p className="text-muted-foreground">
+                      Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz:<br />
+                      DE 123 456 789
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Verantwortlich */}
+          <motion.div variants={fadeUp} custom={5} className="h-full">
+            <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow h-full">
+              <CardContent className="p-6 h-full">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <Shield className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg mb-2">Verantwortlich für den Inhalt</h3>
+                    <p className="text-muted-foreground">
+                      Max Mustermann<br />
+                      Musterstraße 123<br />
+                      12345 Musterstadt
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
         </motion.div>
-
-        {/* Secondary Info Cards */}
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <FileText className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg mb-2">Umsatzsteuer-ID</h3>
-                  <p className="text-muted-foreground">
-                    Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz:<br />
-                    DE 123 456 789
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-border/50 shadow-lg hover:shadow-xl transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <Shield className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg mb-2">Verantwortlich für den Inhalt</h3>
-                  <p className="text-muted-foreground">
-                    Max Mustermann<br />
-                    Musterstraße 123<br />
-                    12345 Musterstadt
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
 
         {/* Haftungsausschluss */}
         <Card className="border-border/50 shadow-lg">
