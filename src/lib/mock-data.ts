@@ -122,7 +122,7 @@ export const mockListings: Listing[] = [
     price: 70.00,
     originalPrice: 79.99,
     condition: "NEW",
-    category: "streaming-box",
+    category: "octagon-geraete",
     images: ["https://images.sumup.com/img_4F72QHC1TA8BVSG35RM0FTJ348/image.png"],
     specs: { Auflösung: "4K UHD", HDR: "HDR10+", WLAN: "5G", Bluetooth: "Ja", Typ: "Android TV Stick" },
     sellerId: "b-electronics",
