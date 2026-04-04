@@ -236,27 +236,7 @@ const ImpressumPage = () => {
 
         {/* Streitschlichtung */}
         <Card className="border-border/50 shadow-lg mt-8">
-          <CardContent className="p-8">
-            <h2 className="text-2xl font-bold mb-6">Streitschlichtung</h2>
-            <div className="border-l-4 border-primary pl-6">
-              <div className="flex items-center gap-3 mb-3">
-                <Scale className="h-5 w-5 text-primary shrink-0" />
-                <h3 className="font-bold text-lg">Online-Streitbeilegung</h3>
-              </div>
-              <p className="text-muted-foreground leading-relaxed">
-                Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:{" "}
-                <a
-                  href="https://ec.europa.eu/consumers/odr"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline"
-                >
-                  https://ec.europa.eu/consumers/odr
-                </a>
-                . Unsere E-Mail-Adresse finden Sie oben im Impressum. Wir sind nicht bereit oder verpflichtet, an
-                Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
-              </p>
-            </div>
+          <CardContent className="p-8 py-0 px-0">
           </CardContent>
         </Card>
       </div>
