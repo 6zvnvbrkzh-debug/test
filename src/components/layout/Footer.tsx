@@ -43,7 +43,7 @@ export function Footer() {
                 info@b-electronics.shop
               </a>
               <a
-                href="https://t.me/bElectronicsshops"
+                href="https://t.me/bElectronicsshop"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 hover:text-foreground transition-colors w-fit"

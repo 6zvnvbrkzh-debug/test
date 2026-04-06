@@ -185,7 +185,7 @@ export function CartDrawer() {
                 Weiter einkaufen
               </Button>
               <a
-                href="https://t.me/bElectronicsshops"
+                href="https://t.me/bElectronicsshop"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full rounded-lg bg-[#229ED9] hover:bg-[#1a8abf] py-2.5 text-sm font-semibold text-white transition-colors"
