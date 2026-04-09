@@ -1,15 +1,24 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Loader2, User, MapPin, FileText, Save, LogOut } from "lucide-react";
+import { Loader2, User, MapPin, FileText, Save, LogOut, Package, ShoppingBag } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { de } from "date-fns/locale";
+
+const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
+  PENDING: { label: "In Bearbeitung", variant: "secondary" },
+  COMPLETED: { label: "Abgeschlossen", variant: "default" },
+  REFUNDED: { label: "Erstattet", variant: "destructive" },
+};
 
 export default function AccountPage() {
   const { user, loading: authLoading, signOut } = useAuth();
@@ -35,6 +44,20 @@ export default function AccountPage() {
         .single();
       if (error) throw error;
       return data;
+    },
+  });
+
+  const { data: orders = [], isLoading: ordersLoading } = useQuery({
+    queryKey: ["my-orders", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("orders")
+        .select("id, amount, status, created_at, listing_id, listings(title, images)")
+        .eq("buyer_id", user!.id)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
     },
   });
 
@@ -82,16 +105,22 @@ export default function AccountPage() {
 
   return (
     <Layout>
-      <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md space-y-8">
-          <div className="text-center space-y-2">
-            <h1 className="text-2xl font-bold tracking-tight">Mein Konto</h1>
-            <p className="text-sm text-muted-foreground">
-              Bearbeite deine Profilinformationen.
-            </p>
-          </div>
+      <div className="container py-8 md:py-12 max-w-2xl space-y-10">
+        {/* Header */}
+        <div className="text-center space-y-2">
+          <h1 className="text-2xl font-bold tracking-tight">Mein Konto</h1>
+          <p className="text-sm text-muted-foreground">
+            Bearbeite deine Profilinformationen und sieh deine Bestellungen.
+          </p>
+        </div>
 
-          {/* Email (read-only) */}
+        {/* Profile Section */}
+        <section className="space-y-4">
+          <h2 className="text-lg font-semibold flex items-center gap-2">
+            <User className="h-5 w-5 text-primary" />
+            Profil
+          </h2>
+
           <div className="space-y-2">
             <Label>E-Mail</Label>
             <Input value={user?.email || ""} disabled className="bg-muted" />
@@ -143,12 +172,7 @@ export default function AccountPage() {
               </div>
             </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              size="lg"
-              disabled={updateMutation.isPending}
-            >
+            <Button type="submit" className="w-full" size="lg" disabled={updateMutation.isPending}>
               {updateMutation.isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
@@ -159,19 +183,86 @@ export default function AccountPage() {
               )}
             </Button>
           </form>
+        </section>
 
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => {
-              signOut();
-              navigate("/");
-            }}
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            Abmelden
-          </Button>
-        </div>
+        {/* Orders Section */}
+        <section className="space-y-4">
+          <h2 className="text-lg font-semibold flex items-center gap-2">
+            <ShoppingBag className="h-5 w-5 text-primary" />
+            Meine Bestellungen
+          </h2>
+
+          {ordersLoading ? (
+            <div className="flex justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : orders.length === 0 ? (
+            <div className="text-center py-10 rounded-xl border border-border/40 bg-card">
+              <Package className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
+              <p className="text-muted-foreground font-medium">Noch keine Bestellungen</p>
+              <Link to="/produkte" className="text-primary text-sm font-medium mt-2 inline-block hover:underline">
+                Jetzt shoppen →
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {orders.map((order) => {
+                const listing = order.listings as any;
+                const status = statusMap[order.status] || statusMap.PENDING;
+                const image = listing?.images?.[0];
+
+                return (
+                  <div
+                    key={order.id}
+                    className="flex items-center gap-4 p-4 rounded-xl border border-border/40 bg-card"
+                  >
+                    {/* Product image */}
+                    <div className="h-16 w-16 rounded-lg bg-muted overflow-hidden shrink-0">
+                      {image ? (
+                        <img src={image} alt={listing?.title || ""} className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="h-full w-full flex items-center justify-center">
+                          <Package className="h-6 w-6 text-muted-foreground" />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Details */}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold truncate">
+                        {listing?.title || "Produkt"}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {format(new Date(order.created_at), "dd. MMM yyyy", { locale: de })}
+                      </p>
+                    </div>
+
+                    {/* Price & Status */}
+                    <div className="text-right shrink-0 space-y-1">
+                      <p className="text-sm font-bold">{Number(order.amount).toFixed(2)} €</p>
+                      <Badge variant={status.variant} className="text-[10px]">
+                        {status.label}
+                      </Badge>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
+
+        {/* Sign out */}
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => {
+            signOut();
+            navigate("/");
+          }}
+        >
+          <LogOut className="h-4 w-4 mr-2" />
+          Abmelden
+        </Button>
       </div>
     </Layout>
   );
