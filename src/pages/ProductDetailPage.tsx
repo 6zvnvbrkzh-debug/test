@@ -181,20 +181,20 @@ const ProductDetailPage = () => {
               <h1 className="text-xl md:text-2xl font-bold tracking-tight leading-tight mb-4">
                 {listing.title}
               </h1>
-              <div className="flex items-baseline gap-3">
-                <span className="text-3xl font-bold font-mono-data">
-                  {listing.price.toFixed(2).replace(".", ",")} €
+              <div className="flex flex-col gap-1.5 sm:flex-row sm:items-end sm:gap-3">
+                <span className="text-[2rem] leading-none md:text-3xl font-bold font-mono-data whitespace-nowrap">
+                  {formatPrice(listing.price)}
                 </span>
                 {hasDiscount && (
-                  <span className="text-base text-muted-foreground font-mono-data">
+                  <span className="text-sm md:text-base text-muted-foreground font-mono-data whitespace-nowrap">
                     <span className="font-sans mr-1">UVP</span>
-                    <span className="line-through">{listing.originalPrice!.toFixed(2).replace(".", ",")} €</span>
+                    <span className="line-through">{formatPrice(listing.originalPrice!)}</span>
                   </span>
                 )}
               </div>
               {hasDiscount && (
-                <p className="text-sm text-primary font-medium mt-1">
-                  Du sparst {(listing.originalPrice! - listing.price).toFixed(2).replace(".", ",")} €
+                <p className="text-sm text-primary font-medium mt-1 whitespace-nowrap">
+                  Du sparst&nbsp;{formatPrice(listing.originalPrice! - listing.price)}
                 </p>
               )}
               {lowStock && (
