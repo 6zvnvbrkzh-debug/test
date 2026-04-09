@@ -10,6 +10,12 @@ const mobileNav = [
   { to: "/produkte", label: "Shop", icon: Store },
 ];
 
+const TelegramIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+  </svg>
+);
+
 export function Header() {
   const location = useLocation();
   const { totalItems, setIsOpen } = useCart();
@@ -36,13 +42,13 @@ export function Header() {
             : "px-2 py-2 md:px-8 md:py-3.5 shadow-[0_8px_40px_-8px_hsl(var(--primary)/0.4)]"
         }`}>
           {/* Logo — desktop only */}
-          <Link to="/" className="hidden md:flex items-center gap-2.5 group">
+          <Link to="/" className="hidden md:flex items-center gap-3 group">
             <img
               src="/images/b-electronics-logo.webp"
               alt="Barbato Electronics Logo"
-              className={`object-contain transition-all duration-500 ease-out group-hover:scale-105 ${scrolled ? "h-8 w-8" : "h-10 w-10"}`}
+              className={`object-contain transition-all duration-500 ease-out group-hover:scale-105 ${scrolled ? "h-10 w-10" : "h-12 w-12"}`}
             />
-            <span className={`font-bold text-primary-foreground tracking-wide transition-all duration-500 ${scrolled ? "text-sm" : "text-base"}`}>
+            <span className={`font-bold text-primary-foreground tracking-wide transition-all duration-500 ${scrolled ? "text-base" : "text-lg"}`}>
               Barbato Electronics
             </span>
           </Link>
@@ -75,6 +81,17 @@ export function Header() {
                 </Link>
               );
             })}
+
+            {/* Telegram */}
+            <a
+              href="https://t.me/bElectronicsshop"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-3 py-1.5 md:py-2 md:px-4 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
+            >
+              <TelegramIcon className="h-5 w-5" />
+              <span className="text-[10px] md:text-sm font-medium mt-0.5 md:mt-0">Telegram</span>
+            </a>
 
             {/* Cart */}
             <button
