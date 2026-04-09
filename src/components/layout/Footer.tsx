@@ -23,13 +23,13 @@ export function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-8 sm:gap-8">
           {/* Brand */}
           <div className="sm:col-span-2 md:col-span-5 space-y-4">
-            <Link to="/" className="inline-flex items-center gap-2.5 group">
+            <Link to="/" className="inline-flex items-center gap-3 group">
               <img
                 src="/images/b-electronics-logo.webp"
                 alt="Barbato Electronics Logo"
-                className="h-9 w-9 object-contain rounded-lg"
+                className="h-12 w-12 object-contain rounded-lg group-hover:scale-105 transition-transform"
               />
-              <span className="text-sm font-bold tracking-wide">Barbato Electronics</span>
+              <span className="text-base font-bold tracking-wide">Barbato Electronics</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
               Dein Fachhändler für Streaming-Hardware und IPTV-Receiver. Top-Marken, schneller Versand.
