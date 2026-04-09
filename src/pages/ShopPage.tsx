@@ -125,9 +125,9 @@ const ShopPage = () => {
         </motion.div>
 
         {/* Category pills + sort */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div className="flex flex-col gap-4 mb-8">
           {/* Category pills */}
-          <div className="grid grid-cols-2 gap-2 md:flex md:items-center md:gap-2 md:flex-wrap">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
             {categoryOptions.map((option) => {
               const isActive = selectedCategory === option.value;
               return (
@@ -150,7 +150,7 @@ const ShopPage = () => {
           </div>
 
           {/* Sort + count */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between md:justify-end gap-3">
             <span className="text-sm text-muted-foreground whitespace-nowrap">
               {filtered.length} {filtered.length === 1 ? "Produkt" : "Produkte"}
             </span>
