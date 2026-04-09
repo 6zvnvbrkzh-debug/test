@@ -151,9 +151,6 @@ const ShopPage = () => {
 
           {/* Sort + count */}
           <div className="flex items-center justify-between md:justify-end gap-3">
-
-          {/* Sort + count */}
-          <div className="flex items-center gap-3">
             <span className="text-sm text-muted-foreground whitespace-nowrap">
               {filtered.length} {filtered.length === 1 ? "Produkt" : "Produkte"}
             </span>
