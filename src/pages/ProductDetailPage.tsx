@@ -17,6 +17,11 @@ const conditionLabels: Record<string, string> = {
   FOR_PARTS: "Ersatzteile",
 };
 
+const formatPrice = (price: number) => {
+  const [euros, cents] = price.toFixed(2).split(".");
+  return `${euros},${cents}\u00A0€`;
+};
+
 const ProductDetailPage = () => {
   const { id } = useParams();
   const { addItem } = useCart();
