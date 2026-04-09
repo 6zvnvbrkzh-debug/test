@@ -107,23 +107,19 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
             </h3>
 
             <div className="flex items-end justify-between gap-1">
-              <div className="min-w-0">
-                <div className="flex items-baseline gap-1.5 md:gap-2">
-                  <span className="text-base md:text-lg font-bold tracking-tight font-mono-data whitespace-nowrap">
-                    {formatPrice(listing.price)}
-                  </span>
-                </div>
+              <div className="min-w-0 overflow-hidden">
+                <span className="text-sm md:text-lg font-bold tracking-tight font-mono-data whitespace-nowrap block">
+                  {formatPrice(listing.price)}
+                </span>
                 {hasDiscount && (
-                  <div className="flex items-center gap-1.5 mt-0.5">
-                    <span className="text-[10px] md:text-[11px] text-muted-foreground/50 font-mono-data line-through whitespace-nowrap">
-                      {formatPrice(listing.originalPrice!)}
-                    </span>
-                  </div>
+                  <span className="text-[10px] md:text-[11px] text-muted-foreground/50 font-mono-data line-through whitespace-nowrap block mt-0.5">
+                    {formatPrice(listing.originalPrice!)}
+                  </span>
                 )}
                 {hasDiscount && !isSold && (
-                  <p className="text-[9px] md:text-[10px] font-semibold text-primary mt-0.5 whitespace-nowrap">
-                    Spare {formatPrice(savings)}
-                  </p>
+                  <span className="text-[9px] md:text-[10px] font-semibold text-primary mt-0.5 whitespace-nowrap block">
+                    Spare&nbsp;{formatPrice(savings)}
+                  </span>
                 )}
               </div>
 
