@@ -290,23 +290,20 @@ const HomePage = () => {
             <motion.div key={cat.slug} {...fadeUp(0.1 + i * 0.06)}>
               <Link
                 to={`/produkte?category=${cat.slug}`}
-                className="group flex items-center gap-4 p-5 rounded-xl border border-border/50 bg-card hover:border-primary/30 hover:shadow-[0_4px_24px_-6px_hsl(var(--primary)/0.12)] transition-all duration-500"
+                className="group flex flex-col items-center justify-center text-center gap-2 p-4 md:p-5 rounded-xl border border-border/50 bg-card hover:border-primary/30 hover:shadow-[0_4px_24px_-6px_hsl(var(--primary)/0.12)] transition-all duration-500 aspect-square md:aspect-auto"
               >
-                <span className="text-3xl">{cat.emoji}</span>
-                <div className="flex-1 min-w-0">
+                <span className="text-3xl md:text-3xl">{cat.emoji}</span>
+                <div className="min-w-0">
                   <p className="text-sm font-semibold group-hover:text-primary transition-colors">
                     {cat.label}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{cat.desc}</p>
+                  <p className="hidden md:block text-xs text-muted-foreground mt-0.5">{cat.desc}</p>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  {cat.count > 0 && (
-                    <span className="text-xs font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                      {cat.count}
-                    </span>
-                  )}
-                  <ChevronRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-1 transition-all" />
-                </div>
+                {cat.count > 0 && (
+                  <span className="text-xs font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                    {cat.count}
+                  </span>
+                )}
               </Link>
             </motion.div>
           ))}
