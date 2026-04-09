@@ -99,14 +99,24 @@ export function Header() {
 
             {/* Auth */}
             {user ? (
-              <button
-                onClick={() => signOut()}
-                className="flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-3 py-1.5 md:py-2 md:px-4 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
-                title="Abmelden"
+              <Link
+                to="/konto"
+                className={`relative flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-3 py-1.5 md:py-2 md:px-4 transition-all duration-300 rounded-xl ${
+                  isActive("/konto")
+                    ? "text-primary-foreground"
+                    : "text-primary-foreground/60 hover:text-primary-foreground"
+                }`}
               >
-                <LogOut className="h-5 w-5" strokeWidth={1.5} />
-                <span className="text-[10px] md:text-sm font-medium mt-0.5 md:mt-0">Abmelden</span>
-              </button>
+                <User className="h-5 w-5" strokeWidth={isActive("/konto") ? 2.5 : 1.5} />
+                <span className={`text-[10px] md:text-sm mt-0.5 md:mt-0 ${isActive("/konto") ? "font-bold" : "font-medium"}`}>Konto</span>
+                {isActive("/konto") && (
+                  <motion.div
+                    layoutId="nav-pill"
+                    className="absolute inset-0 bg-primary-foreground/15 rounded-xl -z-10"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
+                  />
+                )}
+              </Link>
             ) : (
               <Link
                 to="/anmelden"

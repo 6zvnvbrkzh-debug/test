@@ -15,6 +15,7 @@ import ProductDetailPage from "./pages/ProductDetailPage";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
 import CheckoutCancel from "./pages/CheckoutCancel";
 import AuthPage from "./pages/AuthPage";
+import AccountPage from "./pages/AccountPage";
 import NotFound from "./pages/NotFound";
 import ImpressumPage from "./pages/ImpressumPage";
 import DatenschutzPage from "./pages/DatenschutzPage";
@@ -47,6 +48,7 @@ const App = () => (
               <Route path="/checkout/success" element={<CheckoutSuccess />} />
               <Route path="/checkout/cancel" element={<CheckoutCancel />} />
               <Route path="/anmelden" element={<AuthPage />} />
+              <Route path="/konto" element={<AccountPage />} />
               <Route path="/impressum" element={<ImpressumPage />} />
               <Route path="/datenschutz" element={<DatenschutzPage />} />
               <Route path="/agb" element={<AGBPage />} />
