@@ -253,7 +253,7 @@ const ProductDetailPage = () => {
                 ) : (
                   <span className="inline-flex items-center gap-2">
                     <ShoppingCart className="h-4 w-4" />
-                    In den Warenkorb · {(listing.price * quantity).toFixed(2).replace(".", ",")} €
+                    In den Warenkorb · {formatPrice(listing.price * quantity)}
                   </span>
                 )}
               </Button>
