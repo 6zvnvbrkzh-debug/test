@@ -290,7 +290,7 @@ const HomePage = () => {
             <motion.div key={cat.slug} {...fadeUp(0.1 + i * 0.06)}>
               <Link
                 to={`/produkte?category=${cat.slug}`}
-                className="group flex flex-col items-center justify-center text-center gap-2 p-4 md:p-5 rounded-xl border border-border/50 bg-card hover:border-primary/30 hover:shadow-[0_4px_24px_-6px_hsl(var(--primary)/0.12)] transition-all duration-500 aspect-square md:aspect-auto"
+                className="group flex flex-col items-center justify-center text-center gap-2 p-4 md:p-5 rounded-xl border border-border/50 bg-card hover:border-primary/30 hover:shadow-[0_4px_24px_-6px_hsl(var(--primary)/0.12)] transition-all duration-500 aspect-square"
               >
                 <span className="text-3xl md:text-3xl">{cat.emoji}</span>
                 <div className="min-w-0">
