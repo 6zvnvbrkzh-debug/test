@@ -127,7 +127,7 @@ const ShopPage = () => {
         {/* Category pills + sort */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           {/* Category pills */}
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="grid grid-cols-2 gap-2 md:flex md:items-center md:gap-2 md:flex-wrap">
             {categoryOptions.map((option) => {
               const isActive = selectedCategory === option.value;
               return (
