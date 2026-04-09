@@ -74,6 +74,11 @@ const fadeUp = (delay = 0) => ({
   transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] as const },
 });
 
+const formatPrice = (price: number) => {
+  const [euros, cents] = price.toFixed(2).split(".");
+  return `${euros},${cents}\u00A0€`;
+};
+
 const HomePage = () => {
   const { data: listings = [], isLoading } = useActiveListings();
   const highlights = listings.slice(0, 8);
@@ -217,13 +222,13 @@ const HomePage = () => {
                       <div>
                         <p className="text-sm font-semibold line-clamp-1">{heroProduct.title}</p>
                         <div className="flex items-baseline gap-2 mt-0.5">
-                          <span className="text-lg font-bold font-mono-data text-primary">
-                            {heroProduct.price.toFixed(2).replace(".", ",")} €
+                          <span className="text-lg font-bold font-mono-data text-primary whitespace-nowrap">
+                            {formatPrice(heroProduct.price)}
                           </span>
                           {heroProduct.originalPrice &&
                             heroProduct.originalPrice > heroProduct.price && (
-                              <span className="text-xs text-muted-foreground/60 font-mono-data line-through">
-                                {heroProduct.originalPrice.toFixed(2).replace(".", ",")} €
+                              <span className="text-xs text-muted-foreground/60 font-mono-data line-through whitespace-nowrap">
+                                {formatPrice(heroProduct.originalPrice)}
                               </span>
                             )}
                         </div>
@@ -340,16 +345,18 @@ const HomePage = () => {
                     <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
                       {bestDeal.description}
                     </p>
-                    <div className="flex items-baseline gap-3 mb-5">
-                      <span className="text-2xl font-bold font-mono-data text-primary">
-                        {bestDeal.price.toFixed(2).replace(".", ",")} €
+                    <div className="flex flex-col gap-1 md:flex-row md:items-baseline md:gap-3 mb-5">
+                      <span className="text-2xl font-bold font-mono-data text-primary whitespace-nowrap">
+                        {formatPrice(bestDeal.price)}
                       </span>
-                      <span className="text-sm text-muted-foreground/60 font-mono-data line-through">
-                        {bestDeal.originalPrice!.toFixed(2).replace(".", ",")} €
-                      </span>
-                      <span className="text-sm font-semibold text-primary">
-                        Du sparst {(bestDeal.originalPrice! - bestDeal.price).toFixed(2).replace(".", ",")} €
-                      </span>
+                      <div className="flex items-baseline gap-2 md:gap-3">
+                        <span className="text-sm text-muted-foreground/60 font-mono-data line-through whitespace-nowrap">
+                          UVP{"\u00A0"}{formatPrice(bestDeal.originalPrice!)}
+                        </span>
+                        <span className="text-sm font-semibold text-primary whitespace-nowrap">
+                          Du{"\u00A0"}sparst{"\u00A0"}{formatPrice(bestDeal.originalPrice! - bestDeal.price)}
+                        </span>
+                      </div>
                     </div>
                     <div className="flex items-center gap-2 text-sm font-semibold text-primary">
                       Jetzt ansehen
