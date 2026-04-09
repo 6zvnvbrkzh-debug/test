@@ -46,7 +46,7 @@ export function Header() {
             <img
               src="/images/b-electronics-logo.webp"
               alt="Barbato Electronics Logo"
-              className={`object-contain transition-all duration-500 ease-out group-hover:scale-105 ${scrolled ? "h-10 w-10" : "h-12 w-12"}`}
+              className={`object-contain transition-all duration-500 ease-out group-hover:scale-105 rounded-lg ${scrolled ? "h-8 w-8" : "h-11 w-11"}`}
             />
             <span className={`font-bold text-primary-foreground tracking-wide transition-all duration-500 ${scrolled ? "text-base" : "text-lg"}`}>
               Barbato Electronics
