@@ -1,58 +1,63 @@
 
+Ziel: Das mobile Layout der Produktdarstellung aus deinem Screenshot soll luftiger wirken, und Preiszeilen dürfen nicht mehr unschön umbrechen.
 
-## Stripe-Zahlungen mit Produkt-Datenbank einrichten
+Was ich gefunden habe:
+- Das Problem aus dem Screenshot sitzt nicht in der normalen `ProductCard`, sondern in der Angebots-/Deal-Karte auf der Startseite in `src/pages/Index.tsx`.
+- Dort stehen auf Mobile aktuell:
+  - aktueller Preis
+  - alter Preis
+  - „Du sparst …“
+  in einer einzigen horizontalen Zeile.
+- In genau diesem Bereich wird das Layout zu eng, dadurch wirkt die Karte gequetscht und das `€` bzw. die Preisinfos brechen unsauber um.
+- Zusätzlich formatiert `Index.tsx` Preise dort noch manuell mit `" €"` statt mit geschütztem Leerzeichen.
 
-### Überblick
-Die Produkte werden von Mock-Daten in die bestehende `listings`-Tabelle in der Datenbank migriert. Dann wird Stripe Checkout integriert, damit Kunden direkt aus dem Warenkorb bezahlen können.
+Umsetzungsplan:
+1. Startseiten-Deal-Karte mobil neu strukturieren
+- Den Preisbereich in `src/pages/Index.tsx` für kleine Screens von einer Zeile auf einen vertikalen bzw. 2-stufigen Aufbau umbauen.
+- Mobile Zielstruktur:
+```text
+180,00 €
+UVP 249,00 €
+Du sparst 69,00 €
+Jetzt ansehen →
+```
+- Ab `sm`/`md` kann das Layout wieder kompakter nebeneinander laufen, falls es optisch passt.
 
----
+2. Preisformatierung vereinheitlichen
+- In `src/pages/Index.tsx` eine konsistente `formatPrice()`-Logik mit `\u00A0€` verwenden.
+- Damit bleiben Zahl und Eurozeichen immer zusammen.
+- Das gilt für:
+  - Hero-Produkt oben
+  - Deal-Highlight
+  - alle Savings-/UVP-Anzeigen in diesem File
 
-### Schritt 1: Stripe Integration aktivieren
-- Das Stripe-Tool aktivieren (Secrets sind bereits vorhanden: `Stripe_SK` und `webhook_stripe`)
-- Dadurch werden die nötigen Edge Functions und Konfigurationen bereitgestellt
+3. Mobile Abstände luftiger machen
+- Im betroffenen Deal-Block auf Mobile mehr vertikale Luft geben:
+  - größere Abstände zwischen Titel, Beschreibung, Preisblock und CTA
+  - Preisinfos nicht mehr „zusammenpressen“
+- Falls nötig die Beschreibung auf Mobile etwas kontrollierter clampen bzw. mit besserer Zeilenhöhe darstellen, damit die Karte ruhiger wirkt.
 
-### Schritt 2: Produkte in die Datenbank einfügen
-- Die 9 bestehenden Mock-Produkte in die `listings`-Tabelle einfügen (mit einem festen `seller_id` für B-Electronics)
-- Felder: title, description, price, condition, category_id, images, specs, status
-- Dafür muss eine Kategorie-Zuordnung erstellt werden (categories-Tabelle befüllen)
-- Ein `original_price`-Feld zur `listings`-Tabelle hinzufügen (für Rabattanzeige)
+4. Text- und Preisbruch absichern
+- `whitespace-nowrap` für einzelne Preiswerte einsetzen.
+- „Du sparst“ samt Betrag so umbauen, dass der Betrag nicht vom `€` getrennt wird.
+- Alte Preise mit Strich ebenfalls gegen unschöne Umbrüche absichern.
 
-### Schritt 3: Shop-Seiten auf Datenbank umstellen
-- `ShopPage.tsx` und `ProductDetailPage.tsx` ändern: statt `mockListings` werden Daten per Supabase-Query geladen
-- `CartContext` anpassen, damit es mit den Datenbank-Listings funktioniert
-- Loading-States und Error-Handling hinzufügen
+5. Kurzer Mobile-Sweep über ähnliche Shop-Bereiche
+- Nach dem Fix auch die weiteren öffentlichen Produktflächen auf dieselbe Art prüfen:
+  - Startseite Hero-Produkt
+  - Startseite Highlights
+  - Shop-Grid
+  - Produktdetailseite verwandte Produkte
+- Nur dort nachziehen, wo noch manuelle `" €"`-Ausgaben oder gequetschte Preisreihen vorkommen.
 
-### Schritt 4: Stripe Checkout Edge Function
-- Edge Function `create-checkout` erstellen, die:
-  - Warenkorb-Items entgegennimmt
-  - Stripe Checkout Session mit den Produkten erstellt
-  - Session-URL zurückgibt
-- Edge Function `stripe-webhook` für Zahlungsbestätigungen (Order-Status updaten)
+Technische Details:
+- Betroffene Hauptdatei: `src/pages/Index.tsx`
+- Bereits teilweise korrekt: `src/components/marketplace/ProductCard.tsx` und `src/pages/ProductDetailPage.tsx` nutzen schon eine `formatPrice()`-Logik mit geschütztem Leerzeichen.
+- Keine Backend-, Datenbank- oder Auth-Änderungen nötig.
+- Fokus ist rein auf responsive Layout, Typografie und Preisdarstellung.
 
-### Schritt 5: Checkout-Flow im Frontend
-- "Zur Kasse"-Button im CartDrawer mit Stripe Checkout verbinden
-- Erfolgs- und Abbruch-Seiten erstellen (`/checkout/success`, `/checkout/cancel`)
-- Order in der `orders`-Tabelle speichern
-
----
-
-### Technische Details
-
-**Datenbank-Migration:**
-- `ALTER TABLE listings ADD COLUMN original_price numeric;`
-- Categories + Listings per Insert-Tool befüllen
-
-**Neue Dateien:**
-- `supabase/functions/create-checkout/index.ts`
-- `supabase/functions/stripe-webhook/index.ts`
-- `src/pages/CheckoutSuccess.tsx`
-- `src/pages/CheckoutCancel.tsx`
-- `src/hooks/useListings.ts` (Supabase Query Hook)
-
-**Geänderte Dateien:**
-- `src/pages/ShopPage.tsx` — Datenbank statt Mock-Daten
-- `src/pages/ProductDetailPage.tsx` — Datenbank statt Mock-Daten
-- `src/contexts/CartContext.tsx` — Typ-Anpassungen
-- `src/components/cart/CartDrawer.tsx` — Checkout-Button Logik
-- `src/App.tsx` — Neue Routen
-
+Ergebnis nach Umsetzung:
+- Das `€` bricht nicht mehr ab.
+- Preis, UVP und Ersparnis wirken auf Mobile geordnet statt gequetscht.
+- Die Angebotskarte bekommt mehr „Luft“ und liest sich hochwertiger.
+- Vergleichbare Preisstellen auf der Storefront sind visuell konsistent.
