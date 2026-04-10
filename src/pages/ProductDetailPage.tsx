@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ShieldCheck, Truck, Package, ChevronLeft, Minus, Plus, ShoppingCart, Check, Loader2 } from "lucide-react";
+import { ShieldCheck, Truck, Package, ChevronLeft, ChevronRight, Minus, Plus, ShoppingCart, Check, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
@@ -133,6 +133,23 @@ const ProductDetailPage = () => {
                   transition={{ duration: 0.3 }}
                 />
               </AnimatePresence>
+
+              {listing.images.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setSelectedImage((prev) => (prev === 0 ? listing.images.length - 1 : prev - 1))}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-card/80 backdrop-blur-sm border border-border/60 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-card transition-all opacity-0 group-hover:opacity-100"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => setSelectedImage((prev) => (prev === listing.images.length - 1 ? 0 : prev + 1))}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-card/80 backdrop-blur-sm border border-border/60 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-card transition-all opacity-0 group-hover:opacity-100"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </>
+              )}
 
               <div className="absolute top-4 left-4 flex flex-col gap-2">
                 {hasDiscount && (
