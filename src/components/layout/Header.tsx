@@ -44,7 +44,7 @@ export function Header() {
           {/* Logo — desktop only */}
           <Link to="/" className="hidden md:flex items-center gap-3 group">
             <img
-              src="/images/b-electronics-logo.webp"
+              src="/lovable-uploads/46fa0535-bf1d-4bdc-8bc6-b0b7aa36c88a.png"
               alt="Barbato Electronics Logo"
               className={`object-contain transition-all duration-500 ease-out group-hover:scale-105 rounded-lg ${scrolled ? "h-9 w-9" : "h-14 w-14"}`}
             />
