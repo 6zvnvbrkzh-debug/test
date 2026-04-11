@@ -317,7 +317,6 @@ const ProductDetailPage = () => {
                       </div>
                     );
                   })}
-                  ))}
                 </div>
               </div>
             )}
