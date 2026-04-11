@@ -37,10 +37,11 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.06, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="h-full"
     >
       <Link
         to={`/produkt/${listing.id}`}
-        className={`group block relative ${isSold ? "pointer-events-auto" : ""}`}
+        className={`group block relative h-full ${isSold ? "pointer-events-auto" : ""}`}
       >
         <div className="relative rounded-2xl bg-card border border-border/40 overflow-hidden transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-[0_0_40px_-12px_hsl(var(--primary)/0.2)] h-full flex flex-col">
           
