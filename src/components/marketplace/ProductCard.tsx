@@ -42,7 +42,7 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
         to={`/produkt/${listing.id}`}
         className={`group block relative ${isSold ? "pointer-events-auto" : ""}`}
       >
-        <div className="relative rounded-2xl bg-card border border-border/40 overflow-hidden transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-[0_0_40px_-12px_hsl(var(--primary)/0.2)]">
+        <div className="relative rounded-2xl bg-card border border-border/40 overflow-hidden transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-[0_0_40px_-12px_hsl(var(--primary)/0.2)] h-full flex flex-col">
           
           {/* Top bar with badges */}
           <div className="flex items-center justify-between px-3 md:px-4 pt-2.5 md:pt-3 pb-0 relative z-10">
