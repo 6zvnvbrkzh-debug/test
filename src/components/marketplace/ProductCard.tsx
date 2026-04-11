@@ -111,7 +111,7 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
           <div className="mx-3 md:mx-4 h-px bg-border/50 group-hover:bg-primary/20 transition-colors duration-500" />
 
           {/* Info section */}
-          <div className="p-3 md:p-4 space-y-1.5 md:space-y-2.5">
+          <div className="p-3 md:p-4 space-y-1.5 md:space-y-2.5 mt-auto">
             <h3 className="text-xs md:text-[13px] font-medium leading-snug line-clamp-2 text-foreground/90 group-hover:text-foreground transition-colors duration-300">
               {listing.title}
             </h3>
