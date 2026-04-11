@@ -47,6 +47,16 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
           {/* Top bar with badges */}
           <div className="flex items-center justify-between px-3 md:px-4 pt-2.5 md:pt-3 pb-0 relative z-10">
             <div className="flex items-center gap-1">
+              {listing.title.toLowerCase().includes("octagon") && (
+                <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60 bg-muted/60 px-1.5 py-0.5 rounded-md">
+                  OCT
+                </span>
+              )}
+              {listing.title.toLowerCase().includes("formuler") && (
+                <span className="text-[9px] font-bold uppercase tracking-widest text-primary/70 bg-primary/10 px-1.5 py-0.5 rounded-md">
+                  FRM
+                </span>
+              )}
               {hasDiscount && !isSold && (
                 <span className="text-[10px] font-bold uppercase tracking-wider bg-primary text-primary-foreground px-1.5 md:px-2 py-0.5 rounded-full">
                   -{discountPercent}%
