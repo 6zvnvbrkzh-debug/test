@@ -301,16 +301,22 @@ const ProductDetailPage = () => {
               <div>
                 <h3 className="text-sm font-semibold mb-3">Technische Daten</h3>
                 <div className="rounded-xl border border-border/60 overflow-hidden">
-                  {specEntries.map(([key, value], index) => (
-                    <div
-                      key={key}
-                      className={`flex items-center justify-between px-4 py-2.5 text-sm ${
-                        index % 2 === 0 ? "bg-muted/30" : "bg-transparent"
-                      } ${index < specEntries.length - 1 ? "border-b border-border/30" : ""}`}
-                    >
-                      <span className="text-muted-foreground">{key}</span>
-                      <span className="font-mono-data text-xs font-medium text-foreground">{value}</span>
-                    </div>
+                  {specEntries.map(([key, value], index) => {
+                    const isLongValue = String(value).length > 40;
+                    return (
+                      <div
+                        key={key}
+                        className={`px-4 py-2.5 text-sm ${
+                          isLongValue ? "flex flex-col gap-1" : "flex items-center justify-between"
+                        } ${
+                          index % 2 === 0 ? "bg-muted/30" : "bg-transparent"
+                        } ${index < specEntries.length - 1 ? "border-b border-border/30" : ""}`}
+                      >
+                        <span className="text-muted-foreground">{key}</span>
+                        <span className={`font-mono-data text-xs font-medium text-foreground ${isLongValue ? "" : "text-right"}`}>{value}</span>
+                      </div>
+                    );
+                  })}
                   ))}
                 </div>
               </div>
