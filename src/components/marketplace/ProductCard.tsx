@@ -42,7 +42,7 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
         to={`/produkt/${listing.id}`}
         className={`group block relative ${isSold ? "pointer-events-auto" : ""}`}
       >
-        <div className="relative rounded-2xl bg-card border border-border/40 overflow-hidden transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-[0_0_40px_-12px_hsl(var(--primary)/0.2)]">
+        <div className="relative rounded-2xl bg-card border border-border/40 overflow-hidden transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-[0_0_40px_-12px_hsl(var(--primary)/0.2)] h-full flex flex-col">
           
           {/* Top bar with badges */}
           <div className="flex items-center justify-between px-3 md:px-4 pt-2.5 md:pt-3 pb-0 relative z-10">
@@ -111,7 +111,7 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
           <div className="mx-3 md:mx-4 h-px bg-border/50 group-hover:bg-primary/20 transition-colors duration-500" />
 
           {/* Info section */}
-          <div className="p-3 md:p-4 space-y-1.5 md:space-y-2.5">
+          <div className="p-3 md:p-4 space-y-1.5 md:space-y-2.5 mt-auto">
             <h3 className="text-xs md:text-[13px] font-medium leading-snug line-clamp-2 text-foreground/90 group-hover:text-foreground transition-colors duration-300">
               {listing.title}
             </h3>
