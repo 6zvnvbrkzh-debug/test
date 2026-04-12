@@ -44,7 +44,7 @@ const AGBPage = () => {
             <h2>§ 1 Geltungsbereich</h2>
             <p>
               (1) Diese Allgemeinen Geschäftsbedingungen (nachfolgend „AGB") gelten für alle Verträge, die zwischen
-              Barbato Electronics, Petros Barbato Manousos, Ulrichstraße 29, 73033 Göppingen (nachfolgend „Verkäufer")
+              Barbato Electronics, Petros Barbato Manousos, Kemptnerstraße 11, 89079 Ulm (nachfolgend „Verkäufer")
               und dem Kunden (nachfolgend „Käufer") über den Online-Shop unter b-electronics.shop geschlossen werden.
             </p>
             <p>

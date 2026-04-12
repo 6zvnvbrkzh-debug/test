@@ -58,8 +58,8 @@ const WiderrufsrechtPage = () => {
             <p className="pl-4 border-l-4 border-primary">
               Barbato Electronics<br />
               Petros Barbato Manousos<br />
-              Ulrichstraße 29<br />
-              73033 Göppingen<br />
+              Kemptnerstraße 11<br />
+              89079 Ulm<br />
               Deutschland<br />
               E-Mail: info@b-electronics.shop<br />
               Telefon: +49 176 22551230
@@ -115,8 +115,8 @@ const WiderrufsrechtPage = () => {
                 An:<br />
                 Barbato Electronics<br />
                 Petros Barbato Manousos<br />
-                Ulrichstraße 29<br />
-                73033 Göppingen<br />
+                Kemptnerstraße 11<br />
+                89079 Ulm<br />
                 E-Mail: info@b-electronics.shop
               </p>
               <p>

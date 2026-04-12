@@ -62,9 +62,9 @@ const homepageJsonLd = {
       },
       address: {
         "@type": "PostalAddress",
-        streetAddress: "Ulrichstraße 29",
-        addressLocality: "Göppingen",
-        postalCode: "73033",
+        streetAddress: "Kemptnerstraße 11",
+        addressLocality: "Ulm",
+        postalCode: "89079",
         addressCountry: "DE",
       },
     },
