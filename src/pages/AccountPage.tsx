@@ -106,6 +106,7 @@ export default function AccountPage() {
 
   return (
     <Layout>
+      <SEOHead title="Mein Konto" description="Verwalte dein Konto bei Barbato Electronics." noindex />
       <div className="container py-8 md:py-12 max-w-2xl space-y-10">
         {/* Header */}
         <div className="text-center space-y-2">
