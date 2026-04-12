@@ -278,6 +278,9 @@ export default function AdminProducts() {
                   <TableCell>{listing.categories?.name || "–"}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
+                      <Button size="icon" variant="ghost" title="Seriennummern" onClick={() => setSerialDialog({ id: listing.id, title: listing.title })}>
+                        <Hash className="h-4 w-4" />
+                      </Button>
                       <Button size="icon" variant="ghost" onClick={() => openEdit(listing)}>
                         <Pencil className="h-4 w-4" />
                       </Button>
