@@ -10,7 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, Hash } from "lucide-react";
+import SerialNumbersManager from "@/components/admin/SerialNumbersManager";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Listing = Tables<"listings">;
@@ -57,6 +58,7 @@ const emptyForm: ProductForm = {
 export default function AdminProducts() {
   const queryClient = useQueryClient();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [serialDialog, setSerialDialog] = useState<{ id: string; title: string } | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<ProductForm>(emptyForm);
 
@@ -276,6 +278,9 @@ export default function AdminProducts() {
                   <TableCell>{listing.categories?.name || "–"}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
+                      <Button size="icon" variant="ghost" title="Seriennummern" onClick={() => setSerialDialog({ id: listing.id, title: listing.title })}>
+                        <Hash className="h-4 w-4" />
+                      </Button>
                       <Button size="icon" variant="ghost" onClick={() => openEdit(listing)}>
                         <Pencil className="h-4 w-4" />
                       </Button>
@@ -423,6 +428,14 @@ export default function AdminProducts() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {serialDialog && (
+        <SerialNumbersManager
+          listingId={serialDialog.id}
+          listingTitle={serialDialog.title}
+          open={!!serialDialog}
+          onOpenChange={(open) => !open && setSerialDialog(null)}
+        />
+      )}
     </div>
   );
 }

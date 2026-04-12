@@ -299,6 +299,51 @@ export type Database = {
           },
         ]
       }
+      serial_numbers: {
+        Row: {
+          created_at: string
+          id: string
+          listing_id: string
+          order_id: string | null
+          serial_number: string
+          sold_at: string | null
+          status: Database["public"]["Enums"]["serial_number_status"]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          listing_id: string
+          order_id?: string | null
+          serial_number: string
+          sold_at?: string | null
+          status?: Database["public"]["Enums"]["serial_number_status"]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          listing_id?: string
+          order_id?: string | null
+          serial_number?: string
+          sold_at?: string | null
+          status?: Database["public"]["Enums"]["serial_number_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "serial_numbers_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "serial_numbers_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       suppressed_emails: {
         Row: {
           created_at: string
@@ -384,6 +429,7 @@ export type Database = {
       item_condition: "NEW" | "OPEN_BOX" | "USED" | "FOR_PARTS"
       listing_status: "ACTIVE" | "SOLD" | "ARCHIVED"
       order_status: "PENDING" | "COMPLETED" | "REFUNDED"
+      serial_number_status: "available" | "sold"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -515,6 +561,7 @@ export const Constants = {
       item_condition: ["NEW", "OPEN_BOX", "USED", "FOR_PARTS"],
       listing_status: ["ACTIVE", "SOLD", "ARCHIVED"],
       order_status: ["PENDING", "COMPLETED", "REFUNDED"],
+      serial_number_status: ["available", "sold"],
     },
   },
 } as const
