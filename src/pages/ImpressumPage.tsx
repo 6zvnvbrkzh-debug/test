@@ -41,8 +41,8 @@ const infoCards = [
         </p>
         <p>
           E-Mail:{" "}
-          <a href="mailto:info@b-electronics.shop" className="text-primary hover:underline">
-            info@b-electronics.shop
+          <a href="mailto:barbato.electronics@gmail.com" className="text-primary hover:underline">
+            barbato.electronics@gmail.com
           </a>
         </p>
       </div>
