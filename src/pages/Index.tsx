@@ -18,6 +18,33 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+const faqItems = [
+  {
+    q: "Wie lange dauert der Versand?",
+    a: "Wir versenden in der Regel innerhalb von 2–4 Werktagen nach Zahlungseingang. Ab 50 € Bestellwert ist der Versand innerhalb Deutschlands kostenlos.",
+  },
+  {
+    q: "Welche Zahlungsmethoden werden akzeptiert?",
+    a: "Wir akzeptieren alle gängigen Zahlungsmethoden über unseren Zahlungsanbieter Stripe – darunter Kreditkarte, Apple Pay, Google Pay und weitere.",
+  },
+  {
+    q: "Gibt es eine Garantie auf die Produkte?",
+    a: "Ja, auf alle unsere Produkte gewähren wir 2 Jahre Garantie gemäß den gesetzlichen Gewährleistungsbestimmungen.",
+  },
+  {
+    q: "Kann ich meine Bestellung zurückgeben?",
+    a: "Selbstverständlich! Als Verbraucher hast du ein 14-tägiges Widerrufsrecht. Zudem bieten wir ein erweitertes 30-Tage-Rückgaberecht – kostenlos und unkompliziert.",
+  },
+  {
+    q: "Verkauft ihr auch gebrauchte Geräte?",
+    a: "Ja, wir bieten sowohl neue als auch geprüfte Geräte in verschiedenen Zuständen an – von Neuware über Open-Box bis hin zu gebrauchten Artikeln. Der Zustand wird bei jedem Produkt klar angegeben.",
+  },
+  {
+    q: "Wie kann ich den Kundenservice erreichen?",
+    a: "Unser Support-Team ist Mo–So von 9–21 Uhr erreichbar. Du erreichst uns per E-Mail unter barbato.electronics@gmail.com oder telefonisch unter +49 176 22551230.",
+  },
+];
+
 const homepageJsonLd = {
   "@context": "https://schema.org",
   "@graph": [
@@ -56,6 +83,16 @@ const homepageJsonLd = {
       isPartOf: { "@id": "https://b-electronics.shop/#website" },
       about: { "@id": "https://b-electronics.shop/#organization" },
       description: "Dein Fachhändler für Streaming Boxen, IPTV-Receiver & Zubehör. Top-Marken, schneller Versand & 2 Jahre Garantie.",
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://b-electronics.shop/#faq",
+      isPartOf: { "@id": "https://b-electronics.shop/#webpage" },
+      mainEntity: faqItems.map((item) => ({
+        "@type": "Question",
+        name: item.q,
+        acceptedAnswer: { "@type": "Answer", text: item.a },
+      })),
     },
   ],
 };
