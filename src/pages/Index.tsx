@@ -526,6 +526,37 @@ const HomePage = () => {
         </motion.div>
       </section>
 
+      {/* ─── FAQ ─── */}
+      <section className="container py-12 md:py-20">
+        <motion.div {...fadeUp(0.05)} className="max-w-3xl mx-auto">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-4">
+              <HelpCircle className="h-3.5 w-3.5" />
+              Häufige Fragen
+            </div>
+            <h2 className="text-2xl md:text-4xl font-bold tracking-tight">
+              Noch Fragen? Hier findest du Antworten.
+            </h2>
+          </div>
+          <Accordion type="single" collapsible className="w-full space-y-3">
+            {faqItems.map((item, i) => (
+              <AccordionItem
+                key={i}
+                value={`faq-${i}`}
+                className="border border-border/50 rounded-xl px-6 shadow-sm data-[state=open]:shadow-md transition-shadow"
+              >
+                <AccordionTrigger className="text-left font-semibold text-sm md:text-base py-5 hover:no-underline">
+                  {item.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-5">
+                  {item.a}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </motion.div>
+      </section>
+
       {/* ─── FINAL CTA ─── */}
       <section className="container py-8 md:py-12">
         <motion.div {...fadeUp(0.05)} className="text-center">
