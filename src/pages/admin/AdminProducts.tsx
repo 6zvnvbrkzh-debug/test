@@ -10,7 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, Hash } from "lucide-react";
+import SerialNumbersManager from "@/components/admin/SerialNumbersManager";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Listing = Tables<"listings">;
