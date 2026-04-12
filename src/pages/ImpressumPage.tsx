@@ -76,7 +76,7 @@ const infoCards = [
     content: (
       <p className="text-muted-foreground">
         Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz:<br />
-        Nicht Vorhanden Kleinunternehmerregelung
+        DE350409021
       </p>
     ),
   },
@@ -86,7 +86,7 @@ const infoCards = [
     content: (
       <p className="text-muted-foreground">
         Petros Barbato Manousos<br />
-        Kemptenerstraße 11<br />
+        Kemptnerstraße 11<br />
         89079 Ulm
       </p>
     ),
