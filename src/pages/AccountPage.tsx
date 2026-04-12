@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Loader2, User, MapPin, FileText, Save, LogOut, Package, ShoppingBag } from "lucide-react";
+import { SEOHead } from "@/components/SEOHead";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
@@ -105,6 +106,7 @@ export default function AccountPage() {
 
   return (
     <Layout>
+      <SEOHead title="Mein Konto" description="Verwalte dein Konto bei Barbato Electronics." noindex />
       <div className="container py-8 md:py-12 max-w-2xl space-y-10">
         {/* Header */}
         <div className="text-center space-y-2">

@@ -81,17 +81,32 @@ const ProductDetailPage = () => {
 
   const productJsonLd = {
     "@context": "https://schema.org",
-    "@type": "Product",
-    name: listing.title,
-    description: listing.description,
-    image: listing.images?.[0],
-    offers: {
-      "@type": "Offer",
-      price: listing.price,
-      priceCurrency: "EUR",
-      availability: isSold ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
-      seller: { "@type": "Organization", name: "Barbato Electronics" },
-    },
+    "@graph": [
+      {
+        "@type": "Product",
+        name: listing.title,
+        description: listing.description,
+        image: listing.images?.[0],
+        sku: listing.id,
+        brand: { "@type": "Brand", name: "Barbato Electronics" },
+        offers: {
+          "@type": "Offer",
+          price: listing.price,
+          priceCurrency: "EUR",
+          availability: isSold ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+          seller: { "@type": "Organization", name: "Barbato Electronics" },
+          url: `https://b-electronics.shop/produkt/${listing.id}`,
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Startseite", item: "https://b-electronics.shop/" },
+          { "@type": "ListItem", position: 2, name: "Shop", item: "https://b-electronics.shop/produkte" },
+          { "@type": "ListItem", position: 3, name: listing.title, item: `https://b-electronics.shop/produkt/${listing.id}` },
+        ],
+      },
+    ],
   };
 
   return (
@@ -101,6 +116,7 @@ const ProductDetailPage = () => {
         description={listing.description.slice(0, 155)}
         canonical={`/produkt/${listing.id}`}
         type="product"
+        ogImage={listing.images?.[0]}
         jsonLd={productJsonLd}
       />
       <div className="container py-6">
