@@ -4,6 +4,7 @@ import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, ShoppingBag, ArrowLeft } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
+import { SEOHead } from "@/components/SEOHead";
 
 export default function CheckoutSuccess() {
   const [searchParams] = useSearchParams();

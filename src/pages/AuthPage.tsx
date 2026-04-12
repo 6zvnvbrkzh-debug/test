@@ -10,6 +10,7 @@ import { Loader2, Mail, Lock, User, ArrowRight, Shield } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { HoneypotField } from "@/components/security/HoneypotField";
 import { useHoneypot } from "@/hooks/useHoneypot";
+import { SEOHead } from "@/components/SEOHead";
 
 // Simple client-side rate limiting
 const attempts = new Map<string, number[]>();

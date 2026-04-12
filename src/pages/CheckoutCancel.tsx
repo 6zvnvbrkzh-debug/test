@@ -2,10 +2,12 @@ import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { XCircle, ShoppingBag, ArrowLeft } from "lucide-react";
+import { SEOHead } from "@/components/SEOHead";
 
 export default function CheckoutCancel() {
   return (
     <Layout>
+      <SEOHead title="Bestellung abgebrochen" description="Deine Bestellung wurde nicht abgeschlossen." noindex />
       <div className="min-h-[60vh] flex items-center justify-center px-4">
         <div className="text-center max-w-md space-y-6">
           <div className="mx-auto w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center">
