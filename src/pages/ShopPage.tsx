@@ -237,7 +237,7 @@ const ShopPage = () => {
               {
                 icon: Truck,
                 title: "Schneller Versand",
-                desc: "Bestellungen werden innerhalb von 1-2 Werktagen versendet.",
+                desc: "Bestellungen werden innerhalb von 2-4 Werktagen versendet.",
               },
               {
                 icon: ShieldCheck,
