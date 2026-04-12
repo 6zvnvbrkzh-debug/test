@@ -17,6 +17,7 @@ export default function CheckoutSuccess() {
 
   return (
     <Layout>
+      <SEOHead title="Bestellung erfolgreich" description="Deine Bestellung wurde erfolgreich abgeschlossen." noindex />
       <div className="min-h-[60vh] flex items-center justify-center px-4">
         <div className="text-center max-w-md space-y-6">
           <div className="mx-auto w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center">
