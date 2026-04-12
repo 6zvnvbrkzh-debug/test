@@ -67,7 +67,7 @@ export function Header() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`relative flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-3 py-1.5 md:py-2 md:px-5 rounded-xl transition-all duration-300 ${
+                  className={`relative flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-2 py-1.5 md:py-2 md:px-5 rounded-xl transition-all duration-300 ${
                     active
                       ? "text-primary-foreground"
                       : "text-primary-foreground/60 hover:text-primary-foreground"
@@ -88,33 +88,33 @@ export function Header() {
               );
             })}
 
-            {/* Telegram */}
+            {/* Telegram — icon only on mobile */}
             <a
               href="https://t.me/bElectronicsshop"
               target="_blank"
               rel="noopener noreferrer"
-              className="relative flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-3 py-1.5 md:py-2 md:px-4 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
+              className="relative flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-2 py-1.5 md:py-2 md:px-4 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
             >
               <TelegramIcon className="h-5 w-5" />
-              <span className="text-[10px] md:text-sm font-medium mt-0.5 md:mt-0">Telegram</span>
+              <span className="hidden md:block text-sm font-medium">Telegram</span>
             </a>
 
-            {/* WhatsApp for bulk orders */}
+            {/* WhatsApp — icon only on mobile */}
             <a
               href="https://wa.me/4917622551230"
               target="_blank"
               rel="noopener noreferrer"
-              className="relative flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-3 py-1.5 md:py-2 md:px-4 text-primary-foreground/60 hover:text-[#25D366] transition-all duration-300 rounded-xl"
+              className="relative flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-2 py-1.5 md:py-2 md:px-4 text-primary-foreground/60 hover:text-[#25D366] transition-all duration-300 rounded-xl"
             >
               <WhatsAppIcon className="h-5 w-5" />
-              <span className="text-[10px] md:text-sm font-medium mt-0.5 md:mt-0">WhatsApp</span>
+              <span className="hidden md:block text-sm font-medium">WhatsApp</span>
               <span className="hidden md:block text-[9px] text-primary-foreground/40 absolute -bottom-1 right-1">für Großbestellungen</span>
             </a>
 
             {/* Cart */}
             <button
               onClick={() => setIsOpen(true)}
-              className="relative flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-3 py-1.5 md:py-2 md:px-5 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
+              className="relative flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-2 py-1.5 md:py-2 md:px-5 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
             >
               <ShoppingCart className="h-5 w-5" strokeWidth={1.5} />
               <span className="text-[10px] md:text-sm font-medium mt-0.5 md:mt-0">Warenkorb</span>
@@ -136,7 +136,7 @@ export function Header() {
             {user ? (
               <Link
                 to="/konto"
-                className={`relative flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-3 py-1.5 md:py-2 md:px-4 transition-all duration-300 rounded-xl ${
+                className={`relative flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-2 py-1.5 md:py-2 md:px-4 transition-all duration-300 rounded-xl ${
                   isActive("/konto")
                     ? "text-primary-foreground"
                     : "text-primary-foreground/60 hover:text-primary-foreground"
@@ -155,7 +155,7 @@ export function Header() {
             ) : (
               <Link
                 to="/anmelden"
-                className="flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-3 py-1.5 md:py-2 md:px-4 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
+                className="flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-2 py-1.5 md:py-2 md:px-4 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
               >
                 <User className="h-5 w-5" strokeWidth={1.5} />
                 <span className="text-[10px] md:text-sm font-medium mt-0.5 md:mt-0">Konto</span>
