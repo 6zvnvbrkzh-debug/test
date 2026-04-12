@@ -95,6 +95,7 @@ export default function AuthPage() {
 
   return (
     <Layout>
+      <SEOHead title={isLogin ? "Anmelden" : "Registrieren"} description="Melde dich bei Barbato Electronics an oder erstelle ein neues Konto." noindex />
       <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm space-y-8">
           {/* Header */}

@@ -81,6 +81,14 @@ const ShopPage = () => {
         title="Shop – Alle Produkte"
         description="Entdecke Streaming Boxen, IPTV-Receiver & Zubehör. Günstige Preise, schneller Versand aus Deutschland & 2 Jahre Garantie."
         canonical="/produkte"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", position: 1, name: "Startseite", item: "https://b-electronics.shop/" },
+            { "@type": "ListItem", position: 2, name: "Shop", item: "https://b-electronics.shop/produkte" },
+          ],
+        }}
       />
       {/* Trust bar */}
       <div className="border-b border-border/40 bg-surface-sunken">
