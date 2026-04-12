@@ -22,8 +22,8 @@ const infoCards = [
     content: (
       <p className="text-muted-foreground">
         Barbato Electronics<br />
-        Ulrichstraße 29<br />
-        73033 Göppingen<br />
+        Kemptnerstraße 11<br />
+        89079 Ulm<br />
         Deutschland
       </p>
     ),
