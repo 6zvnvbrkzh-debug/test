@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import {
   ArrowRight, Truck, ShieldCheck, RotateCcw, Star, Loader2,
   ChevronRight, Zap, Flame, Package, CreditCard, Headphones,
+  HelpCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
