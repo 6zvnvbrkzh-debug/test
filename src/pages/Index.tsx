@@ -11,6 +11,12 @@ import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/marketplace/ProductCard";
 import { useActiveListings } from "@/hooks/useActiveListings";
 import { SEOHead } from "@/components/SEOHead";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const homepageJsonLd = {
   "@context": "https://schema.org",
