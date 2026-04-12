@@ -36,8 +36,8 @@ const faqItems = [
     a: "Selbstverständlich! Als Verbraucher hast du ein 14-tägiges Widerrufsrecht. Zudem bieten wir ein erweitertes 30-Tage-Rückgaberecht – kostenlos und unkompliziert.",
   },
   {
-    q: "Verkauft ihr auch gebrauchte Geräte?",
-    a: "Ja, wir bieten sowohl neue als auch geprüfte Geräte in verschiedenen Zuständen an – von Neuware über Open-Box bis hin zu gebrauchten Artikeln. Der Zustand wird bei jedem Produkt klar angegeben.",
+    q: "Sind alle Produkte originalverpackt?",
+    a: "Ja, wir verkaufen ausschließlich neue und originalverpackte Produkte. Jedes Gerät kommt mit voller Herstellergarantie.",
   },
   {
     q: "Wie kann ich den Kundenservice erreichen?",
