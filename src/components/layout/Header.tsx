@@ -101,13 +101,14 @@ export function Header() {
 
             {/* WhatsApp for bulk orders */}
             <a
-              href="https://wa.me/491234567890"
+              href="https://wa.me/4917622551230"
               target="_blank"
               rel="noopener noreferrer"
               className="relative flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-3 py-1.5 md:py-2 md:px-4 text-primary-foreground/60 hover:text-[#25D366] transition-all duration-300 rounded-xl"
             >
               <WhatsAppIcon className="h-5 w-5" />
-              <span className="text-[10px] md:text-sm font-medium mt-0.5 md:mt-0">Großhandel</span>
+              <span className="text-[10px] md:text-sm font-medium mt-0.5 md:mt-0">WhatsApp</span>
+              <span className="hidden md:block text-[9px] text-primary-foreground/40 absolute -bottom-1 right-1">für Großbestellungen</span>
             </a>
 
             {/* Cart */}
