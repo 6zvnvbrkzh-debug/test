@@ -428,6 +428,14 @@ export default function AdminProducts() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {serialDialog && (
+        <SerialNumbersManager
+          listingId={serialDialog.id}
+          listingTitle={serialDialog.title}
+          open={!!serialDialog}
+          onOpenChange={(open) => !open && setSerialDialog(null)}
+        />
+      )}
     </div>
   );
 }
