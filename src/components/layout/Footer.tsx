@@ -36,11 +36,11 @@ export function Footer() {
             </p>
             <div className="flex flex-col gap-1.5 text-sm text-muted-foreground">
               <a
-                href="mailto:info@b-electronics.shop"
+                href="mailto:barbato.electronics@gmail.com"
                 className="inline-flex items-center gap-2 hover:text-foreground transition-colors w-fit"
               >
                 <Mail className="h-3.5 w-3.5 text-primary/70" strokeWidth={1.5} />
-                info@b-electronics.shop
+                barbato.electronics@gmail.com
               </a>
               <a
                 href="https://t.me/bElectronicsshop"
