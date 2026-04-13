@@ -248,6 +248,23 @@ export default function AccountPage() {
                       </Badge>
                     </div>
                   </div>
+                  {/* Tracking */}
+                  {(order as any).tracking_number && (
+                    <div className="flex items-center gap-2 px-4 pb-3 -mt-1">
+                      <Truck className="h-3.5 w-3.5 text-primary" />
+                      <span className="text-xs text-muted-foreground">Sendungsverfolgung:</span>
+                      <a
+                        href={`https://www.dhl.de/de/privatkunden/pakete-empfangen/verfolgen.html?piececode=${(order as any).tracking_number}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs font-medium text-primary hover:underline flex items-center gap-1"
+                      >
+                        {(order as any).tracking_number}
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </div>
+                  )}
+                  </div>
                 );
               })}
             </div>
