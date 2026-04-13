@@ -224,7 +224,7 @@ export function Header() {
             >
               <WhatsAppIcon className="h-5 w-5" />
               WhatsApp
-              <span className="absolute -bottom-1 right-1 text-[9px] text-primary-foreground/40">
+              <span className="absolute -bottom-1 -right-2 text-[9px] text-primary-foreground/40">
                 für Großbestellungen
               </span>
             </a>
