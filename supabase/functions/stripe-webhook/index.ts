@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
@@ -25,9 +25,9 @@ serve(async (req) => {
     let event: Stripe.Event;
 
     if (webhookSecret && signature) {
-      event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+      // Use async version to avoid SubtleCryptoProvider error in Deno
+      event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
     } else {
-      // Fallback for development without webhook signing
       event = JSON.parse(body);
     }
 
@@ -46,7 +46,6 @@ serve(async (req) => {
       const listingIds: string[] = JSON.parse(metadata.listing_ids || "[]");
       const quantities: number[] = JSON.parse(metadata.quantities || "[]");
 
-      // Create orders for each listing
       for (let i = 0; i < listingIds.length; i++) {
         const { data: listing } = await supabase
           .from("listings")
@@ -55,14 +54,19 @@ serve(async (req) => {
           .single();
 
         if (listing) {
-          await supabase.from("orders").insert({
-            buyer_id: userId,
-            seller_id: listing.seller_id,
-            listing_id: listingIds[i],
-            amount: listing.price * (quantities[i] || 1),
-            status: "COMPLETED",
-            stripe_session_id: session.id,
-          });
+          const qty = quantities[i] || 1;
+          
+          // Create order for each unit so serial number assignment works
+          for (let q = 0; q < qty; q++) {
+            await supabase.from("orders").insert({
+              buyer_id: userId,
+              seller_id: listing.seller_id,
+              listing_id: listingIds[i],
+              amount: listing.price,
+              status: "COMPLETED",
+              stripe_session_id: session.id,
+            });
+          }
         }
       }
 
