@@ -17,6 +17,7 @@ import { de } from "date-fns/locale";
 
 const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
   PENDING: { label: "In Bearbeitung", variant: "secondary" },
+  SHIPPED: { label: "Versendet", variant: "outline" },
   COMPLETED: { label: "Abgeschlossen", variant: "default" },
   REFUNDED: { label: "Erstattet", variant: "destructive" },
 };
