@@ -24,7 +24,7 @@ const formatPrice = (price: number) => {
 
 const ProductDetailPage = () => {
   const { id } = useParams();
-  const { addItem } = useCart();
+  const { addItem, getItemQuantity } = useCart();
   const { data: listings = [], isLoading } = useActiveListings();
   const listing = listings.find((entry) => entry.id === id);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -70,9 +70,18 @@ const ProductDetailPage = () => {
     : 0;
   const lowStock = listing.stock > 0 && listing.stock <= 3;
 
+  const cartQty = getItemQuantity(listing.id);
+  const remainingStock = Math.max(0, listing.stock - cartQty);
+
   const handleAddToCart = () => {
-    for (let i = 0; i < quantity; i += 1) {
-      addItem(listing);
+    if (quantity > remainingStock) {
+      toast.error(`Nur noch ${remainingStock} verfügbar`);
+      return;
+    }
+    const success = addItem(listing, quantity);
+    if (!success) {
+      toast.error("Maximale Menge bereits im Warenkorb");
+      return;
     }
     setAddedToCart(true);
     toast.success(`${quantity}x ${listing.title} zum Warenkorb hinzugefügt`);
@@ -257,9 +266,9 @@ const ProductDetailPage = () => {
                     {quantity}
                   </span>
                   <button
-                    onClick={() => setQuantity((current) => Math.min(listing.stock, current + 1))}
+                    onClick={() => setQuantity((current) => Math.min(remainingStock, current + 1))}
                     className="h-10 w-10 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
-                    disabled={isSold || quantity >= listing.stock}
+                    disabled={isSold || quantity >= remainingStock}
                   >
                     <Plus className="h-3.5 w-3.5" />
                   </button>
@@ -269,7 +278,7 @@ const ProductDetailPage = () => {
               <Button
                 className="w-full font-semibold text-base h-12 shadow-[0_0_20px_-4px_hsl(var(--primary)/0.4)] transition-all duration-300"
                 size="lg"
-                disabled={isSold}
+                disabled={isSold || remainingStock === 0}
                 onClick={handleAddToCart}
               >
                 {isSold ? (
