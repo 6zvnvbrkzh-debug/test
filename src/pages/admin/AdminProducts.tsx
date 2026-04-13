@@ -136,6 +136,21 @@ export default function AdminProducts() {
     onError: (err: any) => toast.error(err.message),
   });
 
+  const stockMutation = useMutation({
+    mutationFn: async ({ id, delta }: { id: string; delta: number }) => {
+      const listing = listings?.find((l: any) => l.id === id);
+      const currentStock = listing?.stock ?? 0;
+      const newStock = Math.max(0, currentStock + delta);
+      const { error } = await supabase.from("listings").update({ stock: newStock }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-listings"] });
+      queryClient.invalidateQueries({ queryKey: ["active-listings"] });
+    },
+    onError: (err: any) => toast.error(err.message),
+  });
+
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("listings").delete().eq("id", id);
