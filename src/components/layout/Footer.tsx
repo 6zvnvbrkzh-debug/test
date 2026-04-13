@@ -113,7 +113,7 @@ export function Footer() {
           <h4 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">Unser Standort</h4>
           <div className="rounded-xl overflow-hidden border border-border/30">
             <iframe
-              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Barbato+Electronics&language=de"
+              src="https://www.google.com/maps?q=Barbato+Electronics&output=embed"
               title="Barbato Electronics Standort"
               width="100%"
               height="250"
