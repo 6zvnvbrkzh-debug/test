@@ -107,6 +107,25 @@ export function Footer() {
             </ul>
           </div>
         </div>
+
+        {/* Google Maps */}
+        <div className="mt-8">
+          <h4 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">Unser Standort</h4>
+          <div className="rounded-xl overflow-hidden border border-border/30">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2!2d0!3d0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0:0x0!2sBarbato+Electronics!5e0!3m2!1sde!2sde!4v1700000000000"
+              title="Barbato Electronics Standort"
+              width="100%"
+              height="250"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="w-full"
+            />
+          </div>
+        </div>
+        </div>
       </div>
 
       <div className="border-t border-border/20">
