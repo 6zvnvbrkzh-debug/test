@@ -266,9 +266,9 @@ const ProductDetailPage = () => {
                     {quantity}
                   </span>
                   <button
-                    onClick={() => setQuantity((current) => Math.min(listing.stock, current + 1))}
+                    onClick={() => setQuantity((current) => Math.min(remainingStock, current + 1))}
                     className="h-10 w-10 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
-                    disabled={isSold || quantity >= listing.stock}
+                    disabled={isSold || quantity >= remainingStock}
                   >
                     <Plus className="h-3.5 w-3.5" />
                   </button>
@@ -278,7 +278,7 @@ const ProductDetailPage = () => {
               <Button
                 className="w-full font-semibold text-base h-12 shadow-[0_0_20px_-4px_hsl(var(--primary)/0.4)] transition-all duration-300"
                 size="lg"
-                disabled={isSold}
+                disabled={isSold || remainingStock === 0}
                 onClick={handleAddToCart}
               >
                 {isSold ? (
