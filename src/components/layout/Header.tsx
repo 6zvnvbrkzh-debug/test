@@ -10,6 +10,12 @@ const mobileNav = [
   { to: "/produkte", label: "Shop", icon: Store },
 ];
 
+const mobileActionBase =
+  "flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-1.5 text-primary-foreground/70 transition-all duration-300 hover:text-primary-foreground";
+
+const desktopActionBase =
+  "md:flex-none md:flex-row md:gap-1.5 md:px-4 md:py-2";
+
 const TelegramIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
     <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
@@ -41,14 +47,15 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 pt-[env(safe-area-inset-top)]">
-      <div className={`transition-all duration-500 ease-out ${scrolled ? "mx-2 md:mx-6 mt-2 md:mt-3" : "mx-3 md:mx-8 mt-3 md:mt-6"}`}>
-        <div className={`flex items-center justify-between rounded-2xl bg-primary/75 backdrop-blur-2xl backdrop-saturate-150 border border-primary/30 transition-all duration-500 ease-out ${
+      <div className={`transition-all duration-500 ease-out ${scrolled ? "mx-2 md:mx-6 mt-2 md:mt-3" : "mx-2 md:mx-8 mt-3 md:mt-6"}`}>
+        <div className={`rounded-2xl border border-primary/30 bg-primary/75 backdrop-blur-2xl backdrop-saturate-150 transition-all duration-500 ease-out ${
           scrolled
             ? "px-2 py-1.5 md:px-6 md:py-2.5 shadow-[0_4px_20px_-4px_hsl(var(--primary)/0.3)]"
             : "px-2 py-2 md:px-8 md:py-3.5 shadow-[0_8px_40px_-8px_hsl(var(--primary)/0.4)]"
         }`}>
+          <div className="hidden items-center justify-between md:flex">
           {/* Logo — desktop only */}
-          <Link to="/" className="hidden md:flex items-center gap-3 group">
+          <Link to="/" className="items-center gap-3 group hidden md:flex">
             <img
               src="/lovable-uploads/46fa0535-bf1d-4bdc-8bc6-b0b7aa36c88a.png"
               alt="Barbato Electronics Logo"
@@ -59,8 +66,8 @@ export function Header() {
             </span>
           </Link>
 
-          {/* Mobile: icon nav spanning full width */}
-          <nav className="flex items-center justify-evenly w-full md:w-auto md:justify-end md:gap-1">
+            {/* Desktop nav */}
+            <nav className="items-center justify-end gap-1 hidden md:flex">
             {mobileNav.map((item) => {
               const active = isActive(item.to);
               return (
@@ -114,7 +121,7 @@ export function Header() {
             {/* Cart */}
             <button
               onClick={() => setIsOpen(true)}
-              className="relative flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-2 py-1.5 md:py-2 md:px-5 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
+              className="relative flex flex-col items-center gap-0.5 rounded-xl px-2 py-1.5 text-primary-foreground/60 transition-all duration-300 hover:text-primary-foreground md:flex-row md:gap-1.5 md:px-5 md:py-2"
             >
               <ShoppingCart className="h-5 w-5" strokeWidth={1.5} />
               <span className="text-[10px] md:text-sm font-medium mt-0.5 md:mt-0">Warenkorb</span>
@@ -136,7 +143,7 @@ export function Header() {
             {user ? (
               <Link
                 to="/konto"
-                className={`relative flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-2 py-1.5 md:py-2 md:px-4 transition-all duration-300 rounded-xl ${
+                className={`relative flex flex-col items-center gap-0.5 rounded-xl px-2 py-1.5 transition-all duration-300 md:flex-row md:gap-1.5 md:px-4 md:py-2 ${
                   isActive("/konto")
                     ? "text-primary-foreground"
                     : "text-primary-foreground/60 hover:text-primary-foreground"
@@ -155,13 +162,127 @@ export function Header() {
             ) : (
               <Link
                 to="/anmelden"
-                className="flex flex-col md:flex-row items-center gap-0.5 md:gap-1.5 px-2 py-1.5 md:py-2 md:px-4 text-primary-foreground/60 hover:text-primary-foreground transition-all duration-300 rounded-xl"
+                className="flex flex-col items-center gap-0.5 rounded-xl px-2 py-1.5 text-primary-foreground/60 transition-all duration-300 hover:text-primary-foreground md:flex-row md:gap-1.5 md:px-4 md:py-2"
               >
                 <User className="h-5 w-5" strokeWidth={1.5} />
                 <span className="text-[10px] md:text-sm font-medium mt-0.5 md:mt-0">Konto</span>
               </Link>
             )}
-          </nav>
+            </nav>
+          </div>
+
+          <div className="md:hidden">
+            <div className="grid grid-cols-5 gap-1">
+              {mobileNav.map((item) => {
+                const active = isActive(item.to);
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className={`relative ${mobileActionBase} ${
+                      active
+                        ? "text-primary-foreground"
+                        : "text-primary-foreground/60 hover:text-primary-foreground"
+                    }`}
+                  >
+                    <item.icon className="h-4.5 w-4.5" strokeWidth={active ? 2.5 : 1.75} />
+                    <span className={`text-[10px] leading-none ${active ? "font-bold" : "font-medium"}`}>
+                      {item.label}
+                    </span>
+                    {active && (
+                      <motion.div
+                        layoutId="nav-pill"
+                        className="absolute inset-0 -z-10 rounded-xl bg-primary-foreground/15"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
+                      />
+                    )}
+                  </Link>
+                );
+              })}
+
+              <a
+                href="https://t.me/bElectronicsshop"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={mobileActionBase}
+                aria-label="Telegram"
+              >
+                <TelegramIcon className="h-4.5 w-4.5" />
+                <span className="text-[10px] leading-none font-medium">Telegram</span>
+              </a>
+
+              <a
+                href="https://wa.me/4917622551230"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={mobileActionBase}
+                aria-label="WhatsApp für Großbestellungen"
+              >
+                <WhatsAppIcon className="h-4.5 w-4.5" />
+                <span className="text-[10px] leading-none font-medium">WhatsApp</span>
+              </a>
+            </div>
+
+            <div className="mt-1.5 flex items-center justify-between gap-1 border-t border-primary-foreground/10 px-1 pt-1.5">
+              <span className="truncate text-[9px] font-medium uppercase tracking-[0.18em] text-primary-foreground/45">
+                Für Großbestellungen direkt per WhatsApp
+              </span>
+
+              <button
+                onClick={() => setIsOpen(true)}
+                className="relative flex min-w-[72px] flex-none items-center justify-center gap-1 rounded-xl px-2 py-1.5 text-primary-foreground/70 transition-all duration-300 hover:text-primary-foreground"
+                aria-label="Warenkorb öffnen"
+              >
+                <ShoppingCart className="h-4.5 w-4.5" strokeWidth={1.75} />
+                <span className="text-[10px] font-medium leading-none">Warenkorb</span>
+                <AnimatePresence>
+                  {totalItems > 0 && (
+                    <motion.span
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      className="absolute -right-1 -top-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-background px-1 text-[9px] font-bold text-foreground shadow-sm"
+                    >
+                      {totalItems}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </button>
+
+              {user ? (
+                <Link
+                  to="/konto"
+                  className={`relative flex min-w-[64px] flex-none flex-col items-center justify-center gap-1 rounded-xl px-2 py-1.5 transition-all duration-300 ${
+                    isActive("/konto")
+                      ? "text-primary-foreground"
+                      : "text-primary-foreground/70 hover:text-primary-foreground"
+                  }`}
+                  aria-label="Konto"
+                >
+                  <User className="h-4.5 w-4.5" strokeWidth={isActive("/konto") ? 2.5 : 1.75} />
+                  <span className={`text-[10px] leading-none ${isActive("/konto") ? "font-bold" : "font-medium"}`}>
+                    Konto
+                  </span>
+                  {isActive("/konto") && (
+                    <motion.div
+                      layoutId="nav-pill"
+                      className="absolute inset-0 -z-10 rounded-xl bg-primary-foreground/15"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
+                    />
+                  )}
+                </Link>
+              ) : (
+                <Link
+                  to="/anmelden"
+                  className="flex min-w-[64px] flex-none flex-col items-center justify-center gap-1 rounded-xl px-2 py-1.5 text-primary-foreground/70 transition-all duration-300 hover:text-primary-foreground"
+                  aria-label="Anmelden"
+                >
+                  <User className="h-4.5 w-4.5" strokeWidth={1.75} />
+                  <span className="text-[10px] font-medium leading-none">Konto</span>
+                </Link>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </header>
