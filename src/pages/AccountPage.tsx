@@ -217,53 +217,54 @@ export default function AccountPage() {
                 return (
                   <div
                     key={order.id}
-                    className="flex items-center gap-4 p-4 rounded-xl border border-border/40 bg-card"
+                    className="rounded-xl border border-border/40 bg-card overflow-hidden"
                   >
-                    {/* Product image */}
-                    <div className="h-16 w-16 rounded-lg bg-muted overflow-hidden shrink-0">
-                      {image ? (
-                        <img src={image} alt={listing?.title || ""} className="h-full w-full object-cover" />
-                      ) : (
-                        <div className="h-full w-full flex items-center justify-center">
-                          <Package className="h-6 w-6 text-muted-foreground" />
-                        </div>
-                      )}
-                    </div>
+                    <div className="flex items-center gap-4 p-4">
+                      {/* Product image */}
+                      <div className="h-16 w-16 rounded-lg bg-muted overflow-hidden shrink-0">
+                        {image ? (
+                          <img src={image} alt={listing?.title || ""} className="h-full w-full object-cover" />
+                        ) : (
+                          <div className="h-full w-full flex items-center justify-center">
+                            <Package className="h-6 w-6 text-muted-foreground" />
+                          </div>
+                        )}
+                      </div>
 
-                    {/* Details */}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold truncate">
-                        {listing?.title || "Produkt"}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {format(new Date(order.created_at), "dd. MMM yyyy", { locale: de })}
-                      </p>
-                    </div>
+                      {/* Details */}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold truncate">
+                          {listing?.title || "Produkt"}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {format(new Date(order.created_at), "dd. MMM yyyy", { locale: de })}
+                        </p>
+                      </div>
 
-                    {/* Price & Status */}
-                    <div className="text-right shrink-0 space-y-1">
-                      <p className="text-sm font-bold">{Number(order.amount).toFixed(2)} €</p>
-                      <Badge variant={status.variant} className="text-[10px]">
-                        {status.label}
-                      </Badge>
+                      {/* Price & Status */}
+                      <div className="text-right shrink-0 space-y-1">
+                        <p className="text-sm font-bold">{Number(order.amount).toFixed(2)} €</p>
+                        <Badge variant={status.variant} className="text-[10px]">
+                          {status.label}
+                        </Badge>
+                      </div>
                     </div>
-                  </div>
-                  {/* Tracking */}
-                  {(order as any).tracking_number && (
-                    <div className="flex items-center gap-2 px-4 pb-3 -mt-1">
-                      <Truck className="h-3.5 w-3.5 text-primary" />
-                      <span className="text-xs text-muted-foreground">Sendungsverfolgung:</span>
-                      <a
-                        href={`https://www.dhl.de/de/privatkunden/pakete-empfangen/verfolgen.html?piececode=${(order as any).tracking_number}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs font-medium text-primary hover:underline flex items-center gap-1"
-                      >
-                        {(order as any).tracking_number}
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
-                    </div>
-                  )}
+                    {/* Tracking */}
+                    {(order as any).tracking_number && (
+                      <div className="flex items-center gap-2 px-4 pb-3 border-t border-border/20 pt-2">
+                        <Truck className="h-3.5 w-3.5 text-primary" />
+                        <span className="text-xs text-muted-foreground">Sendungsverfolgung:</span>
+                        <a
+                          href={`https://www.dhl.de/de/privatkunden/pakete-empfangen/verfolgen.html?piececode=${(order as any).tracking_number}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs font-medium text-primary hover:underline flex items-center gap-1"
+                        >
+                          {(order as any).tracking_number}
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      </div>
+                    )}
                   </div>
                 );
               })}
