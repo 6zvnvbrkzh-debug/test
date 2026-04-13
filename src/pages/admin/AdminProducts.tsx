@@ -276,9 +276,28 @@ export default function AdminProducts() {
                     )}
                   </TableCell>
                   <TableCell>
-                    <span className={`font-mono text-sm ${(listing.stock ?? 0) === 0 ? 'text-destructive font-semibold' : (listing.stock ?? 0) <= 3 ? 'text-orange-500' : 'text-foreground'}`}>
-                      {listing.stock ?? 0}
-                    </span>
+                    <div className="flex items-center gap-1">
+                      <div className="flex flex-col">
+                        <button
+                          onClick={() => stockMutation.mutate({ id: listing.id, delta: 1 })}
+                          className="p-0.5 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                          title="Bestand erhöhen"
+                        >
+                          <ChevronUp className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          onClick={() => stockMutation.mutate({ id: listing.id, delta: -1 })}
+                          disabled={(listing.stock ?? 0) === 0}
+                          className="p-0.5 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+                          title="Bestand verringern"
+                        >
+                          <ChevronDown className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                      <span className={`font-mono text-sm ${(listing.stock ?? 0) === 0 ? 'text-destructive font-semibold' : (listing.stock ?? 0) <= 3 ? 'text-orange-500' : 'text-foreground'}`}>
+                        {listing.stock ?? 0}
+                      </span>
+                    </div>
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline">
