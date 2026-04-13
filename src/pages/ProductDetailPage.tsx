@@ -24,7 +24,7 @@ const formatPrice = (price: number) => {
 
 const ProductDetailPage = () => {
   const { id } = useParams();
-  const { addItem } = useCart();
+  const { addItem, getItemQuantity } = useCart();
   const { data: listings = [], isLoading } = useActiveListings();
   const listing = listings.find((entry) => entry.id === id);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -70,9 +70,18 @@ const ProductDetailPage = () => {
     : 0;
   const lowStock = listing.stock > 0 && listing.stock <= 3;
 
+  const cartQty = getItemQuantity(listing.id);
+  const remainingStock = Math.max(0, listing.stock - cartQty);
+
   const handleAddToCart = () => {
-    for (let i = 0; i < quantity; i += 1) {
-      addItem(listing);
+    if (quantity > remainingStock) {
+      toast.error(`Nur noch ${remainingStock} verfügbar`);
+      return;
+    }
+    const success = addItem(listing, quantity);
+    if (!success) {
+      toast.error("Maximale Menge bereits im Warenkorb");
+      return;
     }
     setAddedToCart(true);
     toast.success(`${quantity}x ${listing.title} zum Warenkorb hinzugefügt`);
