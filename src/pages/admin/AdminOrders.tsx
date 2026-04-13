@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader2, Eye, Package, CreditCard, User, Calendar, Hash, ExternalLink } from "lucide-react";
+import { Loader2, Eye, Package, CreditCard, User, Calendar, Hash, Truck, Save } from "lucide-react";
+import { toast } from "sonner";
 
 const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive" }> = {
   PENDING: { label: "Ausstehend", variant: "outline" },
@@ -24,12 +26,15 @@ interface OrderDetail {
   seller_id: string;
   listing_id: string;
   stripe_session_id: string | null;
+  tracking_number: string | null;
   listings: { title: string; price: number; images: string[] | null } | null;
 }
 
 export default function AdminOrders() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState<OrderDetail | null>(null);
+  const [trackingInput, setTrackingInput] = useState("");
+  const queryClient = useQueryClient();
 
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ["admin-orders"],
@@ -42,6 +47,26 @@ export default function AdminOrders() {
       return data as OrderDetail[];
     },
   });
+
+  const trackingMutation = useMutation({
+    mutationFn: async ({ orderId, trackingNumber }: { orderId: string; trackingNumber: string }) => {
+      const { error } = await supabase
+        .from("orders")
+        .update({ tracking_number: trackingNumber.trim() || null } as any)
+        .eq("id", orderId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      toast.success("Sendungsnummer gespeichert!");
+    },
+    onError: (err: any) => toast.error(err.message || "Fehler beim Speichern"),
+  });
+
+  const handleOpenDetail = (order: OrderDetail) => {
+    setSelectedOrder(order);
+    setTrackingInput(order.tracking_number || "");
+  };
 
   const filtered = statusFilter === "all"
     ? orders
@@ -108,10 +133,9 @@ export default function AdminOrders() {
               <TableRow>
                 <TableHead>Bestellnr.</TableHead>
                 <TableHead>Produkt</TableHead>
-                <TableHead>Käufer-ID</TableHead>
                 <TableHead className="text-right">Betrag</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Stripe Session</TableHead>
+                <TableHead>Sendungsnr.</TableHead>
                 <TableHead>Datum</TableHead>
                 <TableHead className="w-[50px]" />
               </TableRow>
@@ -138,19 +162,21 @@ export default function AdminOrders() {
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="font-mono-data text-xs text-muted-foreground">
-                      {order.buyer_id.slice(0, 8)}…
-                    </TableCell>
                     <TableCell className="text-right font-semibold font-mono-data">
                       {Number(order.amount).toFixed(2).replace(".", ",")} €
                     </TableCell>
                     <TableCell>
                       <Badge variant={status.variant}>{status.label}</Badge>
                     </TableCell>
-                    <TableCell className="font-mono-data text-xs text-muted-foreground">
-                      {order.stripe_session_id
-                        ? `${order.stripe_session_id.slice(0, 16)}…`
-                        : "–"}
+                    <TableCell className="text-xs text-muted-foreground">
+                      {order.tracking_number ? (
+                        <span className="flex items-center gap-1 text-primary font-medium">
+                          <Truck className="h-3.5 w-3.5" />
+                          {order.tracking_number}
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">–</span>
+                      )}
                     </TableCell>
                     <TableCell className="text-muted-foreground text-sm whitespace-nowrap">
                       {new Date(order.created_at).toLocaleDateString("de-DE", {
@@ -166,7 +192,7 @@ export default function AdminOrders() {
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => setSelectedOrder(order)}
+                        onClick={() => handleOpenDetail(order)}
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
@@ -176,7 +202,7 @@ export default function AdminOrders() {
               })}
               {filtered.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
+                  <TableCell colSpan={7} className="text-center py-12 text-muted-foreground">
                     Keine Bestellungen gefunden
                   </TableCell>
                 </TableRow>
@@ -236,6 +262,51 @@ export default function AdminOrders() {
                   label="Aktualisiert"
                   value={new Date(selectedOrder.updated_at).toLocaleString("de-DE")}
                 />
+              </div>
+
+              {/* Tracking Number Input */}
+              <div className="space-y-2 pt-2 border-t border-border/50">
+                <label className="text-xs font-medium flex items-center gap-1.5">
+                  <Truck className="h-3.5 w-3.5 text-primary" />
+                  DHL Sendungsnummer
+                </label>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="z.B. 00340434161094042557"
+                    value={trackingInput}
+                    onChange={(e) => setTrackingInput(e.target.value)}
+                    className="text-sm font-mono"
+                  />
+                  <Button
+                    size="sm"
+                    disabled={trackingMutation.isPending}
+                    onClick={() =>
+                      trackingMutation.mutate({
+                        orderId: selectedOrder.id,
+                        trackingNumber: trackingInput,
+                      })
+                    }
+                  >
+                    {trackingMutation.isPending ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <>
+                        <Save className="h-4 w-4 mr-1" />
+                        Speichern
+                      </>
+                    )}
+                  </Button>
+                </div>
+                {selectedOrder.tracking_number && (
+                  <a
+                    href={`https://www.dhl.de/de/privatkunden/pakete-empfangen/verfolgen.html?piececode=${selectedOrder.tracking_number}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-primary hover:underline inline-flex items-center gap-1"
+                  >
+                    Bei DHL verfolgen →
+                  </a>
+                )}
               </div>
 
               {/* IDs */}

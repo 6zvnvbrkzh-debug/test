@@ -194,6 +194,7 @@ export type Database = {
           seller_id: string
           status: Database["public"]["Enums"]["order_status"]
           stripe_session_id: string | null
+          tracking_number: string | null
           updated_at: string
         }
         Insert: {
@@ -205,6 +206,7 @@ export type Database = {
           seller_id: string
           status?: Database["public"]["Enums"]["order_status"]
           stripe_session_id?: string | null
+          tracking_number?: string | null
           updated_at?: string
         }
         Update: {
@@ -216,6 +218,7 @@ export type Database = {
           seller_id?: string
           status?: Database["public"]["Enums"]["order_status"]
           stripe_session_id?: string | null
+          tracking_number?: string | null
           updated_at?: string
         }
         Relationships: [
