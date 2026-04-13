@@ -141,7 +141,16 @@ export default function AdminProducts() {
       const listing = listings?.find((l: any) => l.id === id);
       const currentStock = listing?.stock ?? 0;
       const newStock = Math.max(0, currentStock + delta);
-      const { error } = await supabase.from("listings").update({ stock: newStock }).eq("id", id);
+      const update: any = { stock: newStock };
+      // Auto-activate when stock goes from 0 to >=1
+      if (currentStock === 0 && newStock >= 1) {
+        update.status = "ACTIVE";
+      }
+      // Auto-mark as sold when stock reaches 0
+      if (newStock === 0 && currentStock > 0) {
+        update.status = "SOLD";
+      }
+      const { error } = await supabase.from("listings").update(update).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
