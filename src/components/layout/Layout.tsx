@@ -6,7 +6,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen flex-col">
       <Header />
       {/* Top padding for floating top nav */}
-      <main className="flex-1 pt-16 md:pt-28">{children}</main>
+      <main className="flex-1 pt-16 lg:pt-28">{children}</main>
       <Footer />
     </div>
   );

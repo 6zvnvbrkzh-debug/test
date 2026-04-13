@@ -50,12 +50,12 @@ export function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 pt-[env(safe-area-inset-top)]">
       <div
         className={`transition-all duration-500 ease-out ${
-          scrolled ? "mx-2 mt-2 md:mx-6 md:mt-3" : "mx-2 mt-2 md:mx-8 md:mt-6"
+          scrolled ? "mx-2 mt-2 lg:mx-6 lg:mt-3" : "mx-2 mt-2 lg:mx-8 lg:mt-6"
         }`}
       >
         {/* ─── MOBILE ─── */}
         <nav
-          className={`flex items-stretch rounded-2xl border border-primary/30 bg-primary/75 backdrop-blur-2xl backdrop-saturate-150 transition-all duration-500 ease-out md:hidden ${
+          className={`flex items-stretch rounded-2xl border border-primary/30 bg-primary/75 backdrop-blur-2xl backdrop-saturate-150 transition-all duration-500 ease-out lg:hidden ${
             scrolled
               ? "shadow-[0_4px_20px_-4px_hsl(var(--primary)/0.3)]"
               : "shadow-[0_8px_40px_-8px_hsl(var(--primary)/0.4)]"
@@ -161,7 +161,7 @@ export function Header() {
 
         {/* ─── DESKTOP ─── */}
         <div
-          className={`hidden items-center justify-between rounded-2xl border border-primary/30 bg-primary/75 backdrop-blur-2xl backdrop-saturate-150 transition-all duration-500 ease-out md:flex ${
+          className={`hidden items-center justify-between rounded-2xl border border-primary/30 bg-primary/75 backdrop-blur-2xl backdrop-saturate-150 transition-all duration-500 ease-out lg:flex ${
             scrolled
               ? "px-6 py-2.5 shadow-[0_4px_20px_-4px_hsl(var(--primary)/0.3)]"
               : "px-8 py-3.5 shadow-[0_8px_40px_-8px_hsl(var(--primary)/0.4)]"
