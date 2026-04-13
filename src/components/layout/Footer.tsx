@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Mail, MapPin, ArrowUpRight } from "lucide-react";
 
@@ -15,6 +16,55 @@ const legalLinks = [
   { label: "Datenschutz", to: "/datenschutz" },
   { label: "Widerrufsrecht", to: "/widerrufsrecht" },
 ];
+
+function GoogleMapsConsent() {
+  const [consent, setConsent] = useState(() => localStorage.getItem("maps-consent") === "true");
+
+  const handleConsent = () => {
+    localStorage.setItem("maps-consent", "true");
+    setConsent(true);
+  };
+
+  return (
+    <div className="mt-8">
+      <h4 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">Unser Standort</h4>
+      <div className="relative rounded-xl overflow-hidden border border-border/30">
+        {consent ? (
+          <>
+            <iframe
+              src="https://www.google.com/maps?q=Barbato+Electronics&output=embed"
+              title="Barbato Electronics Standort"
+              width="100%"
+              height="250"
+              style={{ border: 0, filter: 'saturate(0.2) brightness(0.7) hue-rotate(200deg) contrast(1.15)' }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="w-full"
+            />
+            <div className="pointer-events-none absolute inset-0 bg-primary/15 mix-blend-overlay" />
+          </>
+        ) : (
+          <div className="flex flex-col items-center justify-center gap-4 bg-muted/50 py-12 px-6 text-center">
+            <MapPin className="h-8 w-8 text-muted-foreground/50" strokeWidth={1.5} />
+            <p className="text-sm text-muted-foreground max-w-md">
+              Mit dem Laden der Karte akzeptierst du die{" "}
+              <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground transition-colors">
+                Datenschutzerklärung von Google
+              </a>.
+            </p>
+            <button
+              onClick={handleConsent}
+              className="rounded-lg bg-primary px-5 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              Karte laden
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export function Footer() {
   return (
@@ -109,23 +159,7 @@ export function Footer() {
         </div>
 
         {/* Google Maps */}
-        <div className="mt-8">
-          <h4 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">Unser Standort</h4>
-          <div className="relative rounded-xl overflow-hidden border border-border/30">
-            <iframe
-              src="https://www.google.com/maps?q=Barbato+Electronics&output=embed"
-              title="Barbato Electronics Standort"
-              width="100%"
-              height="250"
-              style={{ border: 0, filter: 'saturate(0.3) brightness(0.85) hue-rotate(200deg) contrast(1.1)' }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="w-full"
-            />
-            <div className="pointer-events-none absolute inset-0 bg-primary/10 mix-blend-overlay" />
-          </div>
-        </div>
+        <GoogleMapsConsent />
       </div>
 
       <div className="border-t border-border/20">
