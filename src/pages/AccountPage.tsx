@@ -282,6 +282,20 @@ export default function AccountPage() {
                         </a>
                       </div>
                     )}
+                    {/* Google Review CTA for completed/shipped orders */}
+                    {(order.status === "COMPLETED" || order.status === "SHIPPED") && (
+                      <div className="flex items-center gap-2 px-4 pb-3 border-t border-border/20 pt-2">
+                        <Star className="h-3.5 w-3.5 text-yellow-500" />
+                        <a
+                          href="https://g.page/r/CS7eia0rJYfUEBM/review"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs font-medium text-primary hover:underline"
+                        >
+                          Zufrieden? Jetzt bewerten ⭐
+                        </a>
+                      </div>
+                    )}
                   </div>
                 );
               })}
