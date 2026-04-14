@@ -11,7 +11,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Package, Users, LayoutDashboard, ArrowLeft, ShoppingCart, FolderOpen } from "lucide-react";
+import { Package, Users, LayoutDashboard, ArrowLeft, ShoppingCart, FolderOpen, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -21,6 +21,7 @@ const navItems = [
   { title: "Benutzer", url: "/admin/benutzer", icon: Users },
   { title: "Bestellungen", url: "/admin/bestellungen", icon: ShoppingCart },
   { title: "Kategorien", url: "/admin/kategorien", icon: FolderOpen },
+  { title: "Analytics", url: "/admin/analytics", icon: BarChart3 },
 ];
 
 export default function AdminLayout() {
