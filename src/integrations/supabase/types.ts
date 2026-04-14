@@ -440,7 +440,7 @@ export type Database = {
       app_role: "admin" | "moderator" | "user"
       item_condition: "NEW" | "OPEN_BOX" | "USED" | "FOR_PARTS"
       listing_status: "ACTIVE" | "SOLD" | "ARCHIVED"
-      order_status: "PENDING" | "COMPLETED" | "REFUNDED"
+      order_status: "PENDING" | "SHIPPED" | "COMPLETED" | "REFUNDED"
       serial_number_status: "available" | "sold"
     }
     CompositeTypes: {
@@ -572,7 +572,7 @@ export const Constants = {
       app_role: ["admin", "moderator", "user"],
       item_condition: ["NEW", "OPEN_BOX", "USED", "FOR_PARTS"],
       listing_status: ["ACTIVE", "SOLD", "ARCHIVED"],
-      order_status: ["PENDING", "COMPLETED", "REFUNDED"],
+      order_status: ["PENDING", "SHIPPED", "COMPLETED", "REFUNDED"],
       serial_number_status: ["available", "sold"],
     },
   },
