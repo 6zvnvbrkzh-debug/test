@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader2, Eye, Package, CreditCard, User, Calendar, Hash, Truck, Save } from "lucide-react";
+import { Loader2, Eye, Package, CreditCard, User, Calendar, Hash, Truck, Save, MapPin, Mail } from "lucide-react";
 import { toast } from "sonner";
 
 const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive" }> = {
@@ -15,6 +15,16 @@ const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondar
   COMPLETED: { label: "Abgeschlossen", variant: "default" },
   REFUNDED: { label: "Erstattet", variant: "destructive" },
 };
+
+interface ShippingAddress {
+  name?: string;
+  line1?: string;
+  line2?: string;
+  city?: string;
+  postal_code?: string;
+  state?: string;
+  country?: string;
+}
 
 interface OrderDetail {
   id: string;
@@ -27,6 +37,9 @@ interface OrderDetail {
   listing_id: string;
   stripe_session_id: string | null;
   tracking_number: string | null;
+  customer_name: string | null;
+  customer_email: string | null;
+  shipping_address: ShippingAddress | null;
   listings: { title: string; price: number; images: string[] | null } | null;
 }
 
@@ -44,7 +57,12 @@ export default function AdminOrders() {
         .select("*, listings(title, price, images)")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as OrderDetail[];
+      return (data as any[]).map((o) => ({
+        ...o,
+        customer_name: o.customer_name ?? null,
+        customer_email: o.customer_email ?? null,
+        shipping_address: o.shipping_address ?? null,
+      })) as OrderDetail[];
     },
   });
 
@@ -77,6 +95,12 @@ export default function AdminOrders() {
     .reduce((sum, o) => sum + Number(o.amount), 0);
 
   const pendingCount = orders.filter((o) => o.status === "PENDING").length;
+
+  const formatAddress = (addr: ShippingAddress | null) => {
+    if (!addr) return null;
+    const parts = [addr.line1, addr.line2, `${addr.postal_code || ""} ${addr.city || ""}`.trim(), addr.country].filter(Boolean);
+    return parts.join(", ");
+  };
 
   return (
     <div className="space-y-6">
@@ -132,6 +156,7 @@ export default function AdminOrders() {
             <TableHeader>
               <TableRow>
                 <TableHead>Bestellnr.</TableHead>
+                <TableHead>Kunde</TableHead>
                 <TableHead>Produkt</TableHead>
                 <TableHead className="text-right">Betrag</TableHead>
                 <TableHead>Status</TableHead>
@@ -147,6 +172,18 @@ export default function AdminOrders() {
                   <TableRow key={order.id} className="group">
                     <TableCell className="font-mono-data text-xs">
                       #{order.id.slice(0, 8)}
+                    </TableCell>
+                    <TableCell>
+                      <div className="min-w-[140px]">
+                        <p className="text-sm font-medium truncate">
+                          {order.customer_name || "–"}
+                        </p>
+                        {order.customer_email && (
+                          <p className="text-xs text-muted-foreground truncate">
+                            {order.customer_email}
+                          </p>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
@@ -202,7 +239,7 @@ export default function AdminOrders() {
               })}
               {filtered.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-12 text-muted-foreground">
+                  <TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
                     Keine Bestellungen gefunden
                   </TableCell>
                 </TableRow>
@@ -223,6 +260,41 @@ export default function AdminOrders() {
           </DialogHeader>
           {selectedOrder && (
             <div className="space-y-5 pt-2">
+              {/* Customer Info */}
+              <div className="p-4 rounded-xl bg-muted/50 border border-border/50 space-y-2">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Kundendaten</p>
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2">
+                    <User className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span className="text-sm font-medium">{selectedOrder.customer_name || "Nicht verfügbar"}</span>
+                  </div>
+                  {selectedOrder.customer_email && (
+                    <div className="flex items-center gap-2">
+                      <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+                      <span className="text-sm">{selectedOrder.customer_email}</span>
+                    </div>
+                  )}
+                  {selectedOrder.shipping_address && (
+                    <div className="flex items-start gap-2">
+                      <MapPin className="h-3.5 w-3.5 text-muted-foreground mt-0.5" />
+                      <div className="text-sm">
+                        {selectedOrder.shipping_address.name && (
+                          <p className="font-medium">{selectedOrder.shipping_address.name}</p>
+                        )}
+                        {selectedOrder.shipping_address.line1 && <p>{selectedOrder.shipping_address.line1}</p>}
+                        {selectedOrder.shipping_address.line2 && <p>{selectedOrder.shipping_address.line2}</p>}
+                        <p>
+                          {selectedOrder.shipping_address.postal_code} {selectedOrder.shipping_address.city}
+                        </p>
+                        {selectedOrder.shipping_address.country && (
+                          <p className="text-muted-foreground">{selectedOrder.shipping_address.country}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               {/* Product */}
               <div className="flex items-start gap-4 p-4 rounded-xl bg-muted/50 border border-border/50">
                 {selectedOrder.listings?.images?.[0] && (
@@ -250,8 +322,6 @@ export default function AdminOrders() {
                   label="Status"
                   value={STATUS_MAP[selectedOrder.status]?.label || selectedOrder.status}
                 />
-                <DetailItem icon={User} label="Käufer-ID" value={selectedOrder.buyer_id.slice(0, 12) + "…"} mono />
-                <DetailItem icon={User} label="Verkäufer-ID" value={selectedOrder.seller_id.slice(0, 12) + "…"} mono />
                 <DetailItem
                   icon={Calendar}
                   label="Erstellt"
@@ -314,10 +384,6 @@ export default function AdminOrders() {
                 <p className="text-xs text-muted-foreground">
                   <span className="font-medium text-foreground">Bestell-ID:</span>{" "}
                   <span className="font-mono-data">{selectedOrder.id}</span>
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  <span className="font-medium text-foreground">Listing-ID:</span>{" "}
-                  <span className="font-mono-data">{selectedOrder.listing_id}</span>
                 </p>
                 {selectedOrder.stripe_session_id && (
                   <p className="text-xs text-muted-foreground">

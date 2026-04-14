@@ -189,9 +189,12 @@ export type Database = {
           amount: number
           buyer_id: string
           created_at: string
+          customer_email: string | null
+          customer_name: string | null
           id: string
           listing_id: string
           seller_id: string
+          shipping_address: Json | null
           status: Database["public"]["Enums"]["order_status"]
           stripe_session_id: string | null
           tracking_number: string | null
@@ -201,9 +204,12 @@ export type Database = {
           amount: number
           buyer_id: string
           created_at?: string
+          customer_email?: string | null
+          customer_name?: string | null
           id?: string
           listing_id: string
           seller_id: string
+          shipping_address?: Json | null
           status?: Database["public"]["Enums"]["order_status"]
           stripe_session_id?: string | null
           tracking_number?: string | null
@@ -213,9 +219,12 @@ export type Database = {
           amount?: number
           buyer_id?: string
           created_at?: string
+          customer_email?: string | null
+          customer_name?: string | null
           id?: string
           listing_id?: string
           seller_id?: string
+          shipping_address?: Json | null
           status?: Database["public"]["Enums"]["order_status"]
           stripe_session_id?: string | null
           tracking_number?: string | null

@@ -25,7 +25,6 @@ serve(async (req) => {
     let event: Stripe.Event;
 
     if (webhookSecret && signature) {
-      // Use async version to avoid SubtleCryptoProvider error in Deno
       event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
     } else {
       event = JSON.parse(body);
@@ -46,6 +45,21 @@ serve(async (req) => {
       const listingIds: string[] = JSON.parse(metadata.listing_ids || "[]");
       const quantities: number[] = JSON.parse(metadata.quantities || "[]");
 
+      // Extract customer details from Stripe session
+      const customerName = session.customer_details?.name || session.shipping_details?.name || null;
+      const customerEmail = session.customer_details?.email || null;
+      
+      const shippingAddr = session.shipping_details?.address;
+      const shippingAddress = shippingAddr ? {
+        name: session.shipping_details?.name || customerName,
+        line1: shippingAddr.line1,
+        line2: shippingAddr.line2,
+        city: shippingAddr.city,
+        postal_code: shippingAddr.postal_code,
+        state: shippingAddr.state,
+        country: shippingAddr.country,
+      } : null;
+
       for (let i = 0; i < listingIds.length; i++) {
         const { data: listing } = await supabase
           .from("listings")
@@ -56,7 +70,6 @@ serve(async (req) => {
         if (listing) {
           const qty = quantities[i] || 1;
           
-          // Create order for each unit so serial number assignment works
           for (let q = 0; q < qty; q++) {
             await supabase.from("orders").insert({
               buyer_id: userId,
@@ -65,6 +78,9 @@ serve(async (req) => {
               amount: listing.price,
               status: "COMPLETED",
               stripe_session_id: session.id,
+              customer_name: customerName,
+              customer_email: customerEmail,
+              shipping_address: shippingAddress,
             });
           }
         }
