@@ -55,7 +55,7 @@ export default function AccountPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("id, amount, status, created_at, listing_id, tracking_number, listings(title, images)")
+        .select("id, amount, status, created_at, listing_id, tracking_number, customer_name, customer_email, shipping_address, listings(title, images)")
         .eq("buyer_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -249,18 +249,35 @@ export default function AccountPage() {
                         </Badge>
                       </div>
                     </div>
+                    {/* Shipping Address */}
+                    {order.shipping_address && (() => {
+                      const addr = order.shipping_address as any;
+                      return (
+                        <div className="px-4 pb-3 border-t border-border/20 pt-2">
+                          <div className="flex items-center gap-2 mb-1">
+                            <MapPin className="h-3.5 w-3.5 text-primary" />
+                            <span className="text-xs font-medium text-foreground">Lieferadresse</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground pl-5.5">
+                            {addr.name && <>{addr.name}<br /></>}
+                            {addr.line1}{addr.line2 && `, ${addr.line2}`}<br />
+                            {addr.postal_code} {addr.city}{addr.country && `, ${addr.country}`}
+                          </p>
+                        </div>
+                      );
+                    })()}
                     {/* Tracking */}
-                    {(order as any).tracking_number && (
+                    {order.tracking_number && (
                       <div className="flex items-center gap-2 px-4 pb-3 border-t border-border/20 pt-2">
                         <Truck className="h-3.5 w-3.5 text-primary" />
                         <span className="text-xs text-muted-foreground">Sendungsverfolgung:</span>
                         <a
-                          href={`https://www.dhl.de/de/privatkunden/pakete-empfangen/verfolgen.html?piececode=${(order as any).tracking_number}`}
+                          href={`https://www.dhl.de/de/privatkunden/pakete-empfangen/verfolgen.html?piececode=${order.tracking_number}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-xs font-medium text-primary hover:underline flex items-center gap-1"
                         >
-                          {(order as any).tracking_number}
+                          {order.tracking_number}
                           <ExternalLink className="h-3 w-3" />
                         </a>
                       </div>
