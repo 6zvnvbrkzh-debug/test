@@ -33,7 +33,13 @@ serve(async (req) => {
     console.log(`Received event: ${event.type}`);
 
     if (event.type === "checkout.session.completed") {
-      const session = event.data.object as Stripe.Checkout.Session;
+      const sessionRaw = event.data.object as Stripe.Checkout.Session;
+      
+      // Retrieve the full session with expanded fields to get shipping details
+      const session = await stripe.checkout.sessions.retrieve(sessionRaw.id, {
+        expand: ["shipping_details", "customer_details"],
+      });
+      
       const metadata = session.metadata || {};
 
       const supabase = createClient(
@@ -45,13 +51,14 @@ serve(async (req) => {
       const listingIds: string[] = JSON.parse(metadata.listing_ids || "[]");
       const quantities: number[] = JSON.parse(metadata.quantities || "[]");
 
-      // Extract customer details from Stripe session
-      const customerName = session.customer_details?.name || session.shipping_details?.name || null;
+      // Extract customer details from full Stripe session
+      const customerName = session.customer_details?.name || (session as any).shipping_details?.name || null;
       const customerEmail = session.customer_details?.email || null;
       
-      const shippingAddr = session.shipping_details?.address;
+      const shippingDetails = (session as any).shipping_details;
+      const shippingAddr = shippingDetails?.address;
       const shippingAddress = shippingAddr ? {
-        name: session.shipping_details?.name || customerName,
+        name: shippingDetails?.name || customerName,
         line1: shippingAddr.line1,
         line2: shippingAddr.line2,
         city: shippingAddr.city,
@@ -59,6 +66,9 @@ serve(async (req) => {
         state: shippingAddr.state,
         country: shippingAddr.country,
       } : null;
+      
+      console.log("Customer:", customerName, customerEmail);
+      console.log("Shipping address:", JSON.stringify(shippingAddress));
 
       for (let i = 0; i < listingIds.length; i++) {
         const { data: listing } = await supabase
