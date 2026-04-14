@@ -35,10 +35,8 @@ serve(async (req) => {
     if (event.type === "checkout.session.completed") {
       const sessionRaw = event.data.object as Stripe.Checkout.Session;
       
-      // Retrieve the full session with expanded fields to get shipping details
-      const session = await stripe.checkout.sessions.retrieve(sessionRaw.id, {
-        expand: ["shipping_details", "customer_details"],
-      });
+      // Retrieve the full session - shipping_details and customer_details are included by default
+      const session = await stripe.checkout.sessions.retrieve(sessionRaw.id);
       
       const metadata = session.metadata || {};
 
