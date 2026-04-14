@@ -12,6 +12,7 @@ import { toast } from "sonner";
 
 const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive" }> = {
   PENDING: { label: "Ausstehend", variant: "outline" },
+  SHIPPED: { label: "Versendet", variant: "secondary" },
   COMPLETED: { label: "Abgeschlossen", variant: "default" },
   REFUNDED: { label: "Erstattet", variant: "destructive" },
 };
@@ -81,6 +82,22 @@ export default function AdminOrders() {
     onError: (err: any) => toast.error(err.message || "Fehler beim Speichern"),
   });
 
+  const statusMutation = useMutation({
+    mutationFn: async ({ orderId, status }: { orderId: string; status: string }) => {
+      const { error } = await supabase
+        .from("orders")
+        .update({ status } as any)
+        .eq("id", orderId);
+      if (error) throw error;
+    },
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      setSelectedOrder((prev) => prev ? { ...prev, status: variables.status } : null);
+      toast.success("Status aktualisiert!");
+    },
+    onError: (err: any) => toast.error(err.message || "Fehler beim Aktualisieren"),
+  });
+
   const handleOpenDetail = (order: OrderDetail) => {
     setSelectedOrder(order);
     setTrackingInput(order.tracking_number || "");
@@ -121,6 +138,7 @@ export default function AdminOrders() {
           <SelectContent>
             <SelectItem value="all">Alle Status</SelectItem>
             <SelectItem value="PENDING">Ausstehend</SelectItem>
+            <SelectItem value="SHIPPED">Versendet</SelectItem>
             <SelectItem value="COMPLETED">Abgeschlossen</SelectItem>
             <SelectItem value="REFUNDED">Erstattet</SelectItem>
           </SelectContent>
@@ -317,11 +335,26 @@ export default function AdminOrders() {
               {/* Details grid */}
               <div className="grid grid-cols-2 gap-4">
                 <DetailItem icon={CreditCard} label="Betrag" value={`${Number(selectedOrder.amount).toFixed(2).replace(".", ",")} €`} />
-                <DetailItem
-                  icon={Package}
-                  label="Status"
-                  value={STATUS_MAP[selectedOrder.status]?.label || selectedOrder.status}
-                />
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <Package className="h-3.5 w-3.5" />
+                    <span className="text-xs">Status</span>
+                  </div>
+                  <Select
+                    value={selectedOrder.status}
+                    onValueChange={(val) => statusMutation.mutate({ orderId: selectedOrder.id, status: val })}
+                  >
+                    <SelectTrigger className="h-8 text-sm w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="PENDING">Ausstehend</SelectItem>
+                      <SelectItem value="SHIPPED">Versendet</SelectItem>
+                      <SelectItem value="COMPLETED">Abgeschlossen</SelectItem>
+                      <SelectItem value="REFUNDED">Erstattet</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <DetailItem
                   icon={Calendar}
                   label="Erstellt"
