@@ -152,6 +152,7 @@ const ProductDetailPage = () => {
                   src={listing.images[selectedImage] || "/placeholder.svg"}
                   alt={listing.title}
                   className="w-full h-full object-contain p-8 md:p-12"
+                  loading="lazy"
                   initial={{ opacity: 0, scale: 0.97 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.97 }}
@@ -206,7 +207,7 @@ const ProductDetailPage = () => {
                         : "border-border/60 hover:border-border opacity-60 hover:opacity-100"
                     }`}
                   >
-                    <img src={image} alt={`${listing.title} ${index + 1}`} className="w-full h-full object-contain p-1.5" />
+                    <img src={image} alt={`${listing.title} ${index + 1}`} className="w-full h-full object-contain p-1.5" loading="lazy" />
                   </button>
                 ))}
               </div>

@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Loader2, User, MapPin, FileText, Save, LogOut, Package, ShoppingBag, Truck, ExternalLink } from "lucide-react";
+import { Loader2, User, MapPin, FileText, Save, LogOut, Package, ShoppingBag, Truck, ExternalLink, Star } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -223,7 +223,7 @@ export default function AccountPage() {
                       {/* Product image */}
                       <div className="h-16 w-16 rounded-lg bg-muted overflow-hidden shrink-0">
                         {image ? (
-                          <img src={image} alt={listing?.title || ""} className="h-full w-full object-cover" />
+                          <img src={image} alt={listing?.title || ""} className="h-full w-full object-cover" loading="lazy" />
                         ) : (
                           <div className="h-full w-full flex items-center justify-center">
                             <Package className="h-6 w-6 text-muted-foreground" />
