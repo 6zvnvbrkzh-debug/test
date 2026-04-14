@@ -12,6 +12,7 @@ import { toast } from "sonner";
 
 const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive" }> = {
   PENDING: { label: "Ausstehend", variant: "outline" },
+  SHIPPED: { label: "Versendet", variant: "secondary" },
   COMPLETED: { label: "Abgeschlossen", variant: "default" },
   REFUNDED: { label: "Erstattet", variant: "destructive" },
 };
@@ -121,6 +122,7 @@ export default function AdminOrders() {
           <SelectContent>
             <SelectItem value="all">Alle Status</SelectItem>
             <SelectItem value="PENDING">Ausstehend</SelectItem>
+            <SelectItem value="SHIPPED">Versendet</SelectItem>
             <SelectItem value="COMPLETED">Abgeschlossen</SelectItem>
             <SelectItem value="REFUNDED">Erstattet</SelectItem>
           </SelectContent>
