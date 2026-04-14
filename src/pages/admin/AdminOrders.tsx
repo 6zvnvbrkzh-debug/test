@@ -82,6 +82,22 @@ export default function AdminOrders() {
     onError: (err: any) => toast.error(err.message || "Fehler beim Speichern"),
   });
 
+  const statusMutation = useMutation({
+    mutationFn: async ({ orderId, status }: { orderId: string; status: string }) => {
+      const { error } = await supabase
+        .from("orders")
+        .update({ status } as any)
+        .eq("id", orderId);
+      if (error) throw error;
+    },
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      setSelectedOrder((prev) => prev ? { ...prev, status: variables.status } : null);
+      toast.success("Status aktualisiert!");
+    },
+    onError: (err: any) => toast.error(err.message || "Fehler beim Aktualisieren"),
+  });
+
   const handleOpenDetail = (order: OrderDetail) => {
     setSelectedOrder(order);
     setTrackingInput(order.tracking_number || "");
