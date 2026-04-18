@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ShoppingCart, Flame, ArrowUpRight } from "lucide-react";
+import { ShoppingCart, Flame, ArrowUpRight, Star } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import type { Listing } from "@/lib/mock-data";
@@ -8,6 +8,7 @@ import type { Listing } from "@/lib/mock-data";
 interface ProductCardProps {
   listing: Listing;
   index?: number;
+  rating?: { avg: number; count: number };
 }
 
 export function ProductCard({ listing, index = 0 }: ProductCardProps) {
