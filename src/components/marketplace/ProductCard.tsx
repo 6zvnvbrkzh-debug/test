@@ -11,7 +11,7 @@ interface ProductCardProps {
   rating?: { avg: number; count: number };
 }
 
-export function ProductCard({ listing, index = 0 }: ProductCardProps) {
+export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
   const isSold = listing.status === "SOLD" || listing.stock === 0;
   const hasDiscount = listing.originalPrice && listing.originalPrice > listing.price;
   const discountPercent = hasDiscount
@@ -117,6 +117,18 @@ export function ProductCard({ listing, index = 0 }: ProductCardProps) {
             <h3 className="text-xs md:text-[13px] font-medium leading-snug line-clamp-2 text-foreground/90 group-hover:text-foreground transition-colors duration-300">
               {listing.title}
             </h3>
+
+            {rating && rating.count > 0 && (
+              <div className="flex items-center gap-1">
+                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" strokeWidth={1.5} />
+                <span className="text-[11px] font-semibold text-foreground/80">
+                  {rating.avg.toFixed(1)}
+                </span>
+                <span className="text-[10px] text-muted-foreground">
+                  ({rating.count})
+                </span>
+              </div>
+            )}
 
             <div className="flex items-end justify-between gap-1">
               <div className="min-w-0 overflow-hidden">
