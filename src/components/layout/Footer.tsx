@@ -11,6 +11,8 @@ const shopLinks = [
 ];
 
 const legalLinks = [
+  { label: "FAQ", to: "/faq" },
+  { label: "Kontakt", to: "/kontakt" },
   { label: "Impressum", to: "/impressum" },
   { label: "AGB", to: "/agb" },
   { label: "Datenschutz", to: "/datenschutz" },
