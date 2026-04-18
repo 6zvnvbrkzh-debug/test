@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ShieldCheck, Truck, Package, ChevronLeft, ChevronRight, Minus, Plus, ShoppingCart, Check, Loader2 } from "lucide-react";
+import { ShieldCheck, Truck, Package, ChevronLeft, ChevronRight, Minus, Plus, ShoppingCart, Check, Loader2, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
@@ -43,6 +43,10 @@ const ProductDetailPage = () => {
 
   const relatedIds = useMemo(() => relatedProducts.map((r) => r.id), [relatedProducts]);
   const { data: relatedRatings = {} } = useListingsRatings(relatedIds);
+
+  const currentIds = useMemo(() => (listing ? [listing.id] : []), [listing]);
+  const { data: currentRating = {} } = useListingsRatings(currentIds);
+  const myRating = listing ? currentRating[listing.id] : undefined;
 
   if (isLoading) {
     return (
