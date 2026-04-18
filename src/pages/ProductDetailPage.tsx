@@ -41,6 +41,9 @@ const ProductDetailPage = () => {
       .slice(0, 4);
   }, [listing, listings]);
 
+  const relatedIds = useMemo(() => relatedProducts.map((r) => r.id), [relatedProducts]);
+  const { data: relatedRatings = {} } = useListingsRatings(relatedIds);
+
   if (isLoading) {
     return (
       <Layout>
