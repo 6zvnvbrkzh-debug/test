@@ -33,6 +33,7 @@ export const WishlistButton = forwardRef<HTMLButtonElement, WishlistButtonProps>
   if (variant === "detail") {
     return (
       <button
+        ref={ref}
         onClick={handleClick}
         disabled={isPending}
         aria-label={active ? "Von Wunschliste entfernen" : "Zur Wunschliste"}
@@ -52,6 +53,7 @@ export const WishlistButton = forwardRef<HTMLButtonElement, WishlistButtonProps>
 
   return (
     <motion.button
+      ref={ref}
       whileTap={{ scale: 0.85 }}
       onClick={handleClick}
       disabled={isPending}
@@ -65,4 +67,4 @@ export const WishlistButton = forwardRef<HTMLButtonElement, WishlistButtonProps>
       <Heart className={`h-3.5 w-3.5 md:h-4 md:w-4 ${active ? "fill-primary" : ""}`} strokeWidth={2} />
     </motion.button>
   );
-}
+});
