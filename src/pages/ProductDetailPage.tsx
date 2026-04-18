@@ -8,6 +8,7 @@ import { ProductCard } from "@/components/marketplace/ProductCard";
 import { ReviewsSection } from "@/components/reviews/ReviewsSection";
 import { useCart } from "@/contexts/CartContext";
 import { useActiveListings } from "@/hooks/useActiveListings";
+import { useListingsRatings } from "@/hooks/useReviews";
 import { SEOHead } from "@/components/SEOHead";
 import { toast } from "sonner";
 
