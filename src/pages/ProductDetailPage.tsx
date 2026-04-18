@@ -230,10 +230,52 @@ const ProductDetailPage = () => {
             className="lg:col-span-2 space-y-6"
           >
             <div>
-              <h1 className="text-xl md:text-2xl font-bold tracking-tight leading-tight mb-4">
+              <h1 className="text-xl md:text-2xl font-bold tracking-tight leading-tight mb-2">
                 {listing.title}
               </h1>
-              <div className="flex flex-col gap-1.5 sm:flex-row sm:items-end sm:gap-3">
+
+              {/* Inline rating preview */}
+              {myRating && myRating.count > 0 ? (
+                <a
+                  href="#reviews"
+                  className="inline-flex items-center gap-1.5 mb-3 group"
+                  aria-label={`${myRating.avg.toFixed(1)} von 5 Sternen aus ${myRating.count} Bewertungen`}
+                >
+                  <div className="flex items-center gap-0.5">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <Star
+                        key={i}
+                        className={`h-3.5 w-3.5 ${
+                          myRating.avg >= i - 0.5
+                            ? "fill-yellow-400 text-yellow-400"
+                            : "text-muted-foreground/30"
+                        }`}
+                        strokeWidth={1.5}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-xs font-semibold text-foreground">
+                    {myRating.avg.toFixed(1)}
+                  </span>
+                  <span className="text-xs text-muted-foreground group-hover:text-foreground group-hover:underline transition-colors">
+                    ({myRating.count} {myRating.count === 1 ? "Bewertung" : "Bewertungen"})
+                  </span>
+                </a>
+              ) : (
+                <a
+                  href="#reviews"
+                  className="inline-flex items-center gap-1.5 mb-3 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <div className="flex items-center gap-0.5">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <Star key={i} className="h-3.5 w-3.5 text-muted-foreground/25" strokeWidth={1.5} />
+                    ))}
+                  </div>
+                  <span>Noch keine Bewertungen</span>
+                </a>
+              )}
+
+              <div className="flex flex-col gap-1.5 sm:flex-row sm:items-end sm:gap-3 mt-2">
                 <span className="text-[2rem] leading-none md:text-3xl font-bold font-mono-data whitespace-nowrap">
                   {formatPrice(listing.price)}
                 </span>
