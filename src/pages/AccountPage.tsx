@@ -298,17 +298,31 @@ export default function AccountPage() {
                         </a>
                       </div>
                     )}
-                    {/* Google Review CTA for completed/shipped orders */}
+                    {/* Bewertung abgeben (eigenes System) */}
                     {(order.status === "COMPLETED" || order.status === "SHIPPED") && (
-                      <div className="flex items-center gap-2 px-4 pb-3 border-t border-border/20 pt-2">
-                        <Star className="h-3.5 w-3.5 text-yellow-500" />
+                      <div className="flex flex-wrap items-center gap-3 px-4 pb-3 border-t border-border/20 pt-2">
+                        {reviewedOrderIds.has(order.id) ? (
+                          <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+                            Bereits bewertet
+                          </span>
+                        ) : (
+                          <button
+                            onClick={() => setReviewOrder(order)}
+                            className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+                          >
+                            <Star className="h-3.5 w-3.5" />
+                            Produkt bewerten
+                          </button>
+                        )}
+                        <span className="text-muted-foreground/40 text-xs">·</span>
                         <a
                           href="https://g.page/r/CS7eia0rJYfUEBM/review"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs font-medium text-primary hover:underline"
+                          className="text-xs text-muted-foreground hover:text-primary hover:underline"
                         >
-                          Zufrieden? Jetzt bewerten ⭐
+                          Shop bei Google bewerten
                         </a>
                       </div>
                     )}
@@ -332,6 +346,18 @@ export default function AccountPage() {
           Abmelden
         </Button>
       </div>
+
+      {reviewOrder && (
+        <ReviewDialog
+          open={!!reviewOrder}
+          onOpenChange={(o) => !o && setReviewOrder(null)}
+          orderId={reviewOrder.id}
+          sellerId={reviewOrder.seller_id}
+          reviewerId={user!.id}
+          listingId={reviewOrder.listing_id}
+          listingTitle={(reviewOrder.listings as any)?.title || "Produkt"}
+        />
+      )}
     </Layout>
   );
 }
