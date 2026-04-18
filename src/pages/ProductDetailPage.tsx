@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/marketplace/ProductCard";
 import { ReviewsSection } from "@/components/reviews/ReviewsSection";
+import { WishlistButton } from "@/components/marketplace/WishlistButton";
 import { useCart } from "@/contexts/CartContext";
 import { useActiveListings } from "@/hooks/useActiveListings";
 import { useListingsRatings } from "@/hooks/useReviews";
@@ -327,30 +328,33 @@ const ProductDetailPage = () => {
                 </div>
               </div>
 
-              <Button
-                className="w-full font-semibold text-base h-12 shadow-[0_0_20px_-4px_hsl(var(--primary)/0.4)] transition-all duration-300"
-                size="lg"
-                disabled={isSold || remainingStock === 0}
-                onClick={handleAddToCart}
-              >
-                {isSold ? (
-                  "Ausverkauft"
-                ) : addedToCart ? (
-                  <motion.span
-                    initial={{ scale: 0.8 }}
-                    animate={{ scale: 1 }}
-                    className="inline-flex items-center gap-2"
-                  >
-                    <Check className="h-4 w-4" />
-                    Hinzugefügt!
-                  </motion.span>
-                ) : (
-                  <span className="inline-flex items-center gap-2">
-                    <ShoppingCart className="h-4 w-4" />
-                    In den Warenkorb · {formatPrice(listing.price * quantity)}
-                  </span>
-                )}
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Button
+                  className="flex-1 font-semibold text-base h-12 shadow-[0_0_20px_-4px_hsl(var(--primary)/0.4)] transition-all duration-300"
+                  size="lg"
+                  disabled={isSold || remainingStock === 0}
+                  onClick={handleAddToCart}
+                >
+                  {isSold ? (
+                    "Ausverkauft"
+                  ) : addedToCart ? (
+                    <motion.span
+                      initial={{ scale: 0.8 }}
+                      animate={{ scale: 1 }}
+                      className="inline-flex items-center gap-2"
+                    >
+                      <Check className="h-4 w-4" />
+                      Hinzugefügt!
+                    </motion.span>
+                  ) : (
+                    <span className="inline-flex items-center gap-2">
+                      <ShoppingCart className="h-4 w-4" />
+                      In den Warenkorb · {formatPrice(listing.price * quantity)}
+                    </span>
+                  )}
+                </Button>
+                {!isSold && <WishlistButton listingId={listing.id} variant="detail" />}
+              </div>
             </div>
 
             <div className="grid grid-cols-3 gap-3">

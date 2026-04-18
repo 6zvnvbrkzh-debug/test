@@ -21,6 +21,9 @@ import ImpressumPage from "./pages/ImpressumPage";
 import DatenschutzPage from "./pages/DatenschutzPage";
 import AGBPage from "./pages/AGBPage";
 import WiderrufsrechtPage from "./pages/WiderrufsrechtPage";
+import FAQPage from "./pages/FAQPage";
+import ContactPage from "./pages/ContactPage";
+import WishlistPage from "./pages/WishlistPage";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
@@ -55,6 +58,9 @@ const App = () => (
               <Route path="/datenschutz" element={<DatenschutzPage />} />
               <Route path="/agb" element={<AGBPage />} />
               <Route path="/widerrufsrecht" element={<WiderrufsrechtPage />} />
+              <Route path="/faq" element={<FAQPage />} />
+              <Route path="/kontakt" element={<ContactPage />} />
+              <Route path="/wunschliste" element={<WishlistPage />} />
 
               {/* Admin routes */}
               <Route

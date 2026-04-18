@@ -4,6 +4,7 @@ import { ShoppingCart, Flame, ArrowUpRight, Star } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import type { Listing } from "@/lib/mock-data";
+import { WishlistButton } from "@/components/marketplace/WishlistButton";
 
 interface ProductCardProps {
   listing: Listing;
@@ -71,11 +72,14 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
                 </span>
               )}
             </div>
-            {!isSold && (
-              <span className="h-6 w-6 md:h-7 md:w-7 rounded-full bg-muted/50 flex items-center justify-center opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 transition-all duration-300">
-                <ArrowUpRight className="h-3 w-3 md:h-3.5 md:w-3.5 text-foreground" strokeWidth={2.5} />
-              </span>
-            )}
+            <div className="flex items-center gap-1.5">
+              {!isSold && <WishlistButton listingId={listing.id} variant="card" />}
+              {!isSold && (
+                <span className="h-6 w-6 md:h-7 md:w-7 rounded-full bg-muted/50 flex items-center justify-center opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 transition-all duration-300">
+                  <ArrowUpRight className="h-3 w-3 md:h-3.5 md:w-3.5 text-foreground" strokeWidth={2.5} />
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Image */}
