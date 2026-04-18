@@ -163,8 +163,8 @@ export default function AdminReviews() {
         </Card>
         <Card className="p-4">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-yellow-500/10 flex items-center justify-center">
-              <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
+            <div className="h-10 w-10 rounded-lg bg-yellow-400/10 flex items-center justify-center">
+              <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
             </div>
             <div>
               <div className="text-2xl font-bold">{stats.avg}</div>
@@ -174,8 +174,8 @@ export default function AdminReviews() {
         </Card>
         <Card className="p-4">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
-              <MessageSquare className="h-5 w-5 text-blue-500" />
+            <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <MessageSquare className="h-5 w-5 text-primary" />
             </div>
             <div>
               <div className="text-2xl font-bold">{stats.withComment}</div>
@@ -256,7 +256,7 @@ export default function AdminReviews() {
                           {listing?.title ?? "Unbekanntes Produkt"}
                         </div>
                         <div className="flex items-center gap-2 mt-1">
-                          <StarRating rating={r.rating} size="sm" />
+                          <StarRating value={r.rating} size="sm" />
                           <Badge variant="secondary" className="text-[10px]">
                             {r.rating}/5
                           </Badge>
