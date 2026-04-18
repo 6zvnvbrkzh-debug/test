@@ -24,8 +24,18 @@ export function ReviewsSection({ listingId }: ReviewsSectionProps) {
   }, [reviews]);
 
   return (
-    <section className="mt-16 pb-8 border-t border-border/40 pt-10">
-      <h2 className="text-xl font-bold tracking-tight mb-6">Kundenbewertungen</h2>
+    <section id="reviews" className="mt-16 pb-8 border-t border-border/40 pt-10 scroll-mt-24">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold tracking-tight">Kundenbewertungen</h2>
+        {count > 0 && (
+          <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground">
+            <StarRating value={avg} size="sm" />
+            <span className="font-semibold text-foreground">{avg.toFixed(1)}</span>
+            <span>·</span>
+            <span>{count} {count === 1 ? "Bewertung" : "Bewertungen"}</span>
+          </div>
+        )}
+      </div>
 
       {isLoading ? (
         <div className="flex justify-center py-8">
