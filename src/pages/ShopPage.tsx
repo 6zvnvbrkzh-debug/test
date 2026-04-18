@@ -5,6 +5,7 @@ import { Layout } from "@/components/layout/Layout";
 import { SEOHead } from "@/components/SEOHead";
 import { ProductCard } from "@/components/marketplace/ProductCard";
 import { useActiveListings } from "@/hooks/useActiveListings";
+import { useListingsRatings } from "@/hooks/useReviews";
 import type { Category } from "@/lib/mock-data";
 import {
   Select,
@@ -43,6 +44,7 @@ const ShopPage = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCat || "all");
   const [sortBy, setSortBy] = useState("popular");
   const { data: listings = [], isLoading } = useActiveListings();
+  const { data: ratings = {} } = useListingsRatings(listings.map((l) => l.id));
 
   const filtered = useMemo(() => {
     let results = [...listings];
@@ -221,7 +223,12 @@ const ShopPage = () => {
               className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6"
             >
               {filtered.map((listing, index) => (
-                <ProductCard key={listing.id} listing={listing} index={index} />
+                <ProductCard
+                  key={listing.id}
+                  listing={listing}
+                  index={index}
+                  rating={ratings[listing.id]}
+                />
               ))}
             </motion.div>
           </AnimatePresence>

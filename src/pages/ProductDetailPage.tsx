@@ -5,8 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/marketplace/ProductCard";
+import { ReviewsSection } from "@/components/reviews/ReviewsSection";
 import { useCart } from "@/contexts/CartContext";
 import { useActiveListings } from "@/hooks/useActiveListings";
+import { useListingsRatings } from "@/hooks/useReviews";
 import { SEOHead } from "@/components/SEOHead";
 import { toast } from "sonner";
 
@@ -38,6 +40,9 @@ const ProductDetailPage = () => {
       .filter((entry) => entry.id !== listing.id && entry.category === listing.category)
       .slice(0, 4);
   }, [listing, listings]);
+
+  const relatedIds = useMemo(() => relatedProducts.map((r) => r.id), [relatedProducts]);
+  const { data: relatedRatings = {} } = useListingsRatings(relatedIds);
 
   if (isLoading) {
     return (
@@ -349,12 +354,19 @@ const ProductDetailPage = () => {
           </motion.div>
         </div>
 
+        <ReviewsSection listingId={listing.id} />
+
         {relatedProducts.length > 0 && (
           <section className="mt-16 pb-8">
             <h2 className="text-xl font-bold tracking-tight mb-6">Ähnliche Produkte</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {relatedProducts.map((item, index) => (
-                <ProductCard key={item.id} listing={item} index={index} />
+                <ProductCard
+                  key={item.id}
+                  listing={item}
+                  index={index}
+                  rating={relatedRatings[item.id]}
+                />
               ))}
             </div>
           </section>

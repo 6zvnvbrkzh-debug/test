@@ -14,6 +14,7 @@ import { SEOHead } from "@/components/SEOHead";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
+import { ReviewDialog } from "@/components/reviews/ReviewDialog";
 
 const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
   PENDING: { label: "In Bearbeitung", variant: "secondary" },
@@ -30,6 +31,7 @@ export default function AccountPage() {
   const [displayName, setDisplayName] = useState("");
   const [bio, setBio] = useState("");
   const [location, setLocation] = useState("");
+  const [reviewOrder, setReviewOrder] = useState<any | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/anmelden", { replace: true });
@@ -55,13 +57,27 @@ export default function AccountPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("id, amount, status, created_at, listing_id, tracking_number, customer_name, customer_email, shipping_address, listings(title, images)")
+        .select("id, amount, status, created_at, listing_id, seller_id, tracking_number, customer_name, customer_email, shipping_address, listings(title, images)")
         .eq("buyer_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
     },
   });
+
+  const { data: myReviews = [] } = useQuery({
+    queryKey: ["my-reviews", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("reviews")
+        .select("order_id")
+        .eq("reviewer_id", user!.id);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+  const reviewedOrderIds = new Set(myReviews.map((r) => r.order_id));
 
   useEffect(() => {
     if (profile) {
@@ -282,17 +298,31 @@ export default function AccountPage() {
                         </a>
                       </div>
                     )}
-                    {/* Google Review CTA for completed/shipped orders */}
+                    {/* Bewertung abgeben (eigenes System) */}
                     {(order.status === "COMPLETED" || order.status === "SHIPPED") && (
-                      <div className="flex items-center gap-2 px-4 pb-3 border-t border-border/20 pt-2">
-                        <Star className="h-3.5 w-3.5 text-yellow-500" />
+                      <div className="flex flex-wrap items-center gap-3 px-4 pb-3 border-t border-border/20 pt-2">
+                        {reviewedOrderIds.has(order.id) ? (
+                          <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+                            Bereits bewertet
+                          </span>
+                        ) : (
+                          <button
+                            onClick={() => setReviewOrder(order)}
+                            className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+                          >
+                            <Star className="h-3.5 w-3.5" />
+                            Produkt bewerten
+                          </button>
+                        )}
+                        <span className="text-muted-foreground/40 text-xs">·</span>
                         <a
                           href="https://g.page/r/CS7eia0rJYfUEBM/review"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs font-medium text-primary hover:underline"
+                          className="text-xs text-muted-foreground hover:text-primary hover:underline"
                         >
-                          Zufrieden? Jetzt bewerten ⭐
+                          Shop bei Google bewerten
                         </a>
                       </div>
                     )}
@@ -316,6 +346,18 @@ export default function AccountPage() {
           Abmelden
         </Button>
       </div>
+
+      {reviewOrder && (
+        <ReviewDialog
+          open={!!reviewOrder}
+          onOpenChange={(o) => !o && setReviewOrder(null)}
+          orderId={reviewOrder.id}
+          sellerId={reviewOrder.seller_id}
+          reviewerId={user!.id}
+          listingId={reviewOrder.listing_id}
+          listingTitle={(reviewOrder.listings as any)?.title || "Produkt"}
+        />
+      )}
     </Layout>
   );
 }
