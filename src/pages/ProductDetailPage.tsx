@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/marketplace/ProductCard";
+import { ReviewsSection } from "@/components/reviews/ReviewsSection";
 import { useCart } from "@/contexts/CartContext";
 import { useActiveListings } from "@/hooks/useActiveListings";
 import { SEOHead } from "@/components/SEOHead";
@@ -348,6 +349,8 @@ const ProductDetailPage = () => {
             )}
           </motion.div>
         </div>
+
+        <ReviewsSection listingId={listing.id} />
 
         {relatedProducts.length > 0 && (
           <section className="mt-16 pb-8">
