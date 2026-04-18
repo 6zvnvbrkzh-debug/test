@@ -361,7 +361,12 @@ const ProductDetailPage = () => {
             <h2 className="text-xl font-bold tracking-tight mb-6">Ähnliche Produkte</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {relatedProducts.map((item, index) => (
-                <ProductCard key={item.id} listing={item} index={index} />
+                <ProductCard
+                  key={item.id}
+                  listing={item}
+                  index={index}
+                  rating={relatedRatings[item.id]}
+                />
               ))}
             </div>
           </section>
