@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ShoppingCart, User, Home, Store } from "lucide-react";
+import { ShoppingCart, User, Home, Store, Heart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
@@ -182,6 +182,7 @@ export function Header() {
             {[
               { to: "/", label: "Start" },
               { to: "/produkte", label: "Shop" },
+              { to: "/faq", label: "FAQ" },
             ].map((item) => {
               const active = isActive(item.to);
               return (
@@ -248,6 +249,20 @@ export function Header() {
                 )}
               </AnimatePresence>
             </button>
+
+            {user && (
+              <Link
+                to="/wunschliste"
+                className={`relative flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm transition-all duration-300 ${
+                  isActive("/wunschliste")
+                    ? "font-bold text-primary-foreground"
+                    : "font-medium text-primary-foreground/60 hover:text-primary-foreground"
+                }`}
+                aria-label="Wunschliste"
+              >
+                <Heart className="h-5 w-5" strokeWidth={isActive("/wunschliste") ? 2.5 : 1.5} />
+              </Link>
+            )}
 
             {user ? (
               <Link
