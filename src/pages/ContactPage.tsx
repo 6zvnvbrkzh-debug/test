@@ -26,11 +26,15 @@ export default function ContactPage() {
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
-  const honeypot = useHoneypot();
+  const { honeypot, setHoneypot, isBot } = useHoneypot();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!honeypot.validate()) return;
+    if (isBot()) {
+      // silently drop bot submissions
+      setDone(true);
+      return;
+    }
 
     const parsed = contactSchema.safeParse({ name, email, subject, message });
     if (!parsed.success) {
@@ -123,7 +127,7 @@ export default function ContactPage() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="rounded-2xl border border-border/40 bg-card/40 p-6 md:p-8 space-y-5">
-                  <HoneypotField {...honeypot.fieldProps} />
+                  <HoneypotField value={honeypot} onChange={setHoneypot} />
 
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
