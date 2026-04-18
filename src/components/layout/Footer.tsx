@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Mail, MapPin, ArrowUpRight } from "lucide-react";
+import { Mail, MapPin, ArrowUpRight, ShieldCheck, Lock, Truck } from "lucide-react";
 
 const shopLinks = [
   { label: "Alle Produkte", to: "/produkte" },
@@ -155,6 +155,79 @@ export function Footer() {
               <li>Sa: 10 – 21 Uhr</li>
               <li>So: 10 – 20 Uhr</li>
             </ul>
+          </div>
+        </div>
+
+        {/* Trust: Payment & Shipping */}
+        <div className="mt-12 pt-8 border-t border-border/30">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Sichere Zahlung */}
+            <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/[0.06] to-transparent p-5">
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="flex items-center justify-center h-9 w-9 rounded-lg bg-primary/10 border border-primary/20">
+                  <ShieldCheck className="h-4.5 w-4.5 text-primary" strokeWidth={2} />
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold tracking-wide flex items-center gap-2">
+                    Sichere Zahlung
+                    <span className="inline-flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-primary/80 bg-primary/10 px-2 py-0.5 rounded-full">
+                      <Lock className="h-2.5 w-2.5" strokeWidth={2.5} /> SSL
+                    </span>
+                  </h4>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Verschlüsselte Zahlung über Stripe – PCI-DSS zertifiziert
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                {[
+                  { name: "Visa", bg: "bg-white", text: "text-[#1A1F71]" },
+                  { name: "Mastercard", bg: "bg-white", text: "text-[#EB001B]" },
+                  { name: "AmEx", bg: "bg-white", text: "text-[#006FCF]" },
+                  { name: "Klarna", bg: "bg-[#FFA8CD]", text: "text-black" },
+                  { name: "PayPal", bg: "bg-white", text: "text-[#003087]" },
+                  { name: "SEPA", bg: "bg-white", text: "text-foreground" },
+                  { name: "Apple Pay", bg: "bg-white", text: "text-black" },
+                  { name: "Google Pay", bg: "bg-white", text: "text-foreground" },
+                ].map((method) => (
+                  <div
+                    key={method.name}
+                    className={`${method.bg} ${method.text} px-2.5 py-1.5 rounded-md text-[11px] font-bold tracking-tight border border-border/30 shadow-sm`}
+                  >
+                    {method.name}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Versand */}
+            <div className="rounded-2xl border border-border/40 bg-card/40 p-5">
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="flex items-center justify-center h-9 w-9 rounded-lg bg-[#FFCC00]/15 border border-[#FFCC00]/30">
+                  <Truck className="h-4.5 w-4.5 text-[#FFCC00]" strokeWidth={2} />
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold tracking-wide">Versand mit DHL</h4>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Versand aus Deutschland – 2–4 Werktage Lieferzeit
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="bg-[#FFCC00] text-[#D40511] px-3 py-1.5 rounded-md text-sm font-black tracking-tighter italic shadow-sm">
+                  DHL
+                </div>
+                <div className="px-2.5 py-1.5 rounded-md text-[11px] font-medium border border-border/40 bg-background/50">
+                  Sendungsverfolgung
+                </div>
+                <div className="px-2.5 py-1.5 rounded-md text-[11px] font-medium border border-border/40 bg-background/50">
+                  Versichert
+                </div>
+                <div className="px-2.5 py-1.5 rounded-md text-[11px] font-medium border border-primary/30 bg-primary/10 text-primary">
+                  Gratis ab 50&nbsp;€
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
