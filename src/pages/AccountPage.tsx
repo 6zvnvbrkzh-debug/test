@@ -14,6 +14,7 @@ import { SEOHead } from "@/components/SEOHead";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
+import { ReviewDialog } from "@/components/reviews/ReviewDialog";
 
 const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
   PENDING: { label: "In Bearbeitung", variant: "secondary" },
@@ -30,6 +31,7 @@ export default function AccountPage() {
   const [displayName, setDisplayName] = useState("");
   const [bio, setBio] = useState("");
   const [location, setLocation] = useState("");
+  const [reviewOrder, setReviewOrder] = useState<any | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/anmelden", { replace: true });
@@ -55,13 +57,27 @@ export default function AccountPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("id, amount, status, created_at, listing_id, tracking_number, customer_name, customer_email, shipping_address, listings(title, images)")
+        .select("id, amount, status, created_at, listing_id, seller_id, tracking_number, customer_name, customer_email, shipping_address, listings(title, images)")
         .eq("buyer_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
     },
   });
+
+  const { data: myReviews = [] } = useQuery({
+    queryKey: ["my-reviews", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("reviews")
+        .select("order_id")
+        .eq("reviewer_id", user!.id);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+  const reviewedOrderIds = new Set(myReviews.map((r) => r.order_id));
 
   useEffect(() => {
     if (profile) {
