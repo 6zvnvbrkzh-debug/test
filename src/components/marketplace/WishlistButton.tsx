@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { Heart } from "lucide-react";
 import { useWishlist } from "@/hooks/useWishlist";
 import { useAuth } from "@/contexts/AuthContext";
@@ -10,7 +11,10 @@ interface WishlistButtonProps {
   className?: string;
 }
 
-export function WishlistButton({ listingId, variant = "card", className = "" }: WishlistButtonProps) {
+export const WishlistButton = forwardRef<HTMLButtonElement, WishlistButtonProps>(function WishlistButton(
+  { listingId, variant = "card", className = "" },
+  ref
+) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { isInWishlist, toggle, isPending } = useWishlist();
@@ -29,6 +33,7 @@ export function WishlistButton({ listingId, variant = "card", className = "" }: 
   if (variant === "detail") {
     return (
       <button
+        ref={ref}
         onClick={handleClick}
         disabled={isPending}
         aria-label={active ? "Von Wunschliste entfernen" : "Zur Wunschliste"}
@@ -48,6 +53,7 @@ export function WishlistButton({ listingId, variant = "card", className = "" }: 
 
   return (
     <motion.button
+      ref={ref}
       whileTap={{ scale: 0.85 }}
       onClick={handleClick}
       disabled={isPending}
@@ -61,4 +67,4 @@ export function WishlistButton({ listingId, variant = "card", className = "" }: 
       <Heart className={`h-3.5 w-3.5 md:h-4 md:w-4 ${active ? "fill-primary" : ""}`} strokeWidth={2} />
     </motion.button>
   );
-}
+});
