@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ShoppingCart, User, Home, Store, Heart } from "lucide-react";
+import { ShoppingCart, User, Home, Store, Heart, MessageCircle } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 const TelegramIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
@@ -17,20 +18,13 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const items = [
-  { key: "home", to: "/", label: "Start", icon: Home },
-  { key: "shop", to: "/produkte", label: "Shop", icon: Store },
-  { key: "telegram", href: "https://t.me/bElectronicsshop", label: "Telegram", iconComponent: TelegramIcon },
-  { key: "whatsapp", href: "https://wa.me/4917622551230", label: "WhatsApp", iconComponent: WhatsAppIcon },
-  { key: "cart", label: "Warenkorb", icon: ShoppingCart },
-  { key: "account", label: "Konto", icon: User },
-];
 
 export function Header() {
   const location = useLocation();
   const { totalItems, setIsOpen } = useCart();
   const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -61,103 +55,116 @@ export function Header() {
               : "shadow-[0_8px_40px_-8px_hsl(var(--primary)/0.4)]"
           }`}
         >
-          {items.map((item) => {
-            // External links (Telegram, WhatsApp)
-            if (item.href) {
-              const IconComp = item.iconComponent!;
-              return (
-                <a
-                  key={item.key}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cellBase}
-                  aria-label={item.label}
-                >
-                  <IconComp className="h-5 w-5" />
-                  <span className="text-[9px] font-medium leading-none">{item.label}</span>
-                </a>
-              );
-            }
+          {/* Start */}
+          <Link to="/" className={`${cellBase} ${isActive("/") ? "text-primary-foreground" : ""}`} aria-label="Start">
+            <Home className="h-5 w-5" strokeWidth={isActive("/") ? 2.5 : 1.75} />
+            <span className={`text-[9px] leading-none ${isActive("/") ? "font-bold" : "font-medium"}`}>Start</span>
+            {isActive("/") && (
+              <motion.div layoutId="nav-pill" className="absolute inset-0 -z-10 rounded-xl bg-primary-foreground/15" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />
+            )}
+          </Link>
 
-            // Cart
-            if (item.key === "cart") {
-              const Icon = item.icon!;
-              return (
-                <button
-                  key={item.key}
-                  onClick={() => setIsOpen(true)}
-                  className={cellBase}
-                  aria-label="Warenkorb"
-                >
-                  <Icon className="h-5 w-5" strokeWidth={1.75} />
-                  <span className="text-[9px] font-medium leading-none">{item.label}</span>
-                  <AnimatePresence>
-                    {totalItems > 0 && (
-                      <motion.span
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                        className="absolute top-1 right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-background px-0.5 text-[9px] font-bold text-foreground shadow-sm"
-                      >
-                        {totalItems}
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                </button>
-              );
-            }
+          {/* Shop */}
+          <Link to="/produkte" className={`${cellBase} ${isActive("/produkte") ? "text-primary-foreground" : ""}`} aria-label="Shop">
+            <Store className="h-5 w-5" strokeWidth={isActive("/produkte") ? 2.5 : 1.75} />
+            <span className={`text-[9px] leading-none ${isActive("/produkte") ? "font-bold" : "font-medium"}`}>Shop</span>
+            {isActive("/produkte") && (
+              <motion.div layoutId="nav-pill" className="absolute inset-0 -z-10 rounded-xl bg-primary-foreground/15" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />
+            )}
+          </Link>
 
-            // Account
-            if (item.key === "account") {
-              const Icon = item.icon!;
-              const active = isActive("/konto");
-              return (
-                <Link
-                  key={item.key}
-                  to={user ? "/konto" : "/anmelden"}
-                  className={`${cellBase} ${active ? "text-primary-foreground" : ""}`}
-                  aria-label="Konto"
-                >
-                  <Icon className="h-5 w-5" strokeWidth={active ? 2.5 : 1.75} />
-                  <span className={`text-[9px] leading-none ${active ? "font-bold" : "font-medium"}`}>
-                    {item.label}
-                  </span>
-                  {active && (
-                    <motion.div
-                      layoutId="nav-pill"
-                      className="absolute inset-0 -z-10 rounded-xl bg-primary-foreground/15"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
-                    />
-                  )}
-                </Link>
-              );
-            }
+          {/* Wunschliste */}
+          <Link
+            to={user ? "/wunschliste" : "/anmelden"}
+            className={`${cellBase} ${isActive("/wunschliste") ? "text-primary-foreground" : ""}`}
+            aria-label="Wunschliste"
+          >
+            <Heart className="h-5 w-5" strokeWidth={isActive("/wunschliste") ? 2.5 : 1.75} />
+            <span className={`text-[9px] leading-none ${isActive("/wunschliste") ? "font-bold" : "font-medium"}`}>Merkliste</span>
+            {isActive("/wunschliste") && (
+              <motion.div layoutId="nav-pill" className="absolute inset-0 -z-10 rounded-xl bg-primary-foreground/15" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />
+            )}
+          </Link>
 
-            // Nav links (Start, Shop)
-            const Icon = item.icon!;
-            const active = isActive(item.to!);
-            return (
-              <Link
-                key={item.key}
-                to={item.to!}
-                className={`${cellBase} ${active ? "text-primary-foreground" : ""}`}
-              >
-                <Icon className="h-5 w-5" strokeWidth={active ? 2.5 : 1.75} />
-                <span className={`text-[9px] leading-none ${active ? "font-bold" : "font-medium"}`}>
-                  {item.label}
-                </span>
-                {active && (
-                  <motion.div
-                    layoutId="nav-pill"
-                    className="absolute inset-0 -z-10 rounded-xl bg-primary-foreground/15"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
-                  />
-                )}
-              </Link>
-            );
-          })}
+          {/* Chat (Telegram + WhatsApp) */}
+          <button onClick={() => setChatOpen(true)} className={cellBase} aria-label="Chat">
+            <MessageCircle className="h-5 w-5" strokeWidth={1.75} />
+            <span className="text-[9px] font-medium leading-none">Chat</span>
+          </button>
+
+          {/* Cart */}
+          <button onClick={() => setIsOpen(true)} className={cellBase} aria-label="Warenkorb">
+            <ShoppingCart className="h-5 w-5" strokeWidth={1.75} />
+            <span className="text-[9px] font-medium leading-none">Warenkorb</span>
+            <AnimatePresence>
+              {totalItems > 0 && (
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0 }}
+                  className="absolute top-1 right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-background px-0.5 text-[9px] font-bold text-foreground shadow-sm"
+                >
+                  {totalItems}
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+
+          {/* Konto */}
+          <Link
+            to={user ? "/konto" : "/anmelden"}
+            className={`${cellBase} ${isActive("/konto") ? "text-primary-foreground" : ""}`}
+            aria-label="Konto"
+          >
+            <User className="h-5 w-5" strokeWidth={isActive("/konto") ? 2.5 : 1.75} />
+            <span className={`text-[9px] leading-none ${isActive("/konto") ? "font-bold" : "font-medium"}`}>Konto</span>
+            {isActive("/konto") && (
+              <motion.div layoutId="nav-pill" className="absolute inset-0 -z-10 rounded-xl bg-primary-foreground/15" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />
+            )}
+          </Link>
         </nav>
+
+        {/* Chat Sheet */}
+        <Sheet open={chatOpen} onOpenChange={setChatOpen}>
+          <SheetContent side="bottom" className="rounded-t-2xl border-border/40 pb-[env(safe-area-inset-bottom)]">
+            <SheetHeader className="text-left">
+              <SheetTitle>Direktkontakt</SheetTitle>
+              <p className="text-sm text-muted-foreground">Wähle deinen bevorzugten Kanal — wir antworten meist innerhalb weniger Minuten.</p>
+            </SheetHeader>
+            <div className="mt-6 grid gap-3">
+              <a
+                href="https://wa.me/4917622551230"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setChatOpen(false)}
+                className="flex items-center gap-4 rounded-xl border border-border/60 bg-card p-4 transition-all hover:border-primary/40 hover:bg-primary/5"
+              >
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#25D366]/10 text-[#25D366]">
+                  <WhatsAppIcon className="h-6 w-6" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm font-semibold text-foreground">WhatsApp</div>
+                  <div className="text-xs text-muted-foreground">Ideal für Großbestellungen & schnelle Fragen</div>
+                </div>
+              </a>
+              <a
+                href="https://t.me/bElectronicsshop"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setChatOpen(false)}
+                className="flex items-center gap-4 rounded-xl border border-border/60 bg-card p-4 transition-all hover:border-primary/40 hover:bg-primary/5"
+              >
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <TelegramIcon className="h-6 w-6" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm font-semibold text-foreground">Telegram</div>
+                  <div className="text-xs text-muted-foreground">News, Angebote & Support-Channel</div>
+                </div>
+              </a>
+            </div>
+          </SheetContent>
+        </Sheet>
 
         {/* ─── DESKTOP ─── */}
         <div
