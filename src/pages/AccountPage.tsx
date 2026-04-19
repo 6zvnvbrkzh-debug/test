@@ -15,6 +15,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { ReviewDialog } from "@/components/reviews/ReviewDialog";
+import { InvoiceButton } from "@/components/InvoiceButton";
 
 const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
   PENDING: { label: "In Bearbeitung", variant: "secondary" },
