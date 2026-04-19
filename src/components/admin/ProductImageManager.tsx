@@ -173,9 +173,28 @@ export function ProductImageManager({ images, onChange, maxImages = 8 }: Props) 
     }
   };
 
-  const removeImage = (idx: number) => {
+  const removeImage = async (idx: number) => {
+    const url = images[idx];
     const next = images.filter((_, i) => i !== idx);
     onChange(next);
+
+    // Try to extract storage path from public URL and delete the file from the bucket.
+    // Public URL format: <SUPABASE_URL>/storage/v1/object/public/<bucket>/<path>
+    try {
+      const marker = `/storage/v1/object/public/${BUCKET}/`;
+      const i = url.indexOf(marker);
+      if (i === -1) return; // External URL — nothing to delete in our bucket.
+      const path = decodeURIComponent(url.slice(i + marker.length).split("?")[0]);
+      if (!path) return;
+
+      const { error } = await supabase.storage.from(BUCKET).remove([path]);
+      if (error) {
+        // Non-fatal: image is already removed from the product; just inform.
+        toast.warning(`Bild entfernt, aber Datei konnte nicht aus dem Speicher gelöscht werden: ${error.message}`);
+      }
+    } catch {
+      // Silent fail — UI state is already updated.
+    }
   };
 
   const onDrop = (e: React.DragEvent) => {
