@@ -50,16 +50,6 @@ const homepageJsonLd = {
       about: { "@id": "https://b-electronics.shop/#organization" },
       description: "Dein Fachhändler für Streaming Boxen, IPTV-Receiver & Zubehör. Top-Marken, schneller Versand & 2 Jahre Garantie.",
     },
-    {
-      "@type": "FAQPage",
-      "@id": "https://b-electronics.shop/#faq",
-      isPartOf: { "@id": "https://b-electronics.shop/#webpage" },
-      mainEntity: faqItems.map((item) => ({
-        "@type": "Question",
-        name: item.q,
-        acceptedAnswer: { "@type": "Answer", text: item.a },
-      })),
-    },
   ],
 };
 
