@@ -32,6 +32,7 @@ export function Header() {
   const { totalItems, setIsOpen } = useCart();
   const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
