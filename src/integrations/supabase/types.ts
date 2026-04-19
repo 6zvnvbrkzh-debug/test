@@ -249,6 +249,7 @@ export type Database = {
           customer_email: string | null
           customer_name: string | null
           id: string
+          invoice_number: string | null
           listing_id: string
           seller_id: string
           shipping_address: Json | null
@@ -264,6 +265,7 @@ export type Database = {
           customer_email?: string | null
           customer_name?: string | null
           id?: string
+          invoice_number?: string | null
           listing_id: string
           seller_id: string
           shipping_address?: Json | null
@@ -279,6 +281,7 @@ export type Database = {
           customer_email?: string | null
           customer_name?: string | null
           id?: string
+          invoice_number?: string | null
           listing_id?: string
           seller_id?: string
           shipping_address?: Json | null
@@ -488,6 +491,10 @@ export type Database = {
       enqueue_email: {
         Args: { payload: Json; queue_name: string }
         Returns: number
+      }
+      get_or_create_invoice_number: {
+        Args: { _order_id: string }
+        Returns: string
       }
       has_role: {
         Args: {
