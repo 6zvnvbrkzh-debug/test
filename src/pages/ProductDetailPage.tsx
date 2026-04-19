@@ -98,6 +98,23 @@ const ProductDetailPage = () => {
     setTimeout(() => setAddedToCart(false), 2000);
   };
 
+  // Smart brand detection from product title
+  const detectBrand = (title: string): string => {
+    const t = title.toLowerCase();
+    if (t.includes("formuler")) return "Formuler";
+    if (t.includes("octagon")) return "Octagon";
+    if (t.includes("apple")) return "Apple";
+    if (t.includes("samsung")) return "Samsung";
+    return "Barbato Electronics";
+  };
+
+  // priceValidUntil: 1 year from today (Google requirement)
+  const priceValidUntil = (() => {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() + 1);
+    return d.toISOString().slice(0, 10);
+  })();
+
   const productJsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -105,16 +122,55 @@ const ProductDetailPage = () => {
         "@type": "Product",
         name: listing.title,
         description: listing.description,
-        image: listing.images?.[0],
+        image: listing.images && listing.images.length > 0 ? listing.images : undefined,
         sku: listing.id,
-        brand: { "@type": "Brand", name: "Barbato Electronics" },
+        mpn: listing.id,
+        brand: { "@type": "Brand", name: detectBrand(listing.title) },
+        ...(myRating && myRating.count > 0
+          ? {
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: Number(myRating.avg.toFixed(1)),
+                reviewCount: myRating.count,
+                bestRating: 5,
+                worstRating: 1,
+              },
+            }
+          : {}),
         offers: {
           "@type": "Offer",
-          price: listing.price,
+          price: listing.price.toFixed(2),
           priceCurrency: "EUR",
+          priceValidUntil,
           availability: isSold ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+          itemCondition: "https://schema.org/NewCondition",
           seller: { "@type": "Organization", name: "Barbato Electronics" },
           url: `https://b-electronics.shop/produkt/${listing.id}`,
+          shippingDetails: {
+            "@type": "OfferShippingDetails",
+            shippingRate: {
+              "@type": "MonetaryAmount",
+              value: listing.price >= 50 ? "0.00" : "5.99",
+              currency: "EUR",
+            },
+            shippingDestination: {
+              "@type": "DefinedRegion",
+              addressCountry: "DE",
+            },
+            deliveryTime: {
+              "@type": "ShippingDeliveryTime",
+              handlingTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 1, unitCode: "DAY" },
+              transitTime: { "@type": "QuantitativeValue", minValue: 1, maxValue: 3, unitCode: "DAY" },
+            },
+          },
+          hasMerchantReturnPolicy: {
+            "@type": "MerchantReturnPolicy",
+            applicableCountry: "DE",
+            returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+            merchantReturnDays: 14,
+            returnMethod: "https://schema.org/ReturnByMail",
+            returnFees: "https://schema.org/FreeReturn",
+          },
         },
       },
       {
