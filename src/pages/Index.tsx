@@ -4,46 +4,12 @@ import { motion } from "framer-motion";
 import {
   ArrowRight, Truck, ShieldCheck, RotateCcw, Star, Loader2,
   ChevronRight, Zap, Flame, Package, CreditCard, Headphones,
-  HelpCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/marketplace/ProductCard";
 import { useActiveListings } from "@/hooks/useActiveListings";
 import { SEOHead } from "@/components/SEOHead";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-
-const faqItems = [
-  {
-    q: "Wie lange dauert der Versand?",
-    a: "Wir versenden in der Regel innerhalb von 2–4 Werktagen nach Zahlungseingang. Ab 50 € Bestellwert ist der Versand innerhalb Deutschlands kostenlos.",
-  },
-  {
-    q: "Welche Zahlungsmethoden werden akzeptiert?",
-    a: "Wir akzeptieren alle gängigen Zahlungsmethoden über unseren Zahlungsanbieter Stripe – darunter Kreditkarte, Apple Pay, Google Pay und weitere.",
-  },
-  {
-    q: "Gibt es eine Garantie auf die Produkte?",
-    a: "Ja, auf alle unsere Produkte gewähren wir 2 Jahre Garantie gemäß den gesetzlichen Gewährleistungsbestimmungen.",
-  },
-  {
-    q: "Kann ich meine Bestellung zurückgeben?",
-    a: "Selbstverständlich! Als Verbraucher hast du ein 14-tägiges Widerrufsrecht. Zudem bieten wir ein erweitertes 30-Tage-Rückgaberecht – kostenlos und unkompliziert.",
-  },
-  {
-    q: "Sind alle Produkte originalverpackt?",
-    a: "Ja, wir verkaufen ausschließlich neue und originalverpackte Produkte. Jedes Gerät kommt mit voller Herstellergarantie.",
-  },
-  {
-    q: "Wie kann ich den Kundenservice erreichen?",
-    a: "Unser Support-Team ist Mo–So von 9–21 Uhr erreichbar. Du erreichst uns per E-Mail unter barbato.electronics@gmail.com oder telefonisch unter +49 176 22551230.",
-  },
-];
 
 const homepageJsonLd = {
   "@context": "https://schema.org",
