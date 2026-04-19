@@ -147,6 +147,31 @@ export default function CheckoutSuccess() {
             </div>
           )}
 
+          {/* Rechnung herunterladen */}
+          <div className="rounded-xl border border-border/40 bg-card/40 p-5 text-left space-y-3">
+            <div className="flex items-center gap-2">
+              <FileText className="h-4 w-4 text-primary" />
+              <h2 className="text-sm font-semibold">Rechnung</h2>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Lade dir deine Rechnung als PDF herunter – auch zur späteren Aufbewahrung.
+            </p>
+            <Button
+              size="sm"
+              variant="outline"
+              className="w-full"
+              disabled={!sessionId}
+              onClick={async () => {
+                if (!sessionId) return;
+                const url = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.functions.supabase.co/generate-invoice?session_id=${encodeURIComponent(sessionId)}`;
+                window.open(url, "_blank", "noopener,noreferrer");
+              }}
+            >
+              <FileText className="h-4 w-4 mr-2" />
+              Rechnung als PDF öffnen
+            </Button>
+          </div>
+
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <Button asChild>
               <Link to="/produkte">
