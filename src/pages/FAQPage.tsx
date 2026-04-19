@@ -234,7 +234,7 @@ export default function FAQPage() {
                           <span className="text-muted-foreground/50">·</span>
                           <span className="text-muted-foreground inline-flex items-center gap-1">
                             <Clock className="h-3 w-3" />
-                            {guide.reading_time_minutes}\u00A0min
+                            {guide.reading_time_minutes}&nbsp;min
                           </span>
                         </div>
                         <h3 className="text-lg font-bold tracking-tight leading-snug group-hover:text-primary transition-colors">
