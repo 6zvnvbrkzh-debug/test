@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Loader2, Hash, ChevronUp, ChevronDown } from "lucide-react";
 import SerialNumbersManager from "@/components/admin/SerialNumbersManager";
+import { ProductImageManager } from "@/components/admin/ProductImageManager";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Listing = Tables<"listings">;
@@ -38,7 +39,7 @@ interface ProductForm {
   condition: string;
   status: string;
   category_id: string;
-  images: string;
+  images: string[];
   specs: string;
 }
 
@@ -51,7 +52,7 @@ const emptyForm: ProductForm = {
   condition: "NEW",
   status: "ACTIVE",
   category_id: "",
-  images: "",
+  images: [],
   specs: "",
 };
 
@@ -110,10 +111,7 @@ export default function AdminProducts() {
         condition: form.condition as Listing["condition"],
         status: form.status as Listing["status"],
         category_id: form.category_id,
-        images: form.images
-          .split("\n")
-          .map((s) => s.trim())
-          .filter(Boolean),
+        images: form.images,
         specs: Object.keys(parsedSpecs).length > 0 ? parsedSpecs : null,
       };
 
@@ -195,7 +193,7 @@ export default function AdminProducts() {
       condition: listing.condition,
       status: listing.status,
       category_id: listing.category_id,
-      images: (listing.images || []).join("\n"),
+      images: Array.isArray(listing.images) ? listing.images : [],
       specs: specsStr,
     });
     setDialogOpen(true);
@@ -442,12 +440,10 @@ export default function AdminProducts() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Bilder (URLs, eine pro Zeile)</Label>
-              <Textarea
-                value={form.images}
-                onChange={(e) => setForm({ ...form, images: e.target.value })}
-                rows={3}
-                placeholder="https://example.com/bild1.jpg"
+              <Label>Produktbilder</Label>
+              <ProductImageManager
+                images={form.images}
+                onChange={(imgs) => setForm({ ...form, images: imgs })}
               />
             </div>
             <div className="space-y-2">
