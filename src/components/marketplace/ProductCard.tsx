@@ -143,9 +143,9 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
               </div>
             )}
 
-            <div className="flex items-end justify-between gap-1">
-              <div className="min-w-0 overflow-hidden">
-                <span className="text-sm md:text-lg font-bold tracking-tight font-mono-data whitespace-nowrap block">
+            <div className="flex items-end justify-between gap-2">
+              <div className="min-w-0 flex-1 overflow-hidden">
+                <span className="text-base md:text-lg font-bold tracking-tight font-mono-data whitespace-nowrap block">
                   {formatPrice(listing.price)}
                 </span>
                 {hasDiscount && (
@@ -155,16 +155,18 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
                 )}
                 {hasDiscount && !isSold && (
                   <span className="text-[9px] md:text-[10px] font-semibold text-primary mt-0.5 whitespace-nowrap block">
-                    Spare&nbsp;{formatPrice(savings)}
+                    <span className="md:hidden">−{formatPrice(savings)}</span>
+                    <span className="hidden md:inline">Spare&nbsp;{formatPrice(savings)}</span>
                   </span>
                 )}
               </div>
 
-              {/* Add to cart button */}
+              {/* Add to cart button — smaller on mobile to give price more room */}
               {!isSold && (
                 <button
                   onClick={handleAddToCart}
-                  className="h-8 w-8 md:h-9 md:w-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 shadow-[0_2px_10px_hsl(var(--primary)/0.3)] hover:shadow-[0_4px_20px_hsl(var(--primary)/0.4)] hover:scale-105 active:scale-95 transition-all duration-200"
+                  aria-label="In den Warenkorb"
+                  className="h-7 w-7 md:h-9 md:w-9 rounded-lg md:rounded-xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 shadow-[0_2px_10px_hsl(var(--primary)/0.3)] hover:shadow-[0_4px_20px_hsl(var(--primary)/0.4)] hover:scale-105 active:scale-95 transition-all duration-200"
                 >
                   <ShoppingCart className="h-3.5 w-3.5 md:h-4 md:w-4" strokeWidth={2.5} />
                 </button>
