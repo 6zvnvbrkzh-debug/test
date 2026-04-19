@@ -42,6 +42,7 @@ interface OrderDetail {
   customer_name: string | null;
   customer_email: string | null;
   shipping_address: ShippingAddress | null;
+  invoice_number: string | null;
   listings: { title: string; price: number; images: string[] | null } | null;
 }
 
