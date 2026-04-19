@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Loader2, Eye, Package, CreditCard, User, Calendar, Hash, Truck, Save, MapPin, Mail, Download } from "lucide-react";
 import { toast } from "sonner";
+import { InvoiceButton } from "@/components/InvoiceButton";
 
 const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive" }> = {
   PENDING: { label: "Ausstehend", variant: "outline" },
@@ -41,6 +42,7 @@ interface OrderDetail {
   customer_name: string | null;
   customer_email: string | null;
   shipping_address: ShippingAddress | null;
+  invoice_number: string | null;
   listings: { title: string; price: number; images: string[] | null } | null;
 }
 
@@ -314,14 +316,24 @@ export default function AdminOrders() {
                       })}
                     </TableCell>
                     <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => handleOpenDetail(order)}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
+                      <div className="flex items-center gap-1 justify-end">
+                        <InvoiceButton
+                          orderId={order.id}
+                          invoiceNumber={order.invoice_number}
+                          size="sm"
+                          variant="ghost"
+                          label=""
+                          className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                        />
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => handleOpenDetail(order)}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 );
@@ -481,6 +493,25 @@ export default function AdminOrders() {
                     Bei DHL verfolgen →
                   </a>
                 )}
+              </div>
+
+              {/* Rechnung */}
+              <div className="space-y-2 pt-2 border-t border-border/50">
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <p className="text-xs font-medium">Rechnung</p>
+                    <p className="text-xs text-muted-foreground font-mono-data">
+                      {selectedOrder.invoice_number || "Wird beim Öffnen erstellt"}
+                    </p>
+                  </div>
+                  <InvoiceButton
+                    orderId={selectedOrder.id}
+                    invoiceNumber={selectedOrder.invoice_number}
+                    label="PDF öffnen"
+                    size="sm"
+                    variant="outline"
+                  />
+                </div>
               </div>
 
               {/* IDs */}

@@ -15,6 +15,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { ReviewDialog } from "@/components/reviews/ReviewDialog";
+import { InvoiceButton } from "@/components/InvoiceButton";
 
 const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
   PENDING: { label: "In Bearbeitung", variant: "secondary" },
@@ -57,7 +58,7 @@ export default function AccountPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("id, amount, status, created_at, listing_id, seller_id, tracking_number, customer_name, customer_email, shipping_address, listings(title, images)")
+        .select("id, amount, status, created_at, listing_id, seller_id, tracking_number, customer_name, customer_email, shipping_address, invoice_number, listings(title, images)")
         .eq("buyer_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -298,7 +299,19 @@ export default function AccountPage() {
                         </a>
                       </div>
                     )}
-                    {/* Bewertung abgeben (eigenes System) */}
+                    {/* Rechnung */}
+                    <div className="flex items-center justify-between gap-2 px-4 pb-3 border-t border-border/20 pt-2">
+                      <span className="text-xs text-muted-foreground">
+                        {order.invoice_number ? `Rechnung ${order.invoice_number}` : "Rechnung"}
+                      </span>
+                      <InvoiceButton
+                        orderId={order.id}
+                        invoiceNumber={order.invoice_number}
+                        size="sm"
+                        variant="outline"
+                        label="PDF öffnen"
+                      />
+                    </div>
                     {(order.status === "COMPLETED" || order.status === "SHIPPED") && (
                       <div className="flex flex-wrap items-center gap-3 px-4 pb-3 border-t border-border/20 pt-2">
                         {reviewedOrderIds.has(order.id) ? (
