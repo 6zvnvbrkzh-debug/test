@@ -184,14 +184,30 @@ const ProductDetailPage = () => {
     ],
   };
 
+  // Share-friendly OG description: price + short teaser → great WhatsApp/Telegram previews
+  const priceLabel = formatPrice(listing.price).replace(/\u00A0/g, " ");
+  const shortDesc = listing.description.replace(/\s+/g, " ").trim().slice(0, 110);
+  const shareDescription = isSold
+    ? `Aktuell ausverkauft – ${shortDesc}`
+    : `${priceLabel}${hasDiscount ? ` (-${discountPercent}% gespart)` : ""} · Versand aus DE · 2 Jahre Garantie. ${shortDesc}`;
+
   return (
     <Layout>
       <SEOHead
         title={listing.title}
-        description={listing.description.slice(0, 155)}
+        description={shareDescription.slice(0, 200)}
         canonical={`/produkt/${listing.id}`}
         type="product"
         ogImage={listing.images?.[0]}
+        ogImages={listing.images && listing.images.length > 0 ? listing.images : undefined}
+        product={{
+          price: listing.price,
+          currency: "EUR",
+          availability: isSold ? "out of stock" : "in stock",
+          condition: "new",
+          brand: detectBrand(listing.title),
+          retailerItemId: listing.id,
+        }}
         jsonLd={productJsonLd}
       />
       <div className="container py-6">
