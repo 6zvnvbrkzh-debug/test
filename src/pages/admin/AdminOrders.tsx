@@ -196,18 +196,24 @@ export default function AdminOrders() {
             )}
           </p>
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Status filtern" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Alle Status</SelectItem>
-            <SelectItem value="PENDING">Ausstehend</SelectItem>
-            <SelectItem value="SHIPPED">Versendet</SelectItem>
-            <SelectItem value="COMPLETED">Abgeschlossen</SelectItem>
-            <SelectItem value="REFUNDED">Erstattet</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={handleExportCSV} className="gap-1.5">
+            <Download className="h-4 w-4" />
+            CSV-Export
+          </Button>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Status filtern" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Alle Status</SelectItem>
+              <SelectItem value="PENDING">Ausstehend</SelectItem>
+              <SelectItem value="SHIPPED">Versendet</SelectItem>
+              <SelectItem value="COMPLETED">Abgeschlossen</SelectItem>
+              <SelectItem value="REFUNDED">Erstattet</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Stats */}
