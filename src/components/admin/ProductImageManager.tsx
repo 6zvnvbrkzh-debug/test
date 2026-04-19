@@ -18,6 +18,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { optimizeImage } from "@/lib/image-optimize";
 
 interface Props {
   images: string[];
