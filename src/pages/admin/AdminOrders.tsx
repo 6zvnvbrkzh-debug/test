@@ -495,6 +495,25 @@ export default function AdminOrders() {
                 )}
               </div>
 
+              {/* Rechnung */}
+              <div className="space-y-2 pt-2 border-t border-border/50">
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <p className="text-xs font-medium">Rechnung</p>
+                    <p className="text-xs text-muted-foreground font-mono-data">
+                      {selectedOrder.invoice_number || "Wird beim Öffnen erstellt"}
+                    </p>
+                  </div>
+                  <InvoiceButton
+                    orderId={selectedOrder.id}
+                    invoiceNumber={selectedOrder.invoice_number}
+                    label="PDF öffnen"
+                    size="sm"
+                    variant="outline"
+                  />
+                </div>
+              </div>
+
               {/* IDs */}
               <div className="space-y-2 pt-2 border-t border-border/50">
                 <p className="text-xs text-muted-foreground">
