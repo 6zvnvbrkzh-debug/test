@@ -258,7 +258,7 @@ export function ProductImageManager({ images, onChange, maxImages = 8 }: Props) 
         >
           <Upload className="h-6 w-6" />
           <span className="font-medium">Bilder hier ablegen oder klicken zum Auswählen</span>
-          <span className="text-xs">PNG, JPG, WEBP · max. 5&nbsp;MB pro Bild</span>
+          <span className="text-xs">PNG, JPG, WEBP · automatisch nach WebP optimiert (max. 1600&nbsp;px)</span>
         </button>
       ) : (
         <div
