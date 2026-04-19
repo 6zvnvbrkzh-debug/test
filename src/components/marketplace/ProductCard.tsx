@@ -47,9 +47,16 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
       >
         <div className="relative rounded-2xl bg-card border border-border/40 overflow-hidden transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-[0_0_40px_-12px_hsl(var(--primary)/0.2)] h-full flex flex-col">
           
+          {/* Wishlist heart — absolutely positioned top-right corner */}
+          {!isSold && (
+            <div className="absolute top-2 right-2 md:top-2.5 md:right-2.5 z-20">
+              <WishlistButton listingId={listing.id} variant="card" />
+            </div>
+          )}
+
           {/* Top bar with badges */}
           <div className="flex items-center justify-between gap-1.5 px-3 md:px-4 pt-2.5 md:pt-3 pb-0 relative z-10">
-            <div className="flex items-center gap-1 min-w-0 flex-wrap">
+            <div className="flex items-center gap-1 min-w-0 flex-wrap pr-9">
               {/* Brand badge: hidden on mobile to save space */}
               {listing.title.toLowerCase().includes("octagon") && (
                 <span className="hidden md:inline-block text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60 bg-muted/60 px-1.5 py-0.5 rounded-md">
@@ -74,11 +81,11 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-1.5 shrink-0">
-              {!isSold && <WishlistButton listingId={listing.id} variant="card" />}
+            {/* Hover arrow indicator (desktop only) */}
+            <div className="hidden md:flex items-center gap-1.5 shrink-0 pr-9">
               {!isSold && (
-                <span className="h-6 w-6 md:h-7 md:w-7 rounded-full bg-muted/50 flex items-center justify-center opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 transition-all duration-300">
-                  <ArrowUpRight className="h-3 w-3 md:h-3.5 md:w-3.5 text-foreground" strokeWidth={2.5} />
+                <span className="h-7 w-7 rounded-full bg-muted/50 flex items-center justify-center opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 transition-all duration-300">
+                  <ArrowUpRight className="h-3.5 w-3.5 text-foreground" strokeWidth={2.5} />
                 </span>
               )}
             </div>
@@ -136,9 +143,9 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
               </div>
             )}
 
-            <div className="flex items-end justify-between gap-1">
-              <div className="min-w-0 overflow-hidden">
-                <span className="text-sm md:text-lg font-bold tracking-tight font-mono-data whitespace-nowrap block">
+            <div className="flex items-end justify-between gap-2">
+              <div className="min-w-0 flex-1 overflow-hidden">
+                <span className="text-base md:text-lg font-bold tracking-tight font-mono-data whitespace-nowrap block">
                   {formatPrice(listing.price)}
                 </span>
                 {hasDiscount && (
@@ -148,16 +155,18 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
                 )}
                 {hasDiscount && !isSold && (
                   <span className="text-[9px] md:text-[10px] font-semibold text-primary mt-0.5 whitespace-nowrap block">
-                    Spare&nbsp;{formatPrice(savings)}
+                    <span className="md:hidden">−{formatPrice(savings)}</span>
+                    <span className="hidden md:inline">Spare&nbsp;{formatPrice(savings)}</span>
                   </span>
                 )}
               </div>
 
-              {/* Add to cart button */}
+              {/* Add to cart button — smaller on mobile to give price more room */}
               {!isSold && (
                 <button
                   onClick={handleAddToCart}
-                  className="h-8 w-8 md:h-9 md:w-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 shadow-[0_2px_10px_hsl(var(--primary)/0.3)] hover:shadow-[0_4px_20px_hsl(var(--primary)/0.4)] hover:scale-105 active:scale-95 transition-all duration-200"
+                  aria-label="In den Warenkorb"
+                  className="h-7 w-7 md:h-9 md:w-9 rounded-lg md:rounded-xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 shadow-[0_2px_10px_hsl(var(--primary)/0.3)] hover:shadow-[0_4px_20px_hsl(var(--primary)/0.4)] hover:scale-105 active:scale-95 transition-all duration-200"
                 >
                   <ShoppingCart className="h-3.5 w-3.5 md:h-4 md:w-4" strokeWidth={2.5} />
                 </button>
