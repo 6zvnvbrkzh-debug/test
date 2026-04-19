@@ -119,6 +119,71 @@ export default function AdminOrders() {
     return parts.join(", ");
   };
 
+  const handleExportCSV = () => {
+    if (filtered.length === 0) {
+      toast.error("Keine Bestellungen zum Exportieren");
+      return;
+    }
+
+    // CSV-Wert escapen: Anführungszeichen verdoppeln, in Quotes einschließen
+    const esc = (val: unknown): string => {
+      if (val === null || val === undefined) return "";
+      const str = String(val).replace(/"/g, '""');
+      return `"${str}"`;
+    };
+
+    const headers = [
+      "Bestellnummer",
+      "Datum",
+      "Status",
+      "Kundenname",
+      "E-Mail",
+      "Produkt",
+      "Betrag (EUR)",
+      "Sendungsnummer",
+      "Adresse",
+      "PLZ",
+      "Stadt",
+      "Land",
+      "Stripe Session ID",
+    ];
+
+    const rows = filtered.map((o) => [
+      o.id,
+      new Date(o.created_at).toLocaleString("de-DE"),
+      STATUS_MAP[o.status]?.label ?? o.status,
+      o.customer_name ?? "",
+      o.customer_email ?? "",
+      o.listings?.title ?? "",
+      Number(o.amount).toFixed(2).replace(".", ","),
+      o.tracking_number ?? "",
+      [o.shipping_address?.line1, o.shipping_address?.line2].filter(Boolean).join(" "),
+      o.shipping_address?.postal_code ?? "",
+      o.shipping_address?.city ?? "",
+      o.shipping_address?.country ?? "",
+      o.stripe_session_id ?? "",
+    ]);
+
+    // Semikolon-Trennzeichen für DE-Excel, BOM für UTF-8 Erkennung
+    const csv =
+      "\uFEFF" +
+      [headers, ...rows].map((row) => row.map(esc).join(";")).join("\r\n");
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const suffix = statusFilter === "all" ? "alle" : statusFilter.toLowerCase();
+    link.href = url;
+    link.download = `bestellungen_${suffix}_${dateStr}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast.success(`${filtered.length} Bestellungen exportiert`);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
