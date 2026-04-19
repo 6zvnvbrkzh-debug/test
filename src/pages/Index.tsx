@@ -4,46 +4,12 @@ import { motion } from "framer-motion";
 import {
   ArrowRight, Truck, ShieldCheck, RotateCcw, Star, Loader2,
   ChevronRight, Zap, Flame, Package, CreditCard, Headphones,
-  HelpCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/marketplace/ProductCard";
 import { useActiveListings } from "@/hooks/useActiveListings";
 import { SEOHead } from "@/components/SEOHead";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-
-const faqItems = [
-  {
-    q: "Wie lange dauert der Versand?",
-    a: "Wir versenden in der Regel innerhalb von 2–4 Werktagen nach Zahlungseingang. Ab 50 € Bestellwert ist der Versand innerhalb Deutschlands kostenlos.",
-  },
-  {
-    q: "Welche Zahlungsmethoden werden akzeptiert?",
-    a: "Wir akzeptieren alle gängigen Zahlungsmethoden über unseren Zahlungsanbieter Stripe – darunter Kreditkarte, Apple Pay, Google Pay und weitere.",
-  },
-  {
-    q: "Gibt es eine Garantie auf die Produkte?",
-    a: "Ja, auf alle unsere Produkte gewähren wir 2 Jahre Garantie gemäß den gesetzlichen Gewährleistungsbestimmungen.",
-  },
-  {
-    q: "Kann ich meine Bestellung zurückgeben?",
-    a: "Selbstverständlich! Als Verbraucher hast du ein 14-tägiges Widerrufsrecht. Zudem bieten wir ein erweitertes 30-Tage-Rückgaberecht – kostenlos und unkompliziert.",
-  },
-  {
-    q: "Sind alle Produkte originalverpackt?",
-    a: "Ja, wir verkaufen ausschließlich neue und originalverpackte Produkte. Jedes Gerät kommt mit voller Herstellergarantie.",
-  },
-  {
-    q: "Wie kann ich den Kundenservice erreichen?",
-    a: "Unser Support-Team ist Mo–So von 9–21 Uhr erreichbar. Du erreichst uns per E-Mail unter barbato.electronics@gmail.com oder telefonisch unter +49 176 22551230.",
-  },
-];
 
 const homepageJsonLd = {
   "@context": "https://schema.org",
@@ -83,16 +49,6 @@ const homepageJsonLd = {
       isPartOf: { "@id": "https://b-electronics.shop/#website" },
       about: { "@id": "https://b-electronics.shop/#organization" },
       description: "Dein Fachhändler für Streaming Boxen, IPTV-Receiver & Zubehör. Top-Marken, schneller Versand & 2 Jahre Garantie.",
-    },
-    {
-      "@type": "FAQPage",
-      "@id": "https://b-electronics.shop/#faq",
-      isPartOf: { "@id": "https://b-electronics.shop/#webpage" },
-      mainEntity: faqItems.map((item) => ({
-        "@type": "Question",
-        name: item.q,
-        acceptedAnswer: { "@type": "Answer", text: item.a },
-      })),
     },
   ],
 };
@@ -523,37 +479,6 @@ const HomePage = () => {
               </div>
             </div>
           </a>
-        </motion.div>
-      </section>
-
-      {/* ─── FAQ ─── */}
-      <section className="container py-12 md:py-20">
-        <motion.div {...fadeUp(0.05)} className="max-w-3xl mx-auto">
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-4">
-              <HelpCircle className="h-3.5 w-3.5" />
-              Häufige Fragen
-            </div>
-            <h2 className="text-2xl md:text-4xl font-bold tracking-tight">
-              Noch Fragen? Hier findest du Antworten.
-            </h2>
-          </div>
-          <Accordion type="single" collapsible className="w-full space-y-3">
-            {faqItems.map((item, i) => (
-              <AccordionItem
-                key={i}
-                value={`faq-${i}`}
-                className="border border-border/50 rounded-xl px-6 shadow-sm data-[state=open]:shadow-md transition-shadow"
-              >
-                <AccordionTrigger className="text-left font-semibold text-sm md:text-base py-5 hover:no-underline">
-                  {item.q}
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-5">
-                  {item.a}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
         </motion.div>
       </section>
 
