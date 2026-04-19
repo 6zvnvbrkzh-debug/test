@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, ShoppingBag, ArrowLeft, Star, Loader2 } from "lucide-react";
+import { CheckCircle2, ShoppingBag, ArrowLeft, Star, Loader2, FileText } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { SEOHead } from "@/components/SEOHead";
@@ -146,6 +146,31 @@ export default function CheckoutSuccess() {
               )}
             </div>
           )}
+
+          {/* Rechnung herunterladen */}
+          <div className="rounded-xl border border-border/40 bg-card/40 p-5 text-left space-y-3">
+            <div className="flex items-center gap-2">
+              <FileText className="h-4 w-4 text-primary" />
+              <h2 className="text-sm font-semibold">Rechnung</h2>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Lade dir deine Rechnung als PDF herunter – auch zur späteren Aufbewahrung.
+            </p>
+            <Button
+              size="sm"
+              variant="outline"
+              className="w-full"
+              disabled={!sessionId}
+              onClick={() => {
+                if (!sessionId) return;
+                const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-invoice?session_id=${encodeURIComponent(sessionId)}&apikey=${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`;
+                window.open(url, "_blank", "noopener,noreferrer");
+              }}
+            >
+              <FileText className="h-4 w-4 mr-2" />
+              Rechnung als PDF öffnen
+            </Button>
+          </div>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <Button asChild>
