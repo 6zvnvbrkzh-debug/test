@@ -161,9 +161,9 @@ export default function CheckoutSuccess() {
               variant="outline"
               className="w-full"
               disabled={!sessionId}
-              onClick={async () => {
+              onClick={() => {
                 if (!sessionId) return;
-                const url = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.functions.supabase.co/generate-invoice?session_id=${encodeURIComponent(sessionId)}`;
+                const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-invoice?session_id=${encodeURIComponent(sessionId)}&apikey=${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`;
                 window.open(url, "_blank", "noopener,noreferrer");
               }}
             >
