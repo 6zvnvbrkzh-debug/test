@@ -58,7 +58,7 @@ export default function AccountPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("id, amount, status, created_at, listing_id, seller_id, tracking_number, customer_name, customer_email, shipping_address, listings(title, images)")
+        .select("id, amount, status, created_at, listing_id, seller_id, tracking_number, customer_name, customer_email, shipping_address, invoice_number, listings(title, images)")
         .eq("buyer_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
