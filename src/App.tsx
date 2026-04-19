@@ -24,6 +24,7 @@ import WiderrufsrechtPage from "./pages/WiderrufsrechtPage";
 import FAQPage from "./pages/FAQPage";
 import ContactPage from "./pages/ContactPage";
 import WishlistPage from "./pages/WishlistPage";
+import GuideDetailPage from "./pages/GuideDetailPage";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
@@ -32,6 +33,7 @@ import AdminOrders from "./pages/admin/AdminOrders";
 import AdminCategories from "./pages/admin/AdminCategories";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import AdminReviews from "./pages/admin/AdminReviews";
+import AdminGuides from "./pages/admin/AdminGuides";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +63,7 @@ const App = () => (
               <Route path="/faq" element={<FAQPage />} />
               <Route path="/kontakt" element={<ContactPage />} />
               <Route path="/wunschliste" element={<WishlistPage />} />
+              <Route path="/ratgeber/:slug" element={<GuideDetailPage />} />
 
               {/* Admin routes */}
               <Route
@@ -78,6 +81,7 @@ const App = () => (
                 <Route path="kategorien" element={<AdminCategories />} />
                 <Route path="analytics" element={<AdminAnalytics />} />
                 <Route path="bewertungen" element={<AdminReviews />} />
+                <Route path="ratgeber" element={<AdminGuides />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />
