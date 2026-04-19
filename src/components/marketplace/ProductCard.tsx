@@ -48,15 +48,16 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
         <div className="relative rounded-2xl bg-card border border-border/40 overflow-hidden transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-[0_0_40px_-12px_hsl(var(--primary)/0.2)] h-full flex flex-col">
           
           {/* Top bar with badges */}
-          <div className="flex items-center justify-between px-3 md:px-4 pt-2.5 md:pt-3 pb-0 relative z-10">
-            <div className="flex items-center gap-1">
+          <div className="flex items-center justify-between gap-1.5 px-3 md:px-4 pt-2.5 md:pt-3 pb-0 relative z-10">
+            <div className="flex items-center gap-1 min-w-0 flex-wrap">
+              {/* Brand badge: hidden on mobile to save space */}
               {listing.title.toLowerCase().includes("octagon") && (
-                <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60 bg-muted/60 px-1.5 py-0.5 rounded-md">
+                <span className="hidden md:inline-block text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60 bg-muted/60 px-1.5 py-0.5 rounded-md">
                   OCT
                 </span>
               )}
               {listing.title.toLowerCase().includes("formuler") && (
-                <span className="text-[9px] font-bold uppercase tracking-widest text-primary/70 bg-primary/10 px-1.5 py-0.5 rounded-md">
+                <span className="hidden md:inline-block text-[9px] font-bold uppercase tracking-widest text-primary/70 bg-primary/10 px-1.5 py-0.5 rounded-md">
                   FRM
                 </span>
               )}
@@ -68,11 +69,12 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
               {isLowStock && (
                 <span className="text-[10px] font-semibold uppercase tracking-wide bg-destructive/90 text-destructive-foreground px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full flex items-center gap-1 whitespace-nowrap">
                   <Flame className="h-2.5 w-2.5 md:h-3 md:w-3" />
-                  Nur&nbsp;{listing.stock}×
+                  <span className="md:hidden">{listing.stock}×</span>
+                  <span className="hidden md:inline">Nur&nbsp;{listing.stock}×</span>
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 shrink-0">
               {!isSold && <WishlistButton listingId={listing.id} variant="card" />}
               {!isSold && (
                 <span className="h-6 w-6 md:h-7 md:w-7 rounded-full bg-muted/50 flex items-center justify-center opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 transition-all duration-300">
