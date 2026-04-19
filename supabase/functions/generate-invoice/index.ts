@@ -65,14 +65,17 @@ serve(async (req) => {
     }
 
     // Auth: try to identify user (optional — guests can use session_id)
+    // Token can come from Authorization header OR `?token=` query param
+    // (window.open cannot set custom headers, so we accept both).
     const authHeader = req.headers.get("Authorization");
+    const tokenParam = url.searchParams.get("token");
     const anonClient = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_ANON_KEY")!,
     );
     let userId: string | null = null;
-    if (authHeader) {
-      const token = authHeader.replace("Bearer ", "");
+    const token = tokenParam || (authHeader ? authHeader.replace("Bearer ", "") : null);
+    if (token) {
       const { data } = await anonClient.auth.getUser(token);
       userId = data.user?.id ?? null;
     }
