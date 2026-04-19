@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { SEOHead } from "@/components/SEOHead";
 import {
@@ -6,8 +7,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Link } from "react-router-dom";
-import { MessageCircle, Mail } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Link, useSearchParams } from "react-router-dom";
+import { MessageCircle, Mail, BookOpen, HelpCircle, Clock, ArrowRight, Loader2 } from "lucide-react";
+import { usePublishedGuides } from "@/hooks/useGuides";
 
 const faqs: { category: string; items: { q: string; a: string }[] }[] = [
   {
@@ -94,7 +97,22 @@ const faqs: { category: string; items: { q: string; a: string }[] }[] = [
 ];
 
 export default function FAQPage() {
-  const jsonLd = {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialTab = searchParams.get("tab") === "ratgeber" ? "ratgeber" : "faq";
+  const [tab, setTab] = useState<"faq" | "ratgeber">(initialTab);
+  const { data: guides = [], isLoading: guidesLoading } = usePublishedGuides();
+
+  const handleTabChange = (value: string) => {
+    const next = value === "ratgeber" ? "ratgeber" : "faq";
+    setTab(next);
+    if (next === "ratgeber") {
+      setSearchParams({ tab: "ratgeber" }, { replace: true });
+    } else {
+      setSearchParams({}, { replace: true });
+    }
+  };
+
+  const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: faqs.flatMap((cat) =>
@@ -109,51 +127,133 @@ export default function FAQPage() {
   return (
     <Layout>
       <SEOHead
-        title="FAQ – Häufige Fragen | Barbato Electronics"
-        description="Antworten auf häufige Fragen zu Versand, Zahlung, Garantie, Rückgabe und unseren Streaming-Geräten."
-        canonical="https://webstudiocg.store/faq"
+        title={tab === "ratgeber" ? "Ratgeber & Anleitungen" : "FAQ – Häufige Fragen"}
+        description={
+          tab === "ratgeber"
+            ? "Anleitungen, Tipps und Vergleiche rund um Streaming-Hardware, IPTV-Receiver und Heimkino."
+            : "Antworten auf häufige Fragen zu Versand, Zahlung, Garantie, Rückgabe und unseren Streaming-Geräten."
+        }
+        canonical="/faq"
+        jsonLd={tab === "faq" ? faqJsonLd : undefined}
       />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <section className="container py-16 md:py-24">
         <div className="max-w-3xl mx-auto">
-          <div className="mb-12 text-center">
+          <div className="mb-10 text-center">
             <span className="text-xs font-semibold uppercase tracking-widest text-primary">
-              Hilfe & Support
+              Hilfe & Wissen
             </span>
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight mt-3 mb-4">
-              Häufige Fragen
+              {tab === "ratgeber" ? "Ratgeber & Anleitungen" : "Häufige Fragen"}
             </h1>
             <p className="text-muted-foreground max-w-xl mx-auto">
-              Alles was du über Versand, Zahlung, Garantie und unsere Geräte wissen musst.
+              {tab === "ratgeber"
+                ? "Alles was du über Einrichtung, Vergleiche und Best Practices wissen musst."
+                : "Alles was du über Versand, Zahlung, Garantie und unsere Geräte wissen musst."}
             </p>
           </div>
 
-          <div className="space-y-10">
-            {faqs.map((cat) => (
-              <div key={cat.category}>
-                <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
-                  {cat.category}
-                </h2>
-                <Accordion type="single" collapsible className="space-y-2">
-                  {cat.items.map((item, idx) => (
-                    <AccordionItem
-                      key={idx}
-                      value={`${cat.category}-${idx}`}
-                      className="border border-border/40 rounded-xl px-4 bg-card/40"
+          <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-10 h-12 bg-muted/40 p-1 rounded-xl">
+              <TabsTrigger value="faq" className="rounded-lg gap-2 text-sm font-medium data-[state=active]:bg-background">
+                <HelpCircle className="h-4 w-4" />
+                Häufige Fragen
+              </TabsTrigger>
+              <TabsTrigger value="ratgeber" className="rounded-lg gap-2 text-sm font-medium data-[state=active]:bg-background">
+                <BookOpen className="h-4 w-4" />
+                Ratgeber
+                {guides.length > 0 && (
+                  <span className="text-[10px] font-bold bg-primary/15 text-primary px-1.5 py-0.5 rounded-full ml-0.5">
+                    {guides.length}
+                  </span>
+                )}
+              </TabsTrigger>
+            </TabsList>
+
+            {/* FAQ TAB */}
+            <TabsContent value="faq" className="space-y-10 mt-0">
+              {faqs.map((cat) => (
+                <div key={cat.category}>
+                  <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
+                    {cat.category}
+                  </h2>
+                  <Accordion type="single" collapsible className="space-y-2">
+                    {cat.items.map((item, idx) => (
+                      <AccordionItem
+                        key={idx}
+                        value={`${cat.category}-${idx}`}
+                        className="border border-border/40 rounded-xl px-4 bg-card/40"
+                      >
+                        <AccordionTrigger className="text-left text-sm font-medium hover:no-underline py-4">
+                          {item.q}
+                        </AccordionTrigger>
+                        <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-4">
+                          {item.a}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </div>
+              ))}
+            </TabsContent>
+
+            {/* RATGEBER TAB */}
+            <TabsContent value="ratgeber" className="mt-0">
+              {guidesLoading ? (
+                <div className="flex items-center justify-center py-20 text-muted-foreground">
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                </div>
+              ) : guides.length === 0 ? (
+                <div className="rounded-2xl border border-dashed border-border/60 bg-card/30 p-12 text-center">
+                  <BookOpen className="h-10 w-10 mx-auto text-muted-foreground/40 mb-4" strokeWidth={1.5} />
+                  <p className="text-sm text-muted-foreground">
+                    Bald verfügbar – wir arbeiten an hilfreichen Ratgeber-Artikeln für dich.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {guides.map((guide) => (
+                    <Link
+                      key={guide.id}
+                      to={`/ratgeber/${guide.slug}`}
+                      className="group block rounded-2xl border border-border/40 bg-card/40 overflow-hidden hover:border-primary/40 hover:shadow-[0_0_30px_-12px_hsl(var(--primary)/0.25)] transition-all duration-300"
                     >
-                      <AccordionTrigger className="text-left text-sm font-medium hover:no-underline py-4">
-                        {item.q}
-                      </AccordionTrigger>
-                      <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-4">
-                        {item.a}
-                      </AccordionContent>
-                    </AccordionItem>
+                      {guide.cover_image_url && (
+                        <div className="aspect-[16/9] overflow-hidden bg-muted/40">
+                          <img
+                            src={guide.cover_image_url}
+                            alt={guide.title}
+                            loading="lazy"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        </div>
+                      )}
+                      <div className="p-5 space-y-3">
+                        <div className="flex items-center gap-3 text-[10px] font-semibold uppercase tracking-widest">
+                          <span className="text-primary">{guide.category}</span>
+                          <span className="text-muted-foreground/50">·</span>
+                          <span className="text-muted-foreground inline-flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            {guide.reading_time_minutes}&nbsp;min
+                          </span>
+                        </div>
+                        <h3 className="text-lg font-bold tracking-tight leading-snug group-hover:text-primary transition-colors">
+                          {guide.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                          {guide.excerpt}
+                        </p>
+                        <div className="inline-flex items-center gap-1.5 text-xs font-medium text-primary pt-1">
+                          Weiterlesen
+                          <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </div>
+                    </Link>
                   ))}
-                </Accordion>
-              </div>
-            ))}
-          </div>
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
 
           {/* Contact CTA */}
           <div className="mt-16 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/[0.06] to-transparent p-8 text-center">
