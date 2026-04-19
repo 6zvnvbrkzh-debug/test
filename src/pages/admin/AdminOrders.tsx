@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Loader2, Eye, Package, CreditCard, User, Calendar, Hash, Truck, Save, MapPin, Mail, Download } from "lucide-react";
 import { toast } from "sonner";
+import { InvoiceButton } from "@/components/InvoiceButton";
 
 const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive" }> = {
   PENDING: { label: "Ausstehend", variant: "outline" },
