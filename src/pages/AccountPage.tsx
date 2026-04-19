@@ -299,7 +299,19 @@ export default function AccountPage() {
                         </a>
                       </div>
                     )}
-                    {/* Bewertung abgeben (eigenes System) */}
+                    {/* Rechnung */}
+                    <div className="flex items-center justify-between gap-2 px-4 pb-3 border-t border-border/20 pt-2">
+                      <span className="text-xs text-muted-foreground">
+                        {order.invoice_number ? `Rechnung ${order.invoice_number}` : "Rechnung"}
+                      </span>
+                      <InvoiceButton
+                        orderId={order.id}
+                        invoiceNumber={order.invoice_number}
+                        size="sm"
+                        variant="outline"
+                        label="PDF öffnen"
+                      />
+                    </div>
                     {(order.status === "COMPLETED" || order.status === "SHIPPED") && (
                       <div className="flex flex-wrap items-center gap-3 px-4 pb-3 border-t border-border/20 pt-2">
                         {reviewedOrderIds.has(order.id) ? (
