@@ -18,6 +18,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { optimizeImage } from "@/lib/image-optimize";
 
 interface Props {
   images: string[];
@@ -142,17 +143,20 @@ export function ProductImageManager({ images, onChange, maxImages = 8 }: Props) 
           toast.error(`${file.name}: Nur Bilder erlaubt.`);
           continue;
         }
-        if (file.size > 5 * 1024 * 1024) {
-          toast.error(`${file.name}: Max. 5 MB pro Bild.`);
+        if (file.size > 15 * 1024 * 1024) {
+          toast.error(`${file.name}: Max. 15 MB pro Bild.`);
           continue;
         }
-        const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+
+        // Client-side: resize to max 1600px width + convert to WebP when beneficial.
+        const { blob, ext, mime } = await optimizeImage(file, { maxWidth: 1600, quality: 0.82 });
+
         const safeName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
         const path = `${user.id}/${safeName}`;
 
         const { error: upErr } = await supabase.storage
           .from(BUCKET)
-          .upload(path, file, { cacheControl: "3600", upsert: false });
+          .upload(path, blob, { cacheControl: "3600", upsert: false, contentType: mime });
         if (upErr) {
           toast.error(`${file.name}: ${upErr.message}`);
           continue;
@@ -254,7 +258,7 @@ export function ProductImageManager({ images, onChange, maxImages = 8 }: Props) 
         >
           <Upload className="h-6 w-6" />
           <span className="font-medium">Bilder hier ablegen oder klicken zum Auswählen</span>
-          <span className="text-xs">PNG, JPG, WEBP · max. 5&nbsp;MB pro Bild</span>
+          <span className="text-xs">PNG, JPG, WEBP · automatisch nach WebP optimiert (max. 1600&nbsp;px)</span>
         </button>
       ) : (
         <div
