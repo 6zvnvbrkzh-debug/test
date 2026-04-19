@@ -5,6 +5,9 @@ const BASE_URL = "https://b-electronics.shop";
 const staticPages = [
   { loc: "/", changefreq: "daily", priority: "1.0" },
   { loc: "/produkte", changefreq: "daily", priority: "0.9" },
+  { loc: "/faq", changefreq: "weekly", priority: "0.6" },
+  { loc: "/faq?tab=ratgeber", changefreq: "weekly", priority: "0.6" },
+  { loc: "/kontakt", changefreq: "monthly", priority: "0.4" },
   { loc: "/impressum", changefreq: "monthly", priority: "0.3" },
   { loc: "/datenschutz", changefreq: "monthly", priority: "0.3" },
   { loc: "/agb", changefreq: "monthly", priority: "0.3" },
@@ -21,6 +24,12 @@ Deno.serve(async () => {
     .from("listings")
     .select("id, updated_at")
     .eq("status", "ACTIVE")
+    .order("updated_at", { ascending: false });
+
+  const { data: guides } = await supabase
+    .from("guides")
+    .select("slug, updated_at")
+    .eq("status", "published")
     .order("updated_at", { ascending: false });
 
   const toW3CDate = (iso: string) => iso.split("T")[0];
@@ -43,6 +52,17 @@ Deno.serve(async () => {
       xml += `    <lastmod>${toW3CDate(listing.updated_at)}</lastmod>\n`;
       xml += `    <changefreq>weekly</changefreq>\n`;
       xml += `    <priority>0.8</priority>\n`;
+      xml += `  </url>\n`;
+    }
+  }
+
+  if (guides) {
+    for (const guide of guides) {
+      xml += `  <url>\n`;
+      xml += `    <loc>${BASE_URL}/ratgeber/${guide.slug}</loc>\n`;
+      xml += `    <lastmod>${toW3CDate(guide.updated_at)}</lastmod>\n`;
+      xml += `    <changefreq>monthly</changefreq>\n`;
+      xml += `    <priority>0.7</priority>\n`;
       xml += `  </url>\n`;
     }
   }
