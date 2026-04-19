@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader2, Eye, Package, CreditCard, User, Calendar, Hash, Truck, Save, MapPin, Mail } from "lucide-react";
+import { Loader2, Eye, Package, CreditCard, User, Calendar, Hash, Truck, Save, MapPin, Mail, Download } from "lucide-react";
 import { toast } from "sonner";
 
 const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive" }> = {
@@ -119,6 +119,71 @@ export default function AdminOrders() {
     return parts.join(", ");
   };
 
+  const handleExportCSV = () => {
+    if (filtered.length === 0) {
+      toast.error("Keine Bestellungen zum Exportieren");
+      return;
+    }
+
+    // CSV-Wert escapen: Anführungszeichen verdoppeln, in Quotes einschließen
+    const esc = (val: unknown): string => {
+      if (val === null || val === undefined) return "";
+      const str = String(val).replace(/"/g, '""');
+      return `"${str}"`;
+    };
+
+    const headers = [
+      "Bestellnummer",
+      "Datum",
+      "Status",
+      "Kundenname",
+      "E-Mail",
+      "Produkt",
+      "Betrag (EUR)",
+      "Sendungsnummer",
+      "Adresse",
+      "PLZ",
+      "Stadt",
+      "Land",
+      "Stripe Session ID",
+    ];
+
+    const rows = filtered.map((o) => [
+      o.id,
+      new Date(o.created_at).toLocaleString("de-DE"),
+      STATUS_MAP[o.status]?.label ?? o.status,
+      o.customer_name ?? "",
+      o.customer_email ?? "",
+      o.listings?.title ?? "",
+      Number(o.amount).toFixed(2).replace(".", ","),
+      o.tracking_number ?? "",
+      [o.shipping_address?.line1, o.shipping_address?.line2].filter(Boolean).join(" "),
+      o.shipping_address?.postal_code ?? "",
+      o.shipping_address?.city ?? "",
+      o.shipping_address?.country ?? "",
+      o.stripe_session_id ?? "",
+    ]);
+
+    // Semikolon-Trennzeichen für DE-Excel, BOM für UTF-8 Erkennung
+    const csv =
+      "\uFEFF" +
+      [headers, ...rows].map((row) => row.map(esc).join(";")).join("\r\n");
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const suffix = statusFilter === "all" ? "alle" : statusFilter.toLowerCase();
+    link.href = url;
+    link.download = `bestellungen_${suffix}_${dateStr}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast.success(`${filtered.length} Bestellungen exportiert`);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -131,18 +196,24 @@ export default function AdminOrders() {
             )}
           </p>
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Status filtern" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Alle Status</SelectItem>
-            <SelectItem value="PENDING">Ausstehend</SelectItem>
-            <SelectItem value="SHIPPED">Versendet</SelectItem>
-            <SelectItem value="COMPLETED">Abgeschlossen</SelectItem>
-            <SelectItem value="REFUNDED">Erstattet</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={handleExportCSV} className="gap-1.5">
+            <Download className="h-4 w-4" />
+            CSV-Export
+          </Button>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Status filtern" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Alle Status</SelectItem>
+              <SelectItem value="PENDING">Ausstehend</SelectItem>
+              <SelectItem value="SHIPPED">Versendet</SelectItem>
+              <SelectItem value="COMPLETED">Abgeschlossen</SelectItem>
+              <SelectItem value="REFUNDED">Erstattet</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Stats */}
