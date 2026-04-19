@@ -18,14 +18,6 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const items = [
-  { key: "home", to: "/", label: "Start", icon: Home },
-  { key: "shop", to: "/produkte", label: "Shop", icon: Store },
-  { key: "telegram", href: "https://t.me/bElectronicsshop", label: "Telegram", iconComponent: TelegramIcon },
-  { key: "whatsapp", href: "https://wa.me/4917622551230", label: "WhatsApp", iconComponent: WhatsAppIcon },
-  { key: "cart", label: "Warenkorb", icon: ShoppingCart },
-  { key: "account", label: "Konto", icon: User },
-];
 
 export function Header() {
   const location = useLocation();
