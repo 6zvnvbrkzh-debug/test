@@ -53,7 +53,6 @@ const App = () => (
             <ScrollToTop />
             <CartDrawer />
             <CookieBanner />
-            <WhatsAppBubble />
             <Suspense fallback={null}>
               <Routes>
                 <Route path="/" element={<Index />} />
