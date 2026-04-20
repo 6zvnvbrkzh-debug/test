@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -83,6 +83,21 @@ const HomePage = () => {
   const { data: listings = [], isLoading } = useActiveListings();
   const highlights = listings.slice(0, 8);
   const heroProduct = highlights[0];
+  const heroImageUrl = heroProduct?.images?.[0];
+
+  // Preload LCP hero image to eliminate resource load delay
+  useEffect(() => {
+    if (!heroImageUrl) return;
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = heroImageUrl;
+    link.fetchPriority = "high";
+    document.head.appendChild(link);
+    return () => {
+      document.head.removeChild(link);
+    };
+  }, [heroImageUrl]);
 
   const discountProducts = useMemo(
     () =>
@@ -213,6 +228,11 @@ const HomePage = () => {
                       <img
                         src={heroProduct.images[0] || "/placeholder.svg"}
                         alt={heroProduct.title}
+                        width={300}
+                        height={300}
+                        fetchPriority="high"
+                        decoding="async"
+                        loading="eager"
                         className="w-full max-w-[260px] md:max-w-[300px] mx-auto object-contain drop-shadow-2xl group-hover:scale-105 transition-transform duration-700"
                       />
                     </div>
