@@ -1,7 +1,20 @@
-/* Critical: only weight 400 (body text) is loaded synchronously to unblock LCP.
-   Other weights (500/600/700) are loaded asynchronously in main.tsx after hydration. */
-@import '@fontsource/space-grotesk/400.css';
-@import '@fontsource/jetbrains-mono/400.css';
+/* Critical fonts: only weight 400 is inlined here to unblock LCP.
+   Other weights (500/600/700) are loaded asynchronously in main.tsx after hydration
+   via direct @font-face declarations to avoid render-blocking CSS stubs. */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('@fontsource/space-grotesk/files/space-grotesk-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2') format('woff2');
+}
 
 @tailwind base;
 @tailwind components;
