@@ -176,8 +176,12 @@ export function Header() {
         >
           <Link to="/" className="flex items-center gap-3 group">
             <img
-              src="/lovable-uploads/46fa0535-bf1d-4bdc-8bc6-b0b7aa36c88a.png"
+              src="/lovable-uploads/barbato-logo.webp"
               alt="Barbato Electronics Logo"
+              width={56}
+              height={56}
+              fetchPriority="high"
+              decoding="async"
               className={`rounded-lg object-contain transition-all duration-500 ease-out group-hover:scale-105 ${scrolled ? "h-9 w-9" : "h-14 w-14"}`}
             />
             <span className={`font-bold tracking-wide text-primary-foreground transition-all duration-500 ${scrolled ? "text-base" : "text-lg"}`}>

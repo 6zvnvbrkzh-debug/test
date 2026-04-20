@@ -246,8 +246,12 @@ export function Footer() {
             className="inline-flex items-center gap-3 px-5 py-2.5 rounded-xl bg-primary/5 hover:bg-primary/10 border border-primary/10 hover:border-primary/20 transition-all group"
           >
             <img
-              src="/images/webstudio-cg-logo-red.png"
+              src="/images/webstudio-cg-logo-red.webp"
               alt="Webstudio CG Logo"
+              width={32}
+              height={32}
+              loading="lazy"
+              decoding="async"
               className="h-8 w-auto object-contain"
             />
             <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
