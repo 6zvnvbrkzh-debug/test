@@ -213,6 +213,11 @@ const HomePage = () => {
                       <img
                         src={heroProduct.images[0] || "/placeholder.svg"}
                         alt={heroProduct.title}
+                        width={300}
+                        height={300}
+                        fetchPriority="high"
+                        decoding="async"
+                        loading="eager"
                         className="w-full max-w-[260px] md:max-w-[300px] mx-auto object-contain drop-shadow-2xl group-hover:scale-105 transition-transform duration-700"
                       />
                     </div>
