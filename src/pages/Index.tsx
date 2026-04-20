@@ -10,6 +10,7 @@ import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/marketplace/ProductCard";
 import { useActiveListings } from "@/hooks/useActiveListings";
 import { SEOHead } from "@/components/SEOHead";
+import { getOptimizedImageUrl, getImageSrcSet } from "@/lib/supabase-image";
 
 const homepageJsonLd = {
   "@context": "https://schema.org",
@@ -226,7 +227,9 @@ const HomePage = () => {
 
                     <div className="p-8 md:p-12">
                       <img
-                        src={heroProduct.images[0] || "/placeholder.svg"}
+                        src={getOptimizedImageUrl(heroProduct.images[0], { width: 600, quality: 80 }) || "/placeholder.svg"}
+                        srcSet={getImageSrcSet(heroProduct.images[0], [400, 600, 800], { quality: 80 })}
+                        sizes="(min-width: 768px) 300px, 260px"
                         alt={heroProduct.title}
                         width={300}
                         height={300}
@@ -343,8 +346,14 @@ const HomePage = () => {
                   <div className="flex items-center justify-center p-4">
                     {bestDeal.images[0] && (
                       <img
-                        src={bestDeal.images[0]}
+                        src={getOptimizedImageUrl(bestDeal.images[0], { width: 480, quality: 78 })}
+                        srcSet={getImageSrcSet(bestDeal.images[0], [400, 480, 600], { quality: 78 })}
+                        sizes="(min-width: 768px) 240px, 200px"
                         alt={bestDeal.title}
+                        width={240}
+                        height={240}
+                        loading="lazy"
+                        decoding="async"
                         className="max-w-[200px] md:max-w-[240px] object-contain drop-shadow-xl group-hover:scale-105 transition-transform duration-700"
                       />
                     )}

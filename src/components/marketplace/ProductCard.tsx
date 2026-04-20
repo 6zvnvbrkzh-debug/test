@@ -5,6 +5,7 @@ import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import type { Listing } from "@/lib/mock-data";
 import { WishlistButton } from "@/components/marketplace/WishlistButton";
+import { getOptimizedImageUrl, getImageSrcSet } from "@/lib/supabase-image";
 
 interface ProductCardProps {
   listing: Listing;
@@ -95,14 +96,19 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
           <div className="aspect-[4/3] relative px-4 md:px-6 py-3 md:py-4">
             {listing.images.length > 0 ? (
               <img
-                src={listing.images[0]}
+                src={getOptimizedImageUrl(listing.images[0], { width: 400, quality: 75 })}
+                srcSet={getImageSrcSet(listing.images[0], [300, 500, 700], { quality: 75 })}
+                sizes="(min-width: 1024px) 245px, (min-width: 768px) 30vw, 45vw"
                 alt={listing.title}
+                width={400}
+                height={300}
                 className={`w-full h-full object-contain transition-all duration-700 ease-out ${
                   isSold 
                     ? "opacity-30 grayscale blur-[1px]" 
                     : "group-hover:scale-105 group-hover:-rotate-1"
                 }`}
                 loading="lazy"
+                decoding="async"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-muted-foreground/15">
