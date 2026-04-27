@@ -303,8 +303,8 @@ const HomePage = () => {
                     {/* Gradient bg */}
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5 pointer-events-none" />
 
-                    {/* Scan line effect over image */}
-                    <div className="relative scan-line">
+                    {/* Image container */}
+                    <div className="relative">
                       <div className="p-8 md:p-14">
                         <img
                           src={getOptimizedImageUrl(heroProduct.images[0], { width: 600, quality: 80 }) || "/placeholder.svg"}
