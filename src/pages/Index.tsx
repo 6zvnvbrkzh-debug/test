@@ -132,19 +132,21 @@ const HomePage = () => {
   const heroProduct = highlights[0];
   const heroImageUrl = heroProduct?.images?.[0];
 
-  // Preload LCP hero image to eliminate resource load delay
-  useEffect(() => {
-    if (!heroImageUrl) return;
-    const link = document.createElement("link");
-    link.rel = "preload";
-    link.as = "image";
-    link.href = heroImageUrl;
-    link.fetchPriority = "high";
-    document.head.appendChild(link);
-    return () => {
-      document.head.removeChild(link);
-    };
-  }, [heroImageUrl]);
+  // Preload LCP hero image as early as possible (during render, not after effect commit)
+  // to eliminate the ~4s resource load delay flagged by Lighthouse.
+  if (typeof document !== "undefined" && heroImageUrl) {
+    const existing = document.head.querySelector(
+      `link[rel="preload"][as="image"][href="${heroImageUrl}"]`
+    );
+    if (!existing) {
+      const link = document.createElement("link");
+      link.rel = "preload";
+      link.as = "image";
+      link.href = heroImageUrl;
+      link.fetchPriority = "high";
+      document.head.appendChild(link);
+    }
+  }
 
   const discountProducts = useMemo(
     () =>
