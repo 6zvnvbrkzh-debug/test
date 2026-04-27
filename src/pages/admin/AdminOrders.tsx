@@ -190,7 +190,7 @@ export default function AdminOrders() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Bestellungen</h1>
+          <h1 className="text-xl sm:text-2xl font-bold">Bestellungen</h1>
           <p className="text-sm text-muted-foreground mt-1">
             {orders.length} Bestellungen insgesamt
             {pendingCount > 0 && (
@@ -198,13 +198,14 @@ export default function AdminOrders() {
             )}
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={handleExportCSV} className="gap-1.5">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Button variant="outline" size="sm" onClick={handleExportCSV} className="gap-1.5 shrink-0">
             <Download className="h-4 w-4" />
-            CSV-Export
+            <span className="hidden xs:inline sm:inline">CSV-Export</span>
+            <span className="xs:hidden sm:hidden">CSV</span>
           </Button>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="flex-1 sm:w-[180px] sm:flex-none">
               <SelectValue placeholder="Status filtern" />
             </SelectTrigger>
             <SelectContent>
