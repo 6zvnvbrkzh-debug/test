@@ -16,7 +16,23 @@ export function Header() {
   const [chatOpen, setChatOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    // rAF-throttled scroll handler: avoids forced reflows by batching reads into
+    // the next animation frame and only triggering a re-render when the boolean
+    // state actually flips. Cuts main-thread style/layout work significantly.
+    let ticking = false;
+    let lastScrolled = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const next = window.scrollY > 40;
+        if (next !== lastScrolled) {
+          lastScrolled = next;
+          setScrolled(next);
+        }
+        ticking = false;
+      });
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
