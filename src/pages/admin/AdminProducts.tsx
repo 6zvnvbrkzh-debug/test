@@ -221,11 +221,12 @@ export default function AdminProducts() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Produkte</h1>
-        <Button onClick={openCreate}>
-          <Plus className="h-4 w-4 mr-2" />
-          Neues Produkt
+      <div className="flex items-center justify-between gap-2">
+        <h1 className="text-xl sm:text-2xl font-bold">Produkte</h1>
+        <Button onClick={openCreate} size="sm" className="sm:size-default">
+          <Plus className="h-4 w-4 sm:mr-2" />
+          <span className="hidden sm:inline">Neues Produkt</span>
+          <span className="sm:hidden ml-1">Neu</span>
         </Button>
       </div>
 
