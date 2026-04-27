@@ -60,20 +60,20 @@ export default function AdminLayout() {
           </SidebarContent>
         </Sidebar>
 
-        <div className="flex-1 flex flex-col">
-          <header className="h-14 border-b flex items-center px-4 gap-4 bg-background">
-            <SidebarTrigger />
-            <span className="text-sm font-semibold text-muted-foreground">Admin-Bereich</span>
+        <div className="flex-1 flex flex-col min-w-0">
+          <header className="sticky top-0 z-30 h-14 border-b flex items-center px-3 sm:px-4 gap-2 sm:gap-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+            <SidebarTrigger className="shrink-0" />
+            <span className="text-sm font-semibold text-muted-foreground truncate">Admin-Bereich</span>
             <div className="ml-auto">
               <Button variant="ghost" size="sm" asChild>
-                <Link to="/">
-                  <ArrowLeft className="h-4 w-4 mr-1" />
-                  Zum Shop
+                <Link to="/" aria-label="Zum Shop">
+                  <ArrowLeft className="h-4 w-4 sm:mr-1" />
+                  <span className="hidden sm:inline">Zum Shop</span>
                 </Link>
               </Button>
             </div>
           </header>
-          <main className="flex-1 p-6">
+          <main className="flex-1 p-3 sm:p-4 md:p-6 min-w-0">
             <Outlet />
           </main>
         </div>

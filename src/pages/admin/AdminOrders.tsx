@@ -190,7 +190,7 @@ export default function AdminOrders() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Bestellungen</h1>
+          <h1 className="text-xl sm:text-2xl font-bold">Bestellungen</h1>
           <p className="text-sm text-muted-foreground mt-1">
             {orders.length} Bestellungen insgesamt
             {pendingCount > 0 && (
@@ -198,13 +198,14 @@ export default function AdminOrders() {
             )}
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={handleExportCSV} className="gap-1.5">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Button variant="outline" size="sm" onClick={handleExportCSV} className="gap-1.5 shrink-0">
             <Download className="h-4 w-4" />
-            CSV-Export
+            <span className="hidden xs:inline sm:inline">CSV-Export</span>
+            <span className="xs:hidden sm:hidden">CSV</span>
           </Button>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="flex-1 sm:w-[180px] sm:flex-none">
               <SelectValue placeholder="Status filtern" />
             </SelectTrigger>
             <SelectContent>
@@ -242,117 +243,192 @@ export default function AdminOrders() {
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
       ) : (
-        <div className="border rounded-lg overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Bestellnr.</TableHead>
-                <TableHead>Kunde</TableHead>
-                <TableHead>Produkt</TableHead>
-                <TableHead className="text-right">Betrag</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Sendungsnr.</TableHead>
-                <TableHead>Datum</TableHead>
-                <TableHead className="w-[50px]" />
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.map((order) => {
-                const status = STATUS_MAP[order.status] || { label: order.status, variant: "outline" as const };
-                return (
-                  <TableRow key={order.id} className="group">
-                    <TableCell className="font-mono-data text-xs">
-                      #{order.id.slice(0, 8)}
-                    </TableCell>
-                    <TableCell>
-                      <div className="min-w-[140px]">
-                        <p className="text-sm font-medium truncate">
-                          {order.customer_name || "–"}
+        <>
+          {/* Mobile: Card list */}
+          <div className="md:hidden space-y-3">
+            {filtered.map((order) => {
+              const status = STATUS_MAP[order.status] || { label: order.status, variant: "outline" as const };
+              return (
+                <button
+                  key={order.id}
+                  onClick={() => handleOpenDetail(order)}
+                  className="w-full text-left border rounded-lg p-3 bg-card hover:bg-muted/30 transition-colors"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-mono-data text-xs text-muted-foreground">
+                          #{order.id.slice(0, 8)}
+                        </span>
+                        <Badge variant={status.variant} className="text-[10px] h-4 px-1.5">
+                          {status.label}
+                        </Badge>
+                      </div>
+                      <p className="text-sm font-medium truncate mt-1">
+                        {order.customer_name || "–"}
+                      </p>
+                      {order.customer_email && (
+                        <p className="text-xs text-muted-foreground truncate">
+                          {order.customer_email}
                         </p>
-                        {order.customer_email && (
-                          <p className="text-xs text-muted-foreground truncate">
-                            {order.customer_email}
-                          </p>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        {order.listings?.images?.[0] && (
-                          <img
-                            src={order.listings.images[0]}
-                            alt=""
-                            className="w-8 h-8 rounded object-contain bg-muted"
-                          />
-                        )}
-                        <span className="text-sm line-clamp-1 max-w-[200px]">
-                          {order.listings?.title || "Gelöschtes Produkt"}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right font-semibold font-mono-data">
-                      {Number(order.amount).toFixed(2).replace(".", ",")} €
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={status.variant}>{status.label}</Badge>
-                    </TableCell>
-                    <TableCell className="text-xs text-muted-foreground">
-                      {order.tracking_number ? (
-                        <span className="flex items-center gap-1 text-primary font-medium">
-                          <Truck className="h-3.5 w-3.5" />
-                          {order.tracking_number}
-                        </span>
-                      ) : (
-                        <span className="text-muted-foreground">–</span>
                       )}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground text-sm whitespace-nowrap">
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="font-bold font-mono-data text-base">
+                        {Number(order.amount).toFixed(2).replace(".", ",")} €
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 mt-3 pt-3 border-t">
+                    {order.listings?.images?.[0] && (
+                      <img
+                        src={order.listings.images[0]}
+                        alt=""
+                        className="w-8 h-8 rounded object-contain bg-muted shrink-0"
+                      />
+                    )}
+                    <span className="text-xs line-clamp-1 flex-1 min-w-0">
+                      {order.listings?.title || "Gelöschtes Produkt"}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 mt-2 text-[11px] text-muted-foreground">
+                    <span className="whitespace-nowrap">
                       {new Date(order.created_at).toLocaleDateString("de-DE", {
                         day: "2-digit",
                         month: "2-digit",
                         year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
                       })}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1 justify-end">
-                        <InvoiceButton
-                          orderId={order.id}
-                          invoiceNumber={order.invoice_number}
-                          size="sm"
-                          variant="ghost"
-                          label=""
-                          className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                        />
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={() => handleOpenDetail(order)}
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                      </div>
+                    </span>
+                    {order.tracking_number ? (
+                      <span className="flex items-center gap-1 text-primary font-medium truncate">
+                        <Truck className="h-3 w-3 shrink-0" />
+                        <span className="truncate">{order.tracking_number}</span>
+                      </span>
+                    ) : null}
+                  </div>
+                </button>
+              );
+            })}
+            {filtered.length === 0 && (
+              <div className="text-center py-12 text-muted-foreground border rounded-lg">
+                Keine Bestellungen gefunden
+              </div>
+            )}
+          </div>
+
+          {/* Desktop: Table */}
+          <div className="hidden md:block border rounded-lg overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Bestellnr.</TableHead>
+                  <TableHead>Kunde</TableHead>
+                  <TableHead>Produkt</TableHead>
+                  <TableHead className="text-right">Betrag</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Sendungsnr.</TableHead>
+                  <TableHead>Datum</TableHead>
+                  <TableHead className="w-[50px]" />
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filtered.map((order) => {
+                  const status = STATUS_MAP[order.status] || { label: order.status, variant: "outline" as const };
+                  return (
+                    <TableRow key={order.id} className="group">
+                      <TableCell className="font-mono-data text-xs">
+                        #{order.id.slice(0, 8)}
+                      </TableCell>
+                      <TableCell>
+                        <div className="min-w-[140px]">
+                          <p className="text-sm font-medium truncate">
+                            {order.customer_name || "–"}
+                          </p>
+                          {order.customer_email && (
+                            <p className="text-xs text-muted-foreground truncate">
+                              {order.customer_email}
+                            </p>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          {order.listings?.images?.[0] && (
+                            <img
+                              src={order.listings.images[0]}
+                              alt=""
+                              className="w-8 h-8 rounded object-contain bg-muted"
+                            />
+                          )}
+                          <span className="text-sm line-clamp-1 max-w-[200px]">
+                            {order.listings?.title || "Gelöschtes Produkt"}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right font-semibold font-mono-data">
+                        {Number(order.amount).toFixed(2).replace(".", ",")} €
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={status.variant}>{status.label}</Badge>
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground">
+                        {order.tracking_number ? (
+                          <span className="flex items-center gap-1 text-primary font-medium">
+                            <Truck className="h-3.5 w-3.5" />
+                            {order.tracking_number}
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground">–</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground text-sm whitespace-nowrap">
+                        {new Date(order.created_at).toLocaleDateString("de-DE", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1 justify-end">
+                          <InvoiceButton
+                            orderId={order.id}
+                            invoiceNumber={order.invoice_number}
+                            size="sm"
+                            variant="ghost"
+                            label=""
+                            className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                          />
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => handleOpenDetail(order)}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+                {filtered.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
+                      Keine Bestellungen gefunden
                     </TableCell>
                   </TableRow>
-                );
-              })}
-              {filtered.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
-                    Keine Bestellungen gefunden
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </>
       )}
 
       {/* Detail Dialog */}
       <Dialog open={!!selectedOrder} onOpenChange={(open) => !open && setSelectedOrder(null)}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Hash className="h-4 w-4" />

@@ -221,11 +221,12 @@ export default function AdminProducts() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Produkte</h1>
-        <Button onClick={openCreate}>
-          <Plus className="h-4 w-4 mr-2" />
-          Neues Produkt
+      <div className="flex items-center justify-between gap-2">
+        <h1 className="text-xl sm:text-2xl font-bold">Produkte</h1>
+        <Button onClick={openCreate} size="sm" className="sm:size-default">
+          <Plus className="h-4 w-4 sm:mr-2" />
+          <span className="hidden sm:inline">Neues Produkt</span>
+          <span className="sm:hidden ml-1">Neu</span>
         </Button>
       </div>
 
@@ -234,121 +235,221 @@ export default function AdminProducts() {
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
       ) : (
-        <div className="border rounded-lg overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Bild</TableHead>
-                <TableHead>Titel</TableHead>
-                <TableHead>Preis</TableHead>
-                <TableHead>UVP</TableHead>
-                <TableHead>Rabatt</TableHead>
-                <TableHead>Bestand</TableHead>
-                <TableHead>Zustand</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Kategorie</TableHead>
-                <TableHead className="text-right">Aktionen</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {listings?.map((listing: any) => (
-                <TableRow key={listing.id}>
-                  <TableCell>
-                    {listing.images?.[0] ? (
-                      <img
-                        src={listing.images[0]}
-                        alt={listing.title}
-                        className="w-12 h-12 object-contain rounded border"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 bg-muted rounded border" />
-                    )}
-                  </TableCell>
-                  <TableCell className="font-medium max-w-[200px] truncate">
-                    {listing.title}
-                  </TableCell>
-                  <TableCell>{Number(listing.price).toFixed(2).replace(".", ",")} €</TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {listing.original_price
-                      ? `${Number(listing.original_price).toFixed(2).replace(".", ",")} €`
-                      : "–"}
-                  </TableCell>
-                  <TableCell>
-                    {hasDiscount(listing) ? (
-                      <Badge variant="destructive" className="text-xs">
-                        -{discountPercent(listing)}%
-                      </Badge>
-                    ) : (
-                      "–"
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1">
-                      <div className="flex flex-col">
-                        <button
-                          onClick={() => stockMutation.mutate({ id: listing.id, delta: 1 })}
-                          className="p-0.5 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-                          title="Bestand erhöhen"
-                        >
-                          <ChevronUp className="h-3.5 w-3.5" />
-                        </button>
-                        <button
-                          onClick={() => stockMutation.mutate({ id: listing.id, delta: -1 })}
-                          disabled={(listing.stock ?? 0) === 0}
-                          className="p-0.5 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
-                          title="Bestand verringern"
-                        >
-                          <ChevronDown className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
-                      <span className={`font-mono text-sm ${(listing.stock ?? 0) === 0 ? 'text-destructive font-semibold' : (listing.stock ?? 0) <= 3 ? 'text-orange-500' : 'text-foreground'}`}>
-                        {listing.stock ?? 0}
+        <>
+          {/* Mobile: Card list */}
+          <div className="md:hidden space-y-3">
+            {listings?.map((listing: any) => (
+              <div key={listing.id} className="border rounded-lg p-3 bg-card">
+                <div className="flex gap-3">
+                  {listing.images?.[0] ? (
+                    <img
+                      src={listing.images[0]}
+                      alt={listing.title}
+                      className="w-16 h-16 object-contain rounded border bg-muted shrink-0"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 bg-muted rounded border shrink-0" />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm line-clamp-2">{listing.title}</p>
+                    <div className="flex items-baseline gap-2 mt-1">
+                      <span className="text-base font-bold">
+                        {Number(listing.price).toFixed(2).replace(".", ",")} €
                       </span>
+                      {listing.original_price && (
+                        <span className="text-xs text-muted-foreground line-through">
+                          {Number(listing.original_price).toFixed(2).replace(".", ",")} €
+                        </span>
+                      )}
+                      {hasDiscount(listing) && (
+                        <Badge variant="destructive" className="text-[10px] h-4 px-1.5">
+                          -{discountPercent(listing)}%
+                        </Badge>
+                      )}
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline">
-                      {CONDITIONS.find((c) => c.value === listing.condition)?.label || listing.condition}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={statusColor(listing.status)}>
-                      {STATUSES.find((s) => s.value === listing.status)?.label || listing.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{listing.categories?.name || "–"}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
-                      <Button size="icon" variant="ghost" title="Seriennummern" onClick={() => setSerialDialog({ id: listing.id, title: listing.title })}>
-                        <Hash className="h-4 w-4" />
-                      </Button>
-                      <Button size="icon" variant="ghost" onClick={() => openEdit(listing)}>
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="text-destructive"
-                        onClick={() => {
-                          if (confirm("Produkt wirklich löschen?")) deleteMutation.mutate(listing.id);
-                        }}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                    <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                      <Badge variant={statusColor(listing.status)} className="text-[10px] h-4 px-1.5">
+                        {STATUSES.find((s) => s.value === listing.status)?.label || listing.status}
+                      </Badge>
+                      <Badge variant="outline" className="text-[10px] h-4 px-1.5">
+                        {CONDITIONS.find((c) => c.value === listing.condition)?.label || listing.condition}
+                      </Badge>
+                      {listing.categories?.name && (
+                        <span className="text-[10px] text-muted-foreground">
+                          {listing.categories.name}
+                        </span>
+                      )}
                     </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {listings?.length === 0 && (
+                  </div>
+                </div>
+                <div className="flex items-center justify-between mt-3 pt-3 border-t">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground">Bestand:</span>
+                    <button
+                      onClick={() => stockMutation.mutate({ id: listing.id, delta: -1 })}
+                      disabled={(listing.stock ?? 0) === 0}
+                      className="h-7 w-7 rounded border flex items-center justify-center hover:bg-muted disabled:opacity-30"
+                      aria-label="Bestand verringern"
+                    >
+                      <ChevronDown className="h-3.5 w-3.5" />
+                    </button>
+                    <span className={`font-mono text-sm min-w-[1.5rem] text-center ${(listing.stock ?? 0) === 0 ? 'text-destructive font-semibold' : (listing.stock ?? 0) <= 3 ? 'text-orange-500 font-semibold' : 'text-foreground'}`}>
+                      {listing.stock ?? 0}
+                    </span>
+                    <button
+                      onClick={() => stockMutation.mutate({ id: listing.id, delta: 1 })}
+                      className="h-7 w-7 rounded border flex items-center justify-center hover:bg-muted"
+                      aria-label="Bestand erhöhen"
+                    >
+                      <ChevronUp className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Button size="icon" variant="ghost" className="h-8 w-8" title="Seriennummern" onClick={() => setSerialDialog({ id: listing.id, title: listing.title })}>
+                      <Hash className="h-4 w-4" />
+                    </Button>
+                    <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => openEdit(listing)} aria-label="Bearbeiten">
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-8 w-8 text-destructive"
+                      aria-label="Löschen"
+                      onClick={() => {
+                        if (confirm("Produkt wirklich löschen?")) deleteMutation.mutate(listing.id);
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+            {listings?.length === 0 && (
+              <div className="text-center py-12 text-muted-foreground border rounded-lg">
+                Keine Produkte vorhanden
+              </div>
+            )}
+          </div>
+
+          {/* Desktop: Table */}
+          <div className="hidden md:block border rounded-lg overflow-x-auto">
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
-                    Keine Produkte vorhanden
-                  </TableCell>
+                  <TableHead>Bild</TableHead>
+                  <TableHead>Titel</TableHead>
+                  <TableHead>Preis</TableHead>
+                  <TableHead>UVP</TableHead>
+                  <TableHead>Rabatt</TableHead>
+                  <TableHead>Bestand</TableHead>
+                  <TableHead>Zustand</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Kategorie</TableHead>
+                  <TableHead className="text-right">Aktionen</TableHead>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {listings?.map((listing: any) => (
+                  <TableRow key={listing.id}>
+                    <TableCell>
+                      {listing.images?.[0] ? (
+                        <img
+                          src={listing.images[0]}
+                          alt={listing.title}
+                          className="w-12 h-12 object-contain rounded border"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 bg-muted rounded border" />
+                      )}
+                    </TableCell>
+                    <TableCell className="font-medium max-w-[200px] truncate">
+                      {listing.title}
+                    </TableCell>
+                    <TableCell>{Number(listing.price).toFixed(2).replace(".", ",")} €</TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {listing.original_price
+                        ? `${Number(listing.original_price).toFixed(2).replace(".", ",")} €`
+                        : "–"}
+                    </TableCell>
+                    <TableCell>
+                      {hasDiscount(listing) ? (
+                        <Badge variant="destructive" className="text-xs">
+                          -{discountPercent(listing)}%
+                        </Badge>
+                      ) : (
+                        "–"
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1">
+                        <div className="flex flex-col">
+                          <button
+                            onClick={() => stockMutation.mutate({ id: listing.id, delta: 1 })}
+                            className="p-0.5 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                            title="Bestand erhöhen"
+                          >
+                            <ChevronUp className="h-3.5 w-3.5" />
+                          </button>
+                          <button
+                            onClick={() => stockMutation.mutate({ id: listing.id, delta: -1 })}
+                            disabled={(listing.stock ?? 0) === 0}
+                            className="p-0.5 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+                            title="Bestand verringern"
+                          >
+                            <ChevronDown className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                        <span className={`font-mono text-sm ${(listing.stock ?? 0) === 0 ? 'text-destructive font-semibold' : (listing.stock ?? 0) <= 3 ? 'text-orange-500' : 'text-foreground'}`}>
+                          {listing.stock ?? 0}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline">
+                        {CONDITIONS.find((c) => c.value === listing.condition)?.label || listing.condition}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={statusColor(listing.status)}>
+                        {STATUSES.find((s) => s.value === listing.status)?.label || listing.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{listing.categories?.name || "–"}</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-1">
+                        <Button size="icon" variant="ghost" title="Seriennummern" onClick={() => setSerialDialog({ id: listing.id, title: listing.title })}>
+                          <Hash className="h-4 w-4" />
+                        </Button>
+                        <Button size="icon" variant="ghost" onClick={() => openEdit(listing)}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="text-destructive"
+                          onClick={() => {
+                            if (confirm("Produkt wirklich löschen?")) deleteMutation.mutate(listing.id);
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {listings?.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
+                      Keine Produkte vorhanden
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </>
       )}
 
       {/* Create/Edit Dialog */}
