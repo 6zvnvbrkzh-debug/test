@@ -7,10 +7,12 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "@/contexts/CartContext";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { CartDrawer } from "@/components/cart/CartDrawer";
-import { CookieBanner } from "@/components/CookieBanner";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import Index from "./pages/Index";
+
+// Deferred non-critical UI: not part of LCP, idle-loaded by Suspense boundary
+const CartDrawer = lazy(() => import("@/components/cart/CartDrawer").then((m) => ({ default: m.CartDrawer })));
+const CookieBanner = lazy(() => import("@/components/CookieBanner").then((m) => ({ default: m.CookieBanner })));
 
 // Lazy-loaded routes (off the critical path → reduces initial JS bundle)
 const ShopPage = lazy(() => import("./pages/ShopPage"));
@@ -51,8 +53,10 @@ const App = () => (
         <AuthProvider>
           <CartProvider>
             <ScrollToTop />
-            <CartDrawer />
-            <CookieBanner />
+            <Suspense fallback={null}>
+              <CartDrawer />
+              <CookieBanner />
+            </Suspense>
             <Suspense fallback={null}>
               <Routes>
                 <Route path="/" element={<Index />} />

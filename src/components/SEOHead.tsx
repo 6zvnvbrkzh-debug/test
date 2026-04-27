@@ -21,7 +21,7 @@ interface SEOHeadProps {
   product?: ProductMeta;
 }
 
-const BASE_URL = "https://b-electronics.shop";
+export const BASE_URL = "https://b-electronics.shop";
 const DEFAULT_OG_IMAGE = "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e89a4a51-2d74-4f68-8184-64bc47152114/id-preview-0ac99a76--9b92000a-9016-4ffd-953d-1b740cd041f0.lovable.app-1774352734641.png";
 
 export function SEOHead({

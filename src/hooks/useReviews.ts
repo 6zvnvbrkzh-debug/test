@@ -64,6 +64,27 @@ export function useListingReviews(listingId: string | undefined) {
 }
 
 /**
+ * Globale Shop-Statistiken: Gesamt-Reviews und Durchschnittsbewertung.
+ * Wird auf der Homepage für die Social-Proof-Anzeige verwendet.
+ */
+export function useShopStats() {
+  return useQuery({
+    queryKey: ["shop-stats"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("reviews")
+        .select("rating");
+      if (error) throw error;
+      const reviews = data ?? [];
+      if (reviews.length === 0) return { avg: 4.9, count: 0 };
+      const avg = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+      return { avg: Math.round(avg * 10) / 10, count: reviews.length };
+    },
+    staleTime: 5 * 60_000,
+  });
+}
+
+/**
  * Aggregiert Bewertungen pro Listing (Durchschnitt + Anzahl) für eine Liste von Listings.
  * Wird auf der Shop-Übersicht eingesetzt.
  */

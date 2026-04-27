@@ -13,6 +13,11 @@
     <link rel="preconnect" href="https://ggjxyohosugjjbcdrxvd.supabase.co" crossorigin />
     <link rel="dns-prefetch" href="https://ggjxyohosugjjbcdrxvd.supabase.co" />
 
+    <!-- DNS-prefetch (no full preconnect to keep handshake budget small) for assets users hit on intent -->
+    <link rel="dns-prefetch" href="https://js.stripe.com" />
+    <link rel="dns-prefetch" href="https://t.me" />
+    <link rel="dns-prefetch" href="https://wa.me" />
+
     <!-- Preload the homepage listings query in parallel with JS download (parallelizes the longest critical chain HTML -> JS -> API) -->
     <link
       rel="preload"

@@ -146,4 +146,153 @@
   .press-scale:active {
     transform: scale(0.96);
   }
+
+  /* ── Premium grid background (Vercel/Linear style) ── */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, hsl(var(--border) / 0.4) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border) / 0.4) 1px, transparent 1px);
+    background-size: 56px 56px;
+    background-position: -1px -1px;
+  }
+
+  .bg-grid-fade {
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
+  }
+
+  /* ── Subtle noise texture for depth ── */
+  .bg-noise::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+
+  /* ── Signal pulse (live indicator dot) ── */
+  .signal-pulse {
+    position: relative;
+  }
+  .signal-pulse::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 9999px;
+    background: hsl(var(--primary) / 0.5);
+    animation: signal-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  @keyframes signal-ping {
+    0% { transform: scale(0.8); opacity: 0.8; }
+    80%, 100% { transform: scale(2); opacity: 0; }
+  }
+
+  /* ── Marquee (infinite horizontal scroll) ── */
+  .marquee {
+    display: flex;
+    gap: 2.5rem;
+    animation: marquee 38s linear infinite;
+    width: max-content;
+  }
+  .marquee-pause:hover .marquee {
+    animation-play-state: paused;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ── Display typography (oversized, kinetic) ── */
+  .text-display {
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 0.92;
+  }
+
+  .text-stroke {
+    -webkit-text-stroke: 1px hsl(var(--foreground));
+    color: transparent;
+  }
+  @media (min-width: 768px) {
+    .text-stroke {
+      -webkit-text-stroke: 1.5px hsl(var(--foreground));
+    }
+  }
+
+  /* ── Aurora glow (animated gradient orbs) ── */
+  @keyframes aurora-drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(40px, -20px) scale(1.1); }
+  }
+  .aurora-glow {
+    animation: aurora-drift 14s ease-in-out infinite;
+  }
+
+  /* ── Scan line for hero product ── */
+  @keyframes scan {
+    0% { transform: translateY(-100%); opacity: 0; }
+    50% { opacity: 0.6; }
+    100% { transform: translateY(100%); opacity: 0; }
+  }
+  .scan-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, transparent 0%, hsl(var(--primary) / 0.4) 50%, transparent 100%);
+    height: 30%;
+    animation: scan 4s ease-in-out infinite;
+  }
+
+  /* ── Counter slot machine reveal ── */
+  @keyframes count-up {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .count-up {
+    animation: count-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+
+  /* ── Bento card hover reveal ── */
+  .bento-card {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .bento-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), hsl(var(--primary) / 0.18), transparent 50%);
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+  }
+  .bento-card:hover::after {
+    opacity: 1;
+  }
+}
+
+/* ── Honor user preference: kill expensive continuous animations on reduced-motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .marquee {
+    animation: none !important;
+    transform: none !important;
+  }
+  .aurora-glow,
+  .scan-line::after,
+  .signal-pulse::before {
+    animation: none !important;
+  }
 }

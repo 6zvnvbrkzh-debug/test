@@ -133,7 +133,7 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
 
           {/* Info section */}
           <div className="p-3 md:p-4 space-y-1.5 md:space-y-2.5 mt-auto">
-            <h3 className="text-xs md:text-[13px] font-medium leading-snug line-clamp-2 text-foreground/90 group-hover:text-foreground transition-colors duration-300">
+            <h3 className="text-sm md:text-[13px] font-medium leading-snug line-clamp-2 text-foreground/90 group-hover:text-foreground transition-colors duration-300">
               {listing.title}
             </h3>
 

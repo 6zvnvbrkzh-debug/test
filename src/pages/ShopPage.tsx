@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
-import { SEOHead } from "@/components/SEOHead";
+import { SEOHead, BASE_URL } from "@/components/SEOHead";
 import { ProductCard } from "@/components/marketplace/ProductCard";
 import { useActiveListings } from "@/hooks/useActiveListings";
 import { useListingsRatings } from "@/hooks/useReviews";
@@ -14,7 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Truck, ShieldCheck, RotateCcw, Flame, SlidersHorizontal } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
+import { Loader2, Truck, ShieldCheck, RotateCcw, Flame, SlidersHorizontal, Search, X } from "lucide-react";
 
 const categoryOptions = [
   { value: "all", label: "Alle Produkte", emoji: "🔥" },
@@ -25,7 +27,7 @@ const categoryOptions = [
 ];
 
 const sortOptions = [
-  { value: "popular", label: "Beliebteste" },
+  { value: "popular", label: "Neueste zuerst" },
   { value: "name-asc", label: "Name A–Z" },
   { value: "name-desc", label: "Name Z–A" },
   { value: "price-asc", label: "Niedrigster Preis" },
@@ -43,14 +45,33 @@ const ShopPage = () => {
   const initialCat = searchParams.get("category") as Category | null;
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCat || "all");
   const [sortBy, setSortBy] = useState("popular");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [priceRange, setPriceRange] = useState<[number, number] | null>(null);
   const { data: listings = [], isLoading } = useActiveListings();
   const { data: ratings = {} } = useListingsRatings(listings.map((l) => l.id));
+
+  const priceMin = listings.length > 0 ? Math.floor(Math.min(...listings.map((l) => l.price))) : 0;
+  const priceMax = listings.length > 0 ? Math.ceil(Math.max(...listings.map((l) => l.price))) : 500;
+  const activePriceRange = priceRange ?? [priceMin, priceMax];
 
   const filtered = useMemo(() => {
     let results = [...listings];
 
     if (selectedCategory !== "all") {
       results = results.filter((listing) => listing.category === selectedCategory);
+    }
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      results = results.filter(
+        (l) =>
+          l.title.toLowerCase().includes(q) ||
+          (l.description ?? "").toLowerCase().includes(q)
+      );
+    }
+
+    if (priceRange) {
+      results = results.filter((l) => l.price >= priceRange[0] && l.price <= priceRange[1]);
     }
 
     results.sort((a, b) => {
@@ -87,8 +108,8 @@ const ShopPage = () => {
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
           "itemListElement": [
-            { "@type": "ListItem", position: 1, name: "Startseite", item: "https://b-electronics.shop/" },
-            { "@type": "ListItem", position: 2, name: "Shop", item: "https://b-electronics.shop/produkte" },
+            { "@type": "ListItem", position: 1, name: "Startseite", item: `${BASE_URL}/` },
+            { "@type": "ListItem", position: 2, name: "Shop", item: `${BASE_URL}/produkte` },
           ],
         }}
       />
@@ -133,6 +154,60 @@ const ShopPage = () => {
             )}
           </p>
         </motion.div>
+
+        {/* Search */}
+        <div className="relative mb-4">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Produkt oder Modell suchen… z.B. Formuler Z10"
+            className="pl-10 pr-10 h-11 bg-card border-border/60 focus-visible:ring-primary/40"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Suche löschen"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Price filter */}
+        {!isLoading && listings.length > 0 && priceMin < priceMax && (
+          <div className="mb-4 p-4 rounded-xl bg-card border border-border/40">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-sm font-medium flex items-center gap-1.5">
+                <SlidersHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
+                Preis
+              </span>
+              <div className="flex items-center gap-2 text-sm font-mono-data">
+                <span className="text-primary font-semibold">{activePriceRange[0]}€</span>
+                <span className="text-muted-foreground">–</span>
+                <span className="text-primary font-semibold">{activePriceRange[1]}€</span>
+                {priceRange && (
+                  <button
+                    onClick={() => setPriceRange(null)}
+                    className="ml-1 text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label="Preisfilter zurücksetzen"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
+              </div>
+            </div>
+            <Slider
+              min={priceMin}
+              max={priceMax}
+              step={1}
+              value={activePriceRange}
+              onValueChange={(v) => setPriceRange(v as [number, number])}
+              className="w-full"
+            />
+          </div>
+        )}
 
         {/* Category pills + sort */}
         <div className="flex flex-col gap-4 mb-8">
@@ -235,13 +310,27 @@ const ShopPage = () => {
         ) : (
           <div className="text-center py-20">
             <p className="text-4xl mb-3">🔍</p>
-            <p className="text-muted-foreground font-medium">Keine Produkte in dieser Kategorie</p>
-            <button
-              onClick={() => setSelectedCategory("all")}
-              className="text-primary text-sm font-medium mt-2 hover:underline"
-            >
-              Alle Produkte anzeigen
-            </button>
+            <p className="text-muted-foreground font-medium">
+              {searchQuery
+                ? `Kein Produkt für „${searchQuery}" gefunden`
+                : "Keine Produkte in dieser Kategorie"}
+            </p>
+            <div className="flex flex-col items-center gap-1 mt-2">
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="text-primary text-sm font-medium hover:underline"
+                >
+                  Suche zurücksetzen
+                </button>
+              )}
+              <button
+                onClick={() => { setSelectedCategory("all"); setSearchQuery(""); }}
+                className="text-primary text-sm font-medium hover:underline"
+              >
+                Alle Produkte anzeigen
+              </button>
+            </div>
           </div>
         )}
 
@@ -252,7 +341,7 @@ const ShopPage = () => {
               {
                 icon: Truck,
                 title: "Schneller Versand",
-                desc: "Bestellungen werden innerhalb von 2-4 Werktagen versendet.",
+                desc: "Bis 14 Uhr bestellt, nächster Werktag versendet — Lieferung in 1–2 Tagen.",
               },
               {
                 icon: ShieldCheck,
