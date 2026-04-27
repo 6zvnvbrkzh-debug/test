@@ -69,7 +69,6 @@ export function ReviewsSection({ listingId }: ReviewsSectionProps) {
                 const pct = count > 0 ? (c / count) * 100 : 0;
                 return (
                   <div key={star} className="flex items-center gap-2 text-xs">
-                    <span className="w-3 text-muted-foreground">{star}</span>
                     <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
                       <div
                         className="h-full bg-yellow-400 rounded-full transition-all"
