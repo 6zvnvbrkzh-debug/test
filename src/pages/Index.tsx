@@ -293,12 +293,6 @@ const HomePage = () => {
             <motion.div {...fadeUp(0.15)} className="relative lg:justify-self-end w-full max-w-sm md:max-w-md mx-auto lg:mx-0">
               {heroProduct ? (
                 <Link to={`/produkt/${heroProduct.id}`} className="block group">
-                  {/* Floating tag above card */}
-                  <div className="absolute -top-2.5 md:-top-3 left-4 z-20 flex items-center gap-2 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full bg-primary text-primary-foreground text-[9px] md:text-[10px] font-mono-data uppercase tracking-[0.15em] shadow-[0_4px_24px_-4px_hsl(var(--primary)/0.6)]">
-                    <span className="h-1.5 w-1.5 rounded-full bg-primary-foreground animate-pulse" />
-                    Featured
-                  </div>
-
                   <div className="relative rounded-3xl border border-border/50 bg-card/40 backdrop-blur-xl overflow-hidden shadow-[0_20px_80px_-20px_hsl(var(--primary)/0.3)] transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-[0_30px_100px_-20px_hsl(var(--primary)/0.5)]">
                     {/* Corner crosshairs (techy detail) */}
                     <div className="absolute top-3 left-3 w-4 h-4 border-l-2 border-t-2 border-primary/40 z-10" />
