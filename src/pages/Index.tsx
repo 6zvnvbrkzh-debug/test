@@ -425,8 +425,13 @@ const HomePage = () => {
         <div className="grid grid-cols-2 lg:grid-cols-12 gap-2.5 md:gap-4 auto-rows-[170px] md:auto-rows-[300px]">
           {categoriesWithCount.map((cat, i) => {
             const Icon = cat.icon;
-            // First card spans 2 cols on mobile (full width), others are half-width
-            const mobileSpan = i === 0 ? "col-span-2" : "col-span-1";
+            const total = categoriesWithCount.length;
+            // Mobile layout: avoid orphan cards on the last row.
+            // Even total → first AND last span full width (1 - 2 - 2 - … - 1)
+            // Odd total → only first spans full width (1 - 2 - 2 - …)
+            const isEven = total % 2 === 0;
+            const isFullWidth = i === 0 || (isEven && i === total - 1);
+            const mobileSpan = isFullWidth ? "col-span-2" : "col-span-1";
             return (
               <motion.div
                 key={cat.slug}
