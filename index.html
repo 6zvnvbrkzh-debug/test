@@ -27,13 +27,13 @@
       fetchpriority="high"
     />
 
-    <!-- Preload the LCP image (Hero deal product on homepage) — discoverable from HTML, parallelized with JS/CSS -->
-    <link
-      rel="preload"
-      as="image"
-      href="https://ggjxyohosugjjbcdrxvd.supabase.co/storage/v1/object/public/listing-images/formuler-netzteil.webp"
-      fetchpriority="high"
-    />
+    <!-- Note: We intentionally do NOT preload a static LCP image here.
+         The LCP element is the first product card, whose image URL is dynamic
+         (depends on the most recent ACTIVE listing) and uses Supabase's on-the-fly
+         image transform (/render/image/...?width=...). A static preload would either
+         miss the actual LCP resource or waste bandwidth on an unused asset.
+         Instead, the listings API call above is preloaded so the LCP image URL
+         can be resolved and the <img fetchpriority="high"> takes over immediately. -->
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Barbato Electronics – Streaming-Hardware & IPTV-Receiver" />
