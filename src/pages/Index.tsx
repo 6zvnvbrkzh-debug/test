@@ -14,6 +14,10 @@ import { useShopStats } from "@/hooks/useReviews";
 import { SEOHead, BASE_URL } from "@/components/SEOHead";
 import { TelegramIcon } from "@/components/icons";
 import { getOptimizedImageUrl, getImageSrcSet } from "@/lib/supabase-image";
+import categoryHighlights from "@/assets/category-highlights.webp";
+import categoryFormuler from "@/assets/category-formuler.webp";
+import categoryOctagon from "@/assets/category-octagon.webp";
+import categoryZubehoer from "@/assets/category-zubehoer.webp";
 
 const homepageJsonLd = {
   "@context": "https://schema.org",
@@ -63,7 +67,7 @@ const categories = [
     label: "Highlights",
     desc: "Top-Empfehlungen unserer Kunden",
     icon: Sparkles,
-    image: "/lovable-uploads/formuler-ir1-1.webp",
+    image: categoryHighlights,
     span: "lg:col-span-7",
     accent: "from-primary/30 via-primary/10 to-transparent",
     count: 0,
@@ -73,7 +77,7 @@ const categories = [
     label: "Formuler",
     desc: "OTT Medien Player",
     icon: Tv,
-    image: "/lovable-uploads/formuler-gtv-ir1-1.webp",
+    image: categoryFormuler,
     span: "lg:col-span-5",
     accent: "from-primary/20 via-transparent to-transparent",
     count: 0,
@@ -83,7 +87,7 @@ const categories = [
     label: "Octagon",
     desc: "IPTV-Receiver",
     icon: Radio,
-    image: "/lovable-uploads/octagon-rcu06-1.webp",
+    image: categoryOctagon,
     span: "lg:col-span-5",
     accent: "from-orange-500/20 via-transparent to-transparent",
     count: 0,
@@ -93,7 +97,7 @@ const categories = [
     label: "Zubehör",
     desc: "Fernbedienungen, Kabel, Adapter",
     icon: Cable,
-    image: "/lovable-uploads/ersatz-fernbedienung-main.webp",
+    image: categoryZubehoer,
     span: "lg:col-span-7",
     accent: "from-primary/20 via-primary/5 to-transparent",
     count: 0,
@@ -478,11 +482,6 @@ const HomePage = () => {
                     <div className="h-8 w-8 md:h-11 md:w-11 rounded-lg md:rounded-xl bg-card border border-border/60 backdrop-blur-sm flex items-center justify-center group-hover:border-primary/40 group-hover:bg-primary/10 transition-all duration-500">
                       <Icon className="h-4 w-4 md:h-5 md:w-5 text-primary" strokeWidth={2} />
                     </div>
-                    {cat.count > 0 && (
-                      <span className="font-mono-data text-[9px] md:text-[10px] uppercase tracking-wider text-muted-foreground/80 bg-card/60 backdrop-blur-sm border border-border/40 px-2 md:px-2.5 py-0.5 md:py-1 rounded-full">
-                        {cat.count}
-                      </span>
-                    )}
                   </div>
 
                   {/* Bottom: Title + arrow */}
