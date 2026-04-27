@@ -214,22 +214,6 @@ const HomePage = () => {
         <div className="absolute top-[100px] right-[-150px] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[140px] pointer-events-none aurora-glow" style={{ animationDelay: "-7s" }} />
 
         <div className="container relative pt-6 md:pt-24 pb-12 md:pb-24">
-          {/* Live indicator */}
-          <motion.div {...fadeUp(0)} className="mb-6 md:mb-10 flex items-center gap-2.5 text-[10px] md:text-xs font-mono-data uppercase tracking-[0.2em] text-muted-foreground">
-            <span className="relative flex h-2 w-2 shrink-0">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-75 animate-ping" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
-            </span>
-            <span className="text-foreground/80">Live</span>
-            <span>·</span>
-            <span className="truncate">
-              <span className="sm:hidden">{listings.length > 0 ? `${listings.length} Geräte verfügbar` : "Versand aus Ulm"}</span>
-              <span className="hidden sm:inline">Versand aus Ulm, Deutschland</span>
-            </span>
-            <span className="hidden md:inline">·</span>
-            <span className="hidden md:inline">{listings.length > 0 ? `${listings.length} Geräte verfügbar` : "Stets versandbereit"}</span>
-          </motion.div>
-
           <div className="grid lg:grid-cols-[1.4fr_1fr] gap-8 md:gap-16 items-center">
             {/* Left: Display Typography + CTA */}
             <motion.div {...fadeUp(0.05)}>
