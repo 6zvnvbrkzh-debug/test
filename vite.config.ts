@@ -25,7 +25,15 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks: (id) => {
           if (!id.includes("node_modules")) return undefined;
-          if (id.includes("react-dom") || id.includes("/react/") || id.includes("scheduler")) return "vendor-react";
+          // Bundle React + everything that depends on React's module identity into one chunk.
+          // Splitting these across chunks can cause "Cannot read properties of undefined (reading 'createContext')"
+          // when a vendor chunk evaluates before vendor-react in the browser.
+          const norm = id.replace(/\\/g, "/");
+          if (
+            /\/node_modules\/(react|react-dom|scheduler|react-is|use-sync-external-store|use-callback-ref|use-sidecar|react-remove-scroll|react-remove-scroll-bar|react-style-singleton|get-nonce|tslib|@floating-ui)\//.test(norm) ||
+            norm.includes("react/jsx-runtime") ||
+            norm.includes("react/jsx-dev-runtime")
+          ) return "vendor-react";
           if (id.includes("react-router")) return "vendor-router";
           if (id.includes("@tanstack/react-query")) return "vendor-query";
           if (id.includes("@supabase")) return "vendor-supabase";
