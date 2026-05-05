@@ -1,7 +1,18 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Building2, Phone, User, Clock, FileText, Shield, Link2, Copyright, AlertTriangle } from "lucide-react";
+import {
+  ArrowLeft,
+  Building2,
+  Phone,
+  User,
+  Clock,
+  FileText,
+  Shield,
+  Link2,
+  Copyright,
+  AlertTriangle,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { SEOHead } from "@/components/SEOHead";
 
@@ -21,9 +32,12 @@ const infoCards = [
     title: "Unternehmen",
     content: (
       <p className="text-muted-foreground">
-        Barbato Electronics<br />
-        Kemptnerstraße 11<br />
-        89079 Ulm<br />
+        Barbato Electronics
+        <br />
+        Kemptnerstraße 11
+        <br />
+        89079 Ulm
+        <br />
         Deutschland
       </p>
     ),
@@ -36,7 +50,7 @@ const infoCards = [
         <p>
           Telefon:{" "}
           <a href="tel:+4917622551230" className="text-primary hover:underline">
-            +49 176 22551230
+            +49 731 16578436
           </a>
         </p>
         <p>
@@ -53,7 +67,8 @@ const infoCards = [
     title: "Vertreten durch",
     content: (
       <p className="text-muted-foreground">
-        Petros Barbato Manousos<br />
+        Petros Barbato Manousos
+        <br />
         Geschäftsführer
       </p>
     ),
@@ -75,7 +90,8 @@ const infoCards = [
     title: "Umsatzsteuer-ID",
     content: (
       <p className="text-muted-foreground">
-        Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz:<br />
+        Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz:
+        <br />
         DE350409021
       </p>
     ),
@@ -85,8 +101,10 @@ const infoCards = [
     title: "Verantwortlich für den Inhalt",
     content: (
       <p className="text-muted-foreground">
-        Petros Barbato Manousos<br />
-        Kemptnerstraße 11<br />
+        Petros Barbato Manousos
+        <br />
+        Kemptnerstraße 11
+        <br />
         89079 Ulm
       </p>
     ),
@@ -96,12 +114,19 @@ const infoCards = [
 const ImpressumPage = () => {
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title="Impressum" description="Impressum und Anbieterkennzeichnung von Barbato Electronics gemäß § 5 TMG." canonical="/impressum" />
+      <SEOHead
+        title="Impressum"
+        description="Impressum und Anbieterkennzeichnung von Barbato Electronics gemäß § 5 TMG."
+        canonical="/impressum"
+      />
       <div className="bg-gradient-to-br from-primary to-primary/80 py-16 md:py-24">
         <div className="container max-w-5xl text-center">
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}>
             <Link to="/">
-              <Button variant="outline" className="mb-8 border-primary-foreground/30 text-primary-foreground hover:text-primary-foreground bg-primary hover:bg-primary/90">
+              <Button
+                variant="outline"
+                className="mb-8 border-primary-foreground/30 text-primary-foreground hover:text-primary-foreground bg-primary hover:bg-primary/90"
+              >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Zurück zur Startseite
               </Button>
@@ -109,13 +134,19 @@ const ImpressumPage = () => {
           </motion.div>
           <motion.h1
             className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-4"
-            initial="hidden" animate="visible" variants={fadeUp} custom={1}
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={1}
           >
             Impressum
           </motion.h1>
           <motion.p
             className="text-lg text-primary-foreground/80"
-            initial="hidden" animate="visible" variants={fadeUp} custom={2}
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={2}
           >
             Angaben gemäß § 5 TMG
           </motion.p>
@@ -127,7 +158,8 @@ const ImpressumPage = () => {
         {/* Info Cards – 2×3 Grid */}
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          initial="hidden" animate="visible"
+          initial="hidden"
+          animate="visible"
           variants={{ visible: { transition: { staggerChildren: 0.1, delayChildren: 0.3 } } }}
         >
           {infoCards.map((card, i) => {
@@ -165,8 +197,8 @@ const ImpressumPage = () => {
                   und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir
                   gemäß § 7 Abs. 1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen
                   verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet,
-                  übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen,
-                  die auf eine rechtswidrige Tätigkeit hinweisen.
+                  übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die
+                  auf eine rechtswidrige Tätigkeit hinweisen.
                 </p>
               </div>
 
@@ -177,8 +209,8 @@ const ImpressumPage = () => {
                 </div>
                 <p className="text-muted-foreground leading-relaxed">
                   Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss
-                  haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte
-                  der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die
+                  haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der
+                  verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die
                   verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft.
                   Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar.
                 </p>
@@ -190,11 +222,11 @@ const ImpressumPage = () => {
                   <h3 className="font-bold text-lg">Urheberrecht</h3>
                 </div>
                 <p className="text-muted-foreground leading-relaxed">
-                  Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem
-                  deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung
-                  außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors
-                  bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen
-                  Gebrauch gestattet.
+                  Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen
+                  Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der
+                  Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw.
+                  Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch
+                  gestattet.
                 </p>
               </div>
             </div>

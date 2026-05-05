@@ -16,7 +16,7 @@ const COMPANY = {
   city: "89079 Ulm",
   country: "Deutschland",
   email: "info@webstudiocg.de",
-  phone: "+49 176 22551230",
+  phone: "+49 731 16578436",
   vatNote: "Gemäß §19 UStG wird keine Umsatzsteuer berechnet.",
 };
 
@@ -58,10 +58,10 @@ serve(async (req) => {
     const sessionId = url.searchParams.get("session_id");
 
     if (!orderId && !sessionId) {
-      return new Response(
-        JSON.stringify({ error: "order_id or session_id required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      return new Response(JSON.stringify({ error: "order_id or session_id required" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     // Auth: try to identify user (optional — guests can use session_id)
@@ -69,10 +69,7 @@ serve(async (req) => {
     // (window.open cannot set custom headers, so we accept both).
     const authHeader = req.headers.get("Authorization");
     const tokenParam = url.searchParams.get("token");
-    const anonClient = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_ANON_KEY")!,
-    );
+    const anonClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!);
     let userId: string | null = null;
     const token = tokenParam || (authHeader ? authHeader.replace("Bearer ", "") : null);
     if (token) {
@@ -80,10 +77,7 @@ serve(async (req) => {
       userId = data.user?.id ?? null;
     }
 
-    const admin = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-    );
+    const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
     // Fetch all orders that match. A single Stripe session may produce multiple order rows
     // (one per quantity unit), so for session_id lookups we group them all into one invoice.
@@ -102,10 +96,10 @@ serve(async (req) => {
 
     const { data: orders, error } = await query;
     if (error || !orders || orders.length === 0) {
-      return new Response(
-        JSON.stringify({ error: "Order not found" }),
-        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      return new Response(JSON.stringify({ error: "Order not found" }), {
+        status: 404,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const rows = orders as OrderRow[];
@@ -120,25 +114,22 @@ serve(async (req) => {
         .eq("role", "admin")
         .maybeSingle();
       if (!roleRow) {
-        return new Response(
-          JSON.stringify({ error: "Forbidden" }),
-          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-        );
+        return new Response(JSON.stringify({ error: "Forbidden" }), {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       }
     }
     // If no auth at all, require session_id (proves the user just completed checkout)
     if (!userId && !sessionId) {
-      return new Response(
-        JSON.stringify({ error: "Unauthorized" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     // Get/create invoice number — anchor on first order in the group
-    const { data: invNum, error: invErr } = await admin.rpc(
-      "get_or_create_invoice_number",
-      { _order_id: primary.id },
-    );
+    const { data: invNum, error: invErr } = await admin.rpc("get_or_create_invoice_number", { _order_id: primary.id });
     if (invErr) throw invErr;
     const invoiceNumber = invNum as string;
 
@@ -265,18 +256,10 @@ serve(async (req) => {
     doc.line(margin, footerY - 4, pageW - margin, footerY - 4);
     doc.setFontSize(8);
     doc.setTextColor(120);
-    doc.text(
-      `${COMPANY.name} · ${COMPANY.owner} · ${COMPANY.street}, ${COMPANY.city}`,
-      pageW / 2,
-      footerY,
-      { align: "center" },
-    );
-    doc.text(
-      `${COMPANY.email} · ${COMPANY.phone}`,
-      pageW / 2,
-      footerY + 4,
-      { align: "center" },
-    );
+    doc.text(`${COMPANY.name} · ${COMPANY.owner} · ${COMPANY.street}, ${COMPANY.city}`, pageW / 2, footerY, {
+      align: "center",
+    });
+    doc.text(`${COMPANY.email} · ${COMPANY.phone}`, pageW / 2, footerY + 4, { align: "center" });
 
     const arrayBuffer = doc.output("arraybuffer");
     const filename = `Rechnung-${invoiceNumber}.pdf`;
