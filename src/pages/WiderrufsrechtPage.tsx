@@ -84,7 +84,7 @@ const WiderrufsrechtPage = () => {
               <br />
               Deutschland
               <br />
-              E-Mail: info@b-electronics.shop
+              E-Mail: barbato.electronics@gmail.com
               <br />
               Telefon: +49 731 16578436
             </p>
@@ -147,7 +147,7 @@ const WiderrufsrechtPage = () => {
                 <br />
                 89079 Ulm
                 <br />
-                E-Mail: info@b-electronics.shop
+                E-Mail: barbato.electronics@gmail.com
               </p>
               <p>
                 Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden

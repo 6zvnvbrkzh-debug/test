@@ -15,7 +15,7 @@ const COMPANY = {
   street: "Kemptnerstraße 11",
   city: "89079 Ulm",
   country: "Deutschland",
-  email: "info@webstudiocg.de",
+  email: "barbato.electronics@gmail.com",
   phone: "+49 731 16578436",
   vatNote: "Gemäß §19 UStG wird keine Umsatzsteuer berechnet.",
 };
