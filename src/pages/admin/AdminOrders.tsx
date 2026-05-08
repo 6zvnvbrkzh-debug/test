@@ -609,6 +609,33 @@ export default function AdminOrders() {
                   </p>
                 )}
               </div>
+
+              {/* Archive Action */}
+              <div className="pt-2 border-t border-border/50">
+                {selectedOrder.status === "ARCHIVED" ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full gap-2"
+                    disabled={statusMutation.isPending}
+                    onClick={() => statusMutation.mutate({ orderId: selectedOrder.id, status: "COMPLETED" })}
+                  >
+                    <ArchiveRestore className="h-4 w-4" />
+                    Aus Archiv wiederherstellen
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full gap-2"
+                    disabled={statusMutation.isPending}
+                    onClick={() => statusMutation.mutate({ orderId: selectedOrder.id, status: "ARCHIVED" })}
+                  >
+                    <Archive className="h-4 w-4" />
+                    Bestellung archivieren
+                  </Button>
+                )}
+              </div>
             </div>
           )}
         </DialogContent>
