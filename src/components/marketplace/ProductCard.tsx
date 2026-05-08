@@ -93,7 +93,7 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
           </div>
 
           {/* Image */}
-          <div className="aspect-[4/3] relative px-4 md:px-6 py-3 md:py-4">
+          <div className="aspect-[4/3] relative px-4 md:px-6 py-3 md:py-4 flex items-center justify-center">
             {listing.images.length > 0 ? (
               <img
                 src={getOptimizedImageUrl(listing.images[0], { width: 400, quality: 75 })}
