@@ -516,6 +516,7 @@ export default function AdminOrders() {
                       <SelectItem value="SHIPPED">Versendet</SelectItem>
                       <SelectItem value="COMPLETED">Abgeschlossen</SelectItem>
                       <SelectItem value="REFUNDED">Erstattet</SelectItem>
+                      <SelectItem value="ARCHIVED">Archiviert</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
