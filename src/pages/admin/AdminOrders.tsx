@@ -212,11 +212,13 @@ export default function AdminOrders() {
               <SelectValue placeholder="Status filtern" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Alle Status</SelectItem>
+              <SelectItem value="all">Aktive Bestellungen</SelectItem>
               <SelectItem value="PENDING">Ausstehend</SelectItem>
               <SelectItem value="SHIPPED">Versendet</SelectItem>
               <SelectItem value="COMPLETED">Abgeschlossen</SelectItem>
               <SelectItem value="REFUNDED">Erstattet</SelectItem>
+              <SelectItem value="ARCHIVED">Archiviert</SelectItem>
+              <SelectItem value="ALL_INCL_ARCHIVED">Alle (inkl. Archiv)</SelectItem>
             </SelectContent>
           </Select>
         </div>
