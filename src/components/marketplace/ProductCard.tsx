@@ -93,7 +93,7 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
           </div>
 
           {/* Image */}
-          <div className="aspect-[4/3] relative px-4 md:px-6 py-3 md:py-4">
+          <div className="aspect-[4/3] relative px-4 md:px-6 py-3 md:py-4 flex items-center justify-center">
             {listing.images.length > 0 ? (
               <img
                 src={getOptimizedImageUrl(listing.images[0], { width: 400, quality: 75 })}
@@ -102,7 +102,7 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
                 alt={listing.title}
                 width={400}
                 height={300}
-                className={`w-full h-full object-contain transition-all duration-700 ease-out ${
+                className={`max-w-full max-h-full w-auto h-auto object-contain m-auto transition-all duration-700 ease-out ${
                   isSold 
                     ? "opacity-30 grayscale blur-[1px]" 
                     : "group-hover:scale-105 group-hover:-rotate-1"
