@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader2, Eye, Package, CreditCard, User, Calendar, Hash, Truck, Save, MapPin, Mail, Download } from "lucide-react";
+import { Loader2, Eye, Package, CreditCard, User, Calendar, Hash, Truck, Save, MapPin, Mail, Download, Archive, ArchiveRestore } from "lucide-react";
 import { toast } from "sonner";
 import { InvoiceButton } from "@/components/InvoiceButton";
 
@@ -16,6 +16,7 @@ const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondar
   SHIPPED: { label: "Versendet", variant: "secondary" },
   COMPLETED: { label: "Abgeschlossen", variant: "default" },
   REFUNDED: { label: "Erstattet", variant: "destructive" },
+  ARCHIVED: { label: "Archiviert", variant: "outline" },
 };
 
 interface ShippingAddress {
@@ -106,6 +107,8 @@ export default function AdminOrders() {
   };
 
   const filtered = statusFilter === "all"
+    ? orders.filter((o) => o.status !== "ARCHIVED")
+    : statusFilter === "ALL_INCL_ARCHIVED"
     ? orders
     : orders.filter((o) => o.status === statusFilter);
 
@@ -209,11 +212,13 @@ export default function AdminOrders() {
               <SelectValue placeholder="Status filtern" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Alle Status</SelectItem>
+              <SelectItem value="all">Aktive Bestellungen</SelectItem>
               <SelectItem value="PENDING">Ausstehend</SelectItem>
               <SelectItem value="SHIPPED">Versendet</SelectItem>
               <SelectItem value="COMPLETED">Abgeschlossen</SelectItem>
               <SelectItem value="REFUNDED">Erstattet</SelectItem>
+              <SelectItem value="ARCHIVED">Archiviert</SelectItem>
+              <SelectItem value="ALL_INCL_ARCHIVED">Alle (inkl. Archiv)</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -511,6 +516,7 @@ export default function AdminOrders() {
                       <SelectItem value="SHIPPED">Versendet</SelectItem>
                       <SelectItem value="COMPLETED">Abgeschlossen</SelectItem>
                       <SelectItem value="REFUNDED">Erstattet</SelectItem>
+                      <SelectItem value="ARCHIVED">Archiviert</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -601,6 +607,33 @@ export default function AdminOrders() {
                     <span className="font-medium text-foreground">Stripe Session:</span>{" "}
                     <span className="font-mono-data">{selectedOrder.stripe_session_id}</span>
                   </p>
+                )}
+              </div>
+
+              {/* Archive Action */}
+              <div className="pt-2 border-t border-border/50">
+                {selectedOrder.status === "ARCHIVED" ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full gap-2"
+                    disabled={statusMutation.isPending}
+                    onClick={() => statusMutation.mutate({ orderId: selectedOrder.id, status: "COMPLETED" })}
+                  >
+                    <ArchiveRestore className="h-4 w-4" />
+                    Aus Archiv wiederherstellen
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full gap-2"
+                    disabled={statusMutation.isPending}
+                    onClick={() => statusMutation.mutate({ orderId: selectedOrder.id, status: "ARCHIVED" })}
+                  >
+                    <Archive className="h-4 w-4" />
+                    Bestellung archivieren
+                  </Button>
                 )}
               </div>
             </div>
