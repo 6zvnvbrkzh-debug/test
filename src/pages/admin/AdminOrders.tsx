@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader2, Eye, Package, CreditCard, User, Calendar, Hash, Truck, Save, MapPin, Mail, Download } from "lucide-react";
+import { Loader2, Eye, Package, CreditCard, User, Calendar, Hash, Truck, Save, MapPin, Mail, Download, Archive, ArchiveRestore } from "lucide-react";
 import { toast } from "sonner";
 import { InvoiceButton } from "@/components/InvoiceButton";
 
@@ -16,6 +16,7 @@ const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondar
   SHIPPED: { label: "Versendet", variant: "secondary" },
   COMPLETED: { label: "Abgeschlossen", variant: "default" },
   REFUNDED: { label: "Erstattet", variant: "destructive" },
+  ARCHIVED: { label: "Archiviert", variant: "outline" },
 };
 
 interface ShippingAddress {
