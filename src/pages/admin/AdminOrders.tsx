@@ -107,6 +107,8 @@ export default function AdminOrders() {
   };
 
   const filtered = statusFilter === "all"
+    ? orders.filter((o) => o.status !== "ARCHIVED")
+    : statusFilter === "ALL_INCL_ARCHIVED"
     ? orders
     : orders.filter((o) => o.status === statusFilter);
 
