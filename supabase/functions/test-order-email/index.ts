@@ -15,7 +15,7 @@ serve(async (req) => {
     return new Response(JSON.stringify({ error: "Email keys missing" }), { status: 500, headers: corsHeaders });
   }
 
-  const SHOP_EMAIL = "barbato.electronics@gmail.com";
+  const SHOP_EMAIL = "carlos.gabrail@hotmail.com";
   const FROM_EMAIL = "onboarding@resend.dev";
 
   const html = `
