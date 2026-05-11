@@ -10,8 +10,9 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-  if (!RESEND_API_KEY) {
-    return new Response(JSON.stringify({ error: "RESEND_API_KEY missing" }), { status: 500, headers: corsHeaders });
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!RESEND_API_KEY || !LOVABLE_API_KEY) {
+    return new Response(JSON.stringify({ error: "Email keys missing" }), { status: 500, headers: corsHeaders });
   }
 
   const SHOP_EMAIL = "barbato.electronics@gmail.com";
