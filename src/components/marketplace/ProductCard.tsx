@@ -102,7 +102,7 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
                 alt={listing.title}
                 width={400}
                 height={300}
-                className={`max-w-full max-h-full w-auto h-auto object-contain m-auto transition-all duration-700 ease-out ${
+                className={`w-full h-full object-contain object-center transition-all duration-700 ease-out ${
                   isSold 
                     ? "opacity-30 grayscale blur-[1px]" 
                     : "group-hover:scale-105 group-hover:-rotate-1"
