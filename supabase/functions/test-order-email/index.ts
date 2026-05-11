@@ -16,7 +16,7 @@ serve(async (req) => {
   }
 
   const SHOP_EMAIL = "barbato.electronics@gmail.com";
-  const FROM_EMAIL = "noreply@info.webstudiocg.de";
+  const FROM_EMAIL = "onboarding@resend.dev";
 
   const html = `
     <div style="font-family:system-ui,sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#111;">
