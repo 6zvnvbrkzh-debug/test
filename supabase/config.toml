@@ -6,5 +6,14 @@ verify_jwt = true
 [functions.send-contact-message]
 verify_jwt = false
 
-[functions.test-order-email]
+[functions.send-transactional-email]
+verify_jwt = true
+
+[functions.preview-transactional-email]
+verify_jwt = false
+
+[functions.handle-email-unsubscribe]
+verify_jwt = false
+
+[functions.handle-email-suppression]
 verify_jwt = false
