@@ -143,6 +143,32 @@ serve(async (req) => {
         } else {
           console.log("Order notification email enqueued");
         }
+
+        // Customer confirmation email
+        if (customerEmail) {
+          const { error: custMailErr } = await supabase.functions.invoke(
+            "send-transactional-email",
+            {
+              body: {
+                templateName: "order-confirmation-customer",
+                recipientEmail: customerEmail,
+                idempotencyKey: `order-customer-${session.id}`,
+                templateData: {
+                  sessionId: session.id,
+                  customerName: customerName || "",
+                  shippingAddress,
+                  items,
+                  total,
+                },
+              },
+            },
+          );
+          if (custMailErr) {
+            console.error("Customer confirmation email failed:", custMailErr);
+          } else {
+            console.log("Customer confirmation email enqueued");
+          }
+        }
       } catch (mailErr) {
         console.error("Order email error:", mailErr);
       }
