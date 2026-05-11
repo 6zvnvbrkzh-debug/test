@@ -30,6 +30,7 @@ const FAQPage = lazy(() => import("./pages/FAQPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
 const WishlistPage = lazy(() => import("./pages/WishlistPage"));
 const GuideDetailPage = lazy(() => import("./pages/GuideDetailPage"));
+const UnsubscribePage = lazy(() => import("./pages/UnsubscribePage"));
 
 // Admin chunks (only loaded for admins)
 const AdminLayout = lazy(() => import("./components/admin/AdminLayout"));
@@ -74,6 +75,7 @@ const App = () => (
                 <Route path="/kontakt" element={<ContactPage />} />
                 <Route path="/wunschliste" element={<WishlistPage />} />
                 <Route path="/ratgeber/:slug" element={<GuideDetailPage />} />
+                <Route path="/unsubscribe" element={<UnsubscribePage />} />
 
                 {/* Admin routes */}
                 <Route

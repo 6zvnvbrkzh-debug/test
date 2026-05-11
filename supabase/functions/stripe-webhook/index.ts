@@ -96,101 +96,52 @@ serve(async (req) => {
 
       console.log(`Orders created for session ${session.id}`);
 
-      // Send order notification email to shop owner
+      // Send order notification email to shop owner via Lovable Emails
       try {
-        const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-        if (RESEND_API_KEY) {
-          const SHOP_EMAIL = "barbato.electronics@gmail.com";
-          const FROM_EMAIL = "noreply@info.webstudiocg.de";
+        const { data: orderListings } = await supabase
+          .from("listings")
+          .select("id, title, price")
+          .in("id", listingIds);
 
-          // Fetch listing titles for the email
-          const { data: orderListings } = await supabase
-            .from("listings")
-            .select("id, title, price")
-            .in("id", listingIds);
+        const items = listingIds.map((id, i) => {
+          const l = orderListings?.find((x) => x.id === id);
+          const qty = quantities[i] || 1;
+          const price = l ? Number(l.price) : 0;
+          return {
+            title: l?.title || id,
+            quantity: qty,
+            subtotal: price * qty,
+          };
+        });
 
-          const escape = (s: string) =>
-            String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const total = ((session.amount_total ?? 0) / 100)
+          .toFixed(2)
+          .replace(".", ",");
+        const phone = (session.customer_details as any)?.phone || "";
 
-          const itemsRows = listingIds.map((id, i) => {
-            const l = orderListings?.find((x) => x.id === id);
-            const qty = quantities[i] || 1;
-            const price = l ? Number(l.price) : 0;
-            return `<tr>
-              <td style="padding:8px 0;border-bottom:1px solid #eee;">${escape(l?.title || id)}</td>
-              <td style="padding:8px 0;border-bottom:1px solid #eee;text-align:center;">${qty}</td>
-              <td style="padding:8px 0;border-bottom:1px solid #eee;text-align:right;">${(price * qty).toFixed(2)}&nbsp;€</td>
-            </tr>`;
-          }).join("");
-
-          const total = ((session.amount_total ?? 0) / 100).toFixed(2);
-
-          const addr = shippingAddress;
-          const addrHtml = addr
-            ? `${escape(addr.name || "")}<br/>${escape(addr.line1 || "")}${addr.line2 ? "<br/>" + escape(addr.line2) : ""}<br/>${escape(addr.postal_code || "")} ${escape(addr.city || "")}<br/>${escape(addr.country || "")}`
-            : "—";
-
-          const phone = (session.customer_details as any)?.phone || "—";
-
-          const html = `
-            <div style="font-family:system-ui,sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#111;">
-              <h2 style="margin:0 0 16px;font-size:20px;">🛒 Neue Bestellung eingegangen</h2>
-              <p style="color:#666;font-size:13px;margin:0 0 20px;">Session: ${escape(session.id)}</p>
-
-              <h3 style="font-size:14px;margin:20px 0 8px;text-transform:uppercase;letter-spacing:0.5px;color:#666;">Kunde</h3>
-              <table style="width:100%;font-size:14px;">
-                <tr><td style="padding:4px 0;color:#666;width:120px;">Name:</td><td style="padding:4px 0;font-weight:600;">${escape(customerName || "—")}</td></tr>
-                <tr><td style="padding:4px 0;color:#666;">E-Mail:</td><td style="padding:4px 0;"><a href="mailto:${escape(customerEmail || "")}">${escape(customerEmail || "—")}</a></td></tr>
-                <tr><td style="padding:4px 0;color:#666;">Telefon:</td><td style="padding:4px 0;">${escape(phone)}</td></tr>
-              </table>
-
-              <h3 style="font-size:14px;margin:20px 0 8px;text-transform:uppercase;letter-spacing:0.5px;color:#666;">Lieferadresse</h3>
-              <div style="font-size:14px;line-height:1.5;">${addrHtml}</div>
-
-              <h3 style="font-size:14px;margin:20px 0 8px;text-transform:uppercase;letter-spacing:0.5px;color:#666;">Artikel</h3>
-              <table style="width:100%;border-collapse:collapse;font-size:14px;">
-                <thead>
-                  <tr style="border-bottom:2px solid #111;">
-                    <th style="text-align:left;padding:8px 0;">Produkt</th>
-                    <th style="text-align:center;padding:8px 0;">Menge</th>
-                    <th style="text-align:right;padding:8px 0;">Summe</th>
-                  </tr>
-                </thead>
-                <tbody>${itemsRows}</tbody>
-                <tfoot>
-                  <tr>
-                    <td colspan="2" style="padding:12px 0;text-align:right;font-weight:600;font-size:16px;">Gesamt:</td>
-                    <td style="padding:12px 0;text-align:right;font-weight:700;font-size:16px;">${total}&nbsp;€</td>
-                  </tr>
-                </tfoot>
-              </table>
-
-              <p style="margin-top:24px;color:#999;font-size:12px;">Diese E-Mail wurde automatisch von Barbato Electronics versendet.</p>
-            </div>
-          `;
-
-          const emailRes = await fetch("https://api.resend.com/emails", {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${RESEND_API_KEY}`,
-              "Content-Type": "application/json",
+        const { error: mailErr } = await supabase.functions.invoke(
+          "send-transactional-email",
+          {
+            body: {
+              templateName: "order-notification",
+              idempotencyKey: `order-${session.id}`,
+              templateData: {
+                sessionId: session.id,
+                customerName: customerName || "",
+                customerEmail: customerEmail || "",
+                customerPhone: phone,
+                shippingAddress,
+                items,
+                total,
+              },
             },
-            body: JSON.stringify({
-              from: `Barbato Electronics Bestellungen <${FROM_EMAIL}>`,
-              to: [SHOP_EMAIL],
-              reply_to: customerEmail || undefined,
-              subject: `🛒 Neue Bestellung – ${total}\u00A0€ – ${customerName || "Kunde"}`,
-              html,
-            }),
-          });
+          },
+        );
 
-          if (!emailRes.ok) {
-            console.error("Order notification email failed:", await emailRes.text());
-          } else {
-            console.log("Order notification email sent");
-          }
+        if (mailErr) {
+          console.error("Order notification email failed:", mailErr);
         } else {
-          console.warn("RESEND_API_KEY not configured, skipping order email");
+          console.log("Order notification email enqueued");
         }
       } catch (mailErr) {
         console.error("Order email error:", mailErr);
