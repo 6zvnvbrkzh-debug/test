@@ -119,54 +119,63 @@ serve(async (req) => {
           .replace(".", ",");
         const phone = (session.customer_details as any)?.phone || "";
 
-        const { error: mailErr } = await supabase.functions.invoke(
-          "send-transactional-email",
-          {
-            body: {
-              templateName: "order-notification",
-              idempotencyKey: `order-${session.id}`,
+        // Call send-transactional-email via fetch with the anon JWT.
+        // The new Supabase service-role key format (sb_secret_…) is NOT a
+        // JWT and the Function Gateway rejects it with INVALID_JWT_FORMAT
+        // when verify_jwt = true.
+        const FN_URL = `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-transactional-email`;
+        const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
+        const invokeEmail = async (payload: Record<string, unknown>) => {
+          const res = await fetch(FN_URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              apikey: ANON,
+              Authorization: `Bearer ${ANON}`,
+            },
+            body: JSON.stringify(payload),
+          });
+          const text = await res.text();
+          if (!res.ok) throw new Error(`${res.status}: ${text}`);
+          return text;
+        };
+
+        try {
+          await invokeEmail({
+            templateName: "order-notification",
+            idempotencyKey: `order-${session.id}`,
+            templateData: {
+              sessionId: session.id,
+              customerName: customerName || "",
+              customerEmail: customerEmail || "",
+              customerPhone: phone,
+              shippingAddress,
+              items,
+              total,
+            },
+          });
+          console.log("Order notification email enqueued");
+        } catch (e) {
+          console.error("Order notification email failed:", (e as Error).message);
+        }
+
+        if (customerEmail) {
+          try {
+            await invokeEmail({
+              templateName: "order-confirmation-customer",
+              recipientEmail: customerEmail,
+              idempotencyKey: `order-customer-${session.id}`,
               templateData: {
                 sessionId: session.id,
                 customerName: customerName || "",
-                customerEmail: customerEmail || "",
-                customerPhone: phone,
                 shippingAddress,
                 items,
                 total,
               },
-            },
-          },
-        );
-
-        if (mailErr) {
-          console.error("Order notification email failed:", mailErr);
-        } else {
-          console.log("Order notification email enqueued");
-        }
-
-        // Customer confirmation email
-        if (customerEmail) {
-          const { error: custMailErr } = await supabase.functions.invoke(
-            "send-transactional-email",
-            {
-              body: {
-                templateName: "order-confirmation-customer",
-                recipientEmail: customerEmail,
-                idempotencyKey: `order-customer-${session.id}`,
-                templateData: {
-                  sessionId: session.id,
-                  customerName: customerName || "",
-                  shippingAddress,
-                  items,
-                  total,
-                },
-              },
-            },
-          );
-          if (custMailErr) {
-            console.error("Customer confirmation email failed:", custMailErr);
-          } else {
+            });
             console.log("Customer confirmation email enqueued");
+          } catch (e) {
+            console.error("Customer confirmation email failed:", (e as Error).message);
           }
         }
       } catch (mailErr) {
