@@ -182,6 +182,32 @@ export type Database = {
         }
         Relationships: []
       }
+      listing_view_counts: {
+        Row: {
+          listing_id: string
+          updated_at: string
+          views: number
+        }
+        Insert: {
+          listing_id: string
+          updated_at?: string
+          views?: number
+        }
+        Update: {
+          listing_id?: string
+          updated_at?: string
+          views?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_view_counts_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: true
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       listings: {
         Row: {
           category_id: string
@@ -502,6 +528,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_listing_view: {
+        Args: { _listing_id: string }
+        Returns: undefined
       }
       move_to_dlq: {
         Args: {
