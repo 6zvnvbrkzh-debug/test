@@ -131,7 +131,19 @@ const HomePage = () => {
   const reviewAvg = shopStats && shopStats.count > 0 ? shopStats.avg : 4.9;
   const reviewCount = shopStats?.count ?? 0;
   const highlights = listings.slice(0, 8);
-  const heroProduct = highlights[0];
+  const heroProducts = topProducts.length > 0 ? topProducts : highlights.slice(0, 5);
+  const [heroIndex, setHeroIndex] = useState(0);
+
+  useEffect(() => {
+    if (heroProducts.length <= 1) return;
+    const interval = setInterval(() => {
+      setHeroIndex((i) => (i + 1) % heroProducts.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [heroProducts.length]);
+
+  const safeHeroIndex = heroProducts.length > 0 ? heroIndex % heroProducts.length : 0;
+  const heroProduct = heroProducts[safeHeroIndex];
   const heroImageUrl = heroProduct?.images?.[0];
 
   // Preload LCP hero image as early as possible (during render, not after effect commit)
