@@ -244,7 +244,7 @@ export type Database = {
       orders: {
         Row: {
           amount: number
-          buyer_id: string | null
+          buyer_id: string
           created_at: string
           customer_email: string | null
           customer_name: string | null
@@ -260,7 +260,7 @@ export type Database = {
         }
         Insert: {
           amount: number
-          buyer_id?: string | null
+          buyer_id: string
           created_at?: string
           customer_email?: string | null
           customer_name?: string | null
@@ -276,7 +276,7 @@ export type Database = {
         }
         Update: {
           amount?: number
-          buyer_id?: string | null
+          buyer_id?: string
           created_at?: string
           customer_email?: string | null
           customer_name?: string | null
