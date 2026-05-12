@@ -307,14 +307,15 @@ const HomePage = () => {
             <motion.div {...fadeUp(0.15)} className="relative lg:justify-self-end w-full max-w-sm md:max-w-md mx-auto lg:mx-0">
               {heroProduct ? (
                 <div className="relative">
-                  <div className="relative overflow-hidden rounded-3xl">
-                    <AnimatePresence mode="wait" initial={false}>
+                  <div className="relative grid grid-cols-1 grid-rows-1 overflow-hidden rounded-3xl">
+                    <AnimatePresence initial={false} mode="popLayout">
                       <motion.div
                         key={heroProduct.id}
-                        initial={{ opacity: 0, x: 60 }}
+                        initial={{ opacity: 0, x: 80 }}
                         animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -60 }}
+                        exit={{ opacity: 0, x: -80, position: "absolute" }}
                         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                        className="col-start-1 row-start-1 inset-0 w-full"
                       >
                         <Link to={`/produkt/${heroProduct.id}`} className="block group">
                           <div className="relative rounded-3xl border border-border/50 bg-card/40 backdrop-blur-xl overflow-hidden shadow-[0_20px_80px_-20px_hsl(var(--primary)/0.3)] transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-[0_30px_100px_-20px_hsl(var(--primary)/0.5)]">
