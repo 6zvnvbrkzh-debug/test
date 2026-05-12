@@ -90,7 +90,7 @@ const AGBPage = () => {
 
             <h2>§ 5 Lieferung</h2>
             <p>
-              (1) Die Lieferzeit beträgt in der Regel 2–4 Werktage nach Zahlungseingang, sofern nicht anders angegeben.
+              (1) Die Lieferzeit beträgt in der Regel 2–3 Werktage nach Zahlungseingang, sofern nicht anders angegeben.
             </p>
             <p>
               (2) Es wird ausschließlich innerhalb Deutschlands geliefert, sofern nicht anders vereinbart.

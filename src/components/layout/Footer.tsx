@@ -147,9 +147,9 @@ export function Footer() {
           <div className="md:col-span-2">
             <h4 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">Service</h4>
             <ul className="space-y-2.5 text-sm text-muted-foreground">
-              <li>1–2 Werktage Lieferzeit</li>
+              <li>2–3 Werktage Lieferzeit</li>
               <li>2 Jahre Garantie</li>
-              <li>30 Tage Rückgabe</li>
+              <li>14 Tage Rückgabe</li>
             </ul>
             <h4 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mt-6 mb-3">Öffnungszeiten</h4>
             <ul className="space-y-1 text-sm text-muted-foreground">
@@ -212,7 +212,7 @@ export function Footer() {
                 <div>
                   <h4 className="text-sm font-semibold tracking-wide">Versand mit DHL</h4>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Versand aus Deutschland – 1–2 Werktage Lieferzeit
+                    Versand aus Deutschland – 2–3 Werktage Lieferzeit
                   </p>
                 </div>
               </div>

@@ -109,7 +109,7 @@ const trustItems = [
   { icon: Zap, title: "Blitzschneller Versand", desc: "Bis 14 Uhr bestellt, nächster Tag versendet" },
   { icon: Truck, title: "Kostenloser Versand", desc: "Ab 50€ Bestellwert" },
   { icon: ShieldCheck, title: "2 Jahre Garantie", desc: "Auf alle Produkte" },
-  { icon: RotateCcw, title: "30 Tage Rückgabe", desc: "Kostenlos & einfach" },
+  { icon: RotateCcw, title: "14 Tage Rückgabe", desc: "Kostenlos & einfach" },
   { icon: Headphones, title: "Persönlicher Support", desc: "Mo–So, 9–21 Uhr" },
 ];
 
@@ -696,7 +696,7 @@ const HomePage = () => {
                 num: "03",
                 icon: Truck,
                 title: "DHL aus Deutschland",
-                desc: "Bestellung bis 14 Uhr → DHL-Versand am selben Werktag. Paket-Tracking inklusive, versichert.",
+                desc: "Schneller DHL-Versand aus Deutschland. Paket-Tracking inklusive, versichert.",
               },
             ].map((item, i) => (
               <motion.div key={item.title} {...fadeUp(0.1 + i * 0.08)} className="bg-card group relative p-6 md:p-10 hover:bg-surface-sunken transition-colors duration-500">
@@ -771,7 +771,7 @@ const HomePage = () => {
               Dein nächster <span className="bg-gradient-to-r from-primary to-primary/40 bg-clip-text text-transparent">Receiver</span> ist nur einen Klick entfernt.
             </h2>
             <p className="text-sm md:text-lg text-muted-foreground max-w-xl mx-auto mb-7 md:mb-10">
-              Bestelle jetzt — bis 14 Uhr versendet, in 1–2 Werktagen bei dir, mit 30 Tagen Rückgaberecht.
+              Bestelle jetzt — in 2–3 Werktagen bei dir, mit 14 Tagen Rückgaberecht.
             </p>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 md:gap-3">
               <Link to="/produkte">
