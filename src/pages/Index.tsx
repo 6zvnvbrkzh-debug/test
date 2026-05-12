@@ -576,9 +576,9 @@ const HomePage = () => {
           </Link>
         </div>
 
-        {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {Array.from({ length: 8 }).map((_, i) => (
+        {isLoadingTop ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+            {Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="rounded-2xl border border-border/40 bg-card animate-pulse overflow-hidden">
                 <div className="aspect-[4/3] bg-muted/60 m-3 rounded-xl" />
                 <div className="p-3 space-y-2">
@@ -590,15 +590,15 @@ const HomePage = () => {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {highlights.map((listing, index) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+            {topProducts.map((listing, index) => (
               <ProductCard key={listing.id} listing={listing} index={index} />
             ))}
           </div>
         )}
 
         {/* Show all CTA */}
-        {!isLoading && listings.length > 8 && (
+        {!isLoading && listings.length > 5 && (
           <div className="flex justify-center mt-10">
             <Link to="/produkte">
               <Button variant="outline" size="lg" className="press-scale transition-signal">
