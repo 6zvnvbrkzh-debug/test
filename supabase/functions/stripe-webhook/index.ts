@@ -45,7 +45,12 @@ serve(async (req) => {
         Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
       );
 
-      const userId = metadata.supabase_user_id;
+      const rawUserId = metadata.supabase_user_id;
+      // Guests pass "guest" — store as NULL since buyer_id is a uuid column
+      const userId =
+        rawUserId && rawUserId !== "guest" && /^[0-9a-f-]{36}$/i.test(rawUserId)
+          ? rawUserId
+          : null;
       const listingIds: string[] = JSON.parse(metadata.listing_ids || "[]");
       const quantities: number[] = JSON.parse(metadata.quantities || "[]");
 
@@ -79,7 +84,7 @@ serve(async (req) => {
           const qty = quantities[i] || 1;
           
           for (let q = 0; q < qty; q++) {
-            await supabase.from("orders").insert({
+            const { error: insErr } = await supabase.from("orders").insert({
               buyer_id: userId,
               seller_id: listing.seller_id,
               listing_id: listingIds[i],
@@ -90,6 +95,7 @@ serve(async (req) => {
               customer_email: customerEmail,
               shipping_address: shippingAddress,
             });
+            if (insErr) console.error("Order insert failed:", insErr);
           }
         }
       }
