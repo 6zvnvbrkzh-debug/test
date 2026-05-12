@@ -246,8 +246,8 @@ const HomePage = () => {
               <div className="max-w-md mb-7 md:mb-10">
                 <div className="flex items-start gap-3">
                   <div className="mt-1.5 h-px w-8 md:w-10 bg-primary shrink-0" />
-                  <p className="text-sm md:text-lg text-muted-foreground leading-relaxed whitespace-pre-line">
-                    Formuler & Octagon Hardware aus deutschem Lager. In 2–3 Werktagen bei dir — mit DHL versandkostenfrei ab 50{"\n"}€.
+                  <p className="text-sm md:text-lg text-muted-foreground leading-relaxed">
+                    Formuler & Octagon Hardware aus deutschem Lager. In 2–3 Werktagen bei dir — mit DHL versandkostenfrei ab 50\u00A0€.
                   </p>
                 </div>
               </div>
