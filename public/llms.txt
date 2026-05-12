@@ -23,5 +23,5 @@
 ## Versand & Zahlung
 
 - Versandkostenfrei innerhalb Deutschlands ab 50 € Bestellwert, sonst 5,99 € Pauschale.
-- Lieferung in 2–4 Werktagen per DHL.
+- Lieferung in 2–3 Werktagen per DHL.
 - Zahlung per Kreditkarte, Klarna, Sofort und weitere Stripe-Methoden.

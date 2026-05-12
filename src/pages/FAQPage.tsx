@@ -18,7 +18,7 @@ const faqs: { category: string; items: { q: string; a: string }[] }[] = [
     items: [
       {
         q: "Wie lange dauert der Versand?",
-        a: "Wir versenden alle Bestellungen aus Deutschland mit DHL. Die Lieferzeit beträgt in der Regel 2–4 Werktage nach Zahlungseingang.",
+        a: "Wir versenden alle Bestellungen aus Deutschland mit DHL. Die Lieferzeit beträgt in der Regel 2–3 Werktage nach Zahlungseingang.",
       },
       {
         q: "Was kostet der Versand?",

@@ -37,7 +37,7 @@ const sortOptions = [
 const trustBadges = [
   { icon: Truck, text: "Kostenloser Versand ab 50€" },
   { icon: ShieldCheck, text: "2 Jahre Garantie" },
-  { icon: RotateCcw, text: "30 Tage Rückgaberecht" },
+  { icon: RotateCcw, text: "14 Tage Rückgaberecht" },
 ];
 
 const ShopPage = () => {
@@ -351,7 +351,7 @@ const ShopPage = () => {
               {
                 icon: RotateCcw,
                 title: "Einfache Rückgabe",
-                desc: "30 Tage Rückgaberecht auf alle Produkte.",
+                desc: "14 Tage Rückgaberecht auf alle Produkte.",
               },
             ].map((item) => (
               <div
