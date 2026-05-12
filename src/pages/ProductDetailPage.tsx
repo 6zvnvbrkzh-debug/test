@@ -35,6 +35,15 @@ const ProductDetailPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
 
+  // Track product view (debounced via sessionStorage to avoid double-counting on remounts)
+  useEffect(() => {
+    if (!id) return;
+    const key = `viewed:${id}`;
+    if (typeof sessionStorage !== "undefined" && sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+    supabase.rpc("increment_listing_view", { _listing_id: id }).then(() => {});
+  }, [id]);
+
   const relatedProducts = useMemo(() => {
     if (!listing) return [];
 
