@@ -189,7 +189,7 @@ const HomePage = () => {
   return (
     <Layout>
       <SEOHead
-        title="Streaming-Hardware & IPTV-Receiver kaufen"
+        title="Streaming- & IPTV-Hardware kaufen"
         description="Dein Fachhändler für Streaming Boxen, IPTV-Receiver & Zubehör. Top-Marken wie Formuler, schneller Versand aus Deutschland & 2 Jahre Garantie."
         canonical="/"
         jsonLd={homepageJsonLd}

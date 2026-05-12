@@ -5,4 +5,4 @@ Disallow: /checkout/
 Disallow: /anmelden
 Disallow: /konto
 
-Sitemap: https://ggjxyohosugjjbcdrxvd.supabase.co/functions/v1/sitemap
+Sitemap: https://b-electronics.shop/sitemap.xml
