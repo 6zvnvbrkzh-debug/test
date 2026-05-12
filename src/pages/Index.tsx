@@ -696,7 +696,7 @@ const HomePage = () => {
                 num: "03",
                 icon: Truck,
                 title: "DHL aus Deutschland",
-                desc: "Bestellung bis 14 Uhr → DHL-Versand am selben Werktag. Paket-Tracking inklusive, versichert.",
+                desc: "Schneller DHL-Versand aus Deutschland. Paket-Tracking inklusive, versichert.",
               },
             ].map((item, i) => (
               <motion.div key={item.title} {...fadeUp(0.1 + i * 0.08)} className="bg-card group relative p-6 md:p-10 hover:bg-surface-sunken transition-colors duration-500">
