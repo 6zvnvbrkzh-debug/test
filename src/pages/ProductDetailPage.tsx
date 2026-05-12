@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ShieldCheck, Truck, Package, ChevronLeft, ChevronRight, Minus, Plus, ShoppingCart, Check, Loader2, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,6 +11,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useActiveListings } from "@/hooks/useActiveListings";
 import { useListingsRatings } from "@/hooks/useReviews";
 import { SEOHead } from "@/components/SEOHead";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const conditionLabels: Record<string, string> = {
