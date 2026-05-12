@@ -212,7 +212,7 @@ export function Footer() {
                 <div>
                   <h4 className="text-sm font-semibold tracking-wide">Versand mit DHL</h4>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Versand aus Deutschland – 1–2 Werktage Lieferzeit
+                    Versand aus Deutschland – 2–3 Werktage Lieferzeit
                   </p>
                 </div>
               </div>
