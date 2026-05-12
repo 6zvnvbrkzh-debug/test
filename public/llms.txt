@@ -1,0 +1,27 @@
+# Barbato Electronics
+
+> Deutscher Online-Shop für Streaming-Hardware, IPTV-Receiver, Android-TV-Boxen und passendes Zubehör. Versand aus Deutschland, 2 Jahre Garantie, versandkostenfrei ab 50 €.
+
+## Pages
+
+- [Startseite](/): Übersicht über aktuelle Highlights, Top-Produkte und Marken.
+- [Produkte](/produkte): Vollständiger Produktkatalog mit Filter nach Kategorie und Marke.
+- [Ratgeber & FAQ](/faq): Häufige Fragen sowie Ratgeberartikel rund um Streaming, IPTV und Receiver.
+- [Kontakt](/kontakt): Support per E-Mail, WhatsApp und Telegram.
+- [Impressum](/impressum): Anbieterkennzeichnung nach § 5 TMG.
+- [Datenschutz](/datenschutz): Informationen zur Datenverarbeitung.
+- [AGB](/agb): Allgemeine Geschäftsbedingungen.
+- [Widerrufsrecht](/widerrufsrecht): Widerrufsbelehrung für Verbraucher.
+
+## Sortiment
+
+- Streaming-Boxen (z. B. Formuler, Octagon)
+- IPTV- und Sat-Receiver
+- Android-TV-Geräte
+- Fernbedienungen, HDMI-Kabel und weiteres Zubehör
+
+## Versand & Zahlung
+
+- Versandkostenfrei innerhalb Deutschlands ab 50 € Bestellwert, sonst 5,99 € Pauschale.
+- Lieferung in 2–4 Werktagen per DHL.
+- Zahlung per Kreditkarte, Klarna, Sofort und weitere Stripe-Methoden.

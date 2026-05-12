@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Dynamic sitemap served via edge function. See robots.txt for the canonical URL. -->
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://b-electronics.shop/</loc>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-</urlset>
+<!--
+  Static sitemap index. Points to the dynamic sitemap served by the
+  edge function, which includes all product and guide URLs generated
+  from the database.
+-->
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>https://ggjxyohosugjjbcdrxvd.supabase.co/functions/v1/sitemap</loc>
+  </sitemap>
+</sitemapindex>

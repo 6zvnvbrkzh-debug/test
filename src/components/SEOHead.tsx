@@ -37,6 +37,10 @@ export function SEOHead({
 }: SEOHeadProps) {
   const fullTitle = `${title} | Barbato Electronics`;
   const canonicalUrl = `${BASE_URL}${canonical ?? ""}`;
+  // Truncate descriptions to 160 chars (search-result limit) — break at last word boundary.
+  const truncatedDescription = description.length > 160
+    ? description.slice(0, 157).replace(/\s+\S*$/, "").trimEnd() + "…"
+    : description;
   const images = (ogImages && ogImages.length > 0 ? ogImages : [ogImage || DEFAULT_OG_IMAGE]).filter(Boolean) as string[];
   const primaryImage = images[0];
   const imagesKey = images.join("|");
@@ -58,10 +62,10 @@ export function SEOHead({
       document.querySelectorAll(`meta[${attr}="${key}"]`).forEach((el) => el.remove());
     };
 
-    setMeta("name", "description", description);
+    setMeta("name", "description", truncatedDescription);
     setMeta("name", "robots", noindex ? "noindex, nofollow" : "index, follow");
     setMeta("property", "og:title", fullTitle);
-    setMeta("property", "og:description", description);
+    setMeta("property", "og:description", truncatedDescription);
     setMeta("property", "og:url", canonicalUrl);
     setMeta("property", "og:type", type);
     setMeta("property", "og:site_name", "Barbato Electronics");
@@ -87,7 +91,7 @@ export function SEOHead({
 
     setMeta("name", "twitter:card", "summary_large_image");
     setMeta("name", "twitter:title", fullTitle);
-    setMeta("name", "twitter:description", description);
+    setMeta("name", "twitter:description", truncatedDescription);
     if (primaryImage) setMeta("name", "twitter:image", primaryImage);
 
     // Product-specific OG tags (used by WhatsApp/Telegram/Pinterest for rich previews)
