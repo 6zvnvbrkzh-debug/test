@@ -106,11 +106,11 @@ const categories = [
 ];
 
 const trustItems = [
-  { icon: Zap, title: "Blitzschneller Versand", desc: "Bis 14 Uhr bestellt, nächster Tag versendet" },
-  { icon: Truck, title: "Kostenloser Versand", desc: "Ab 50€ Bestellwert" },
+  { icon: Zap, title: "Schneller Versand", desc: "In 2–3 Werktagen bei dir" },
+  { icon: Truck, title: "Kostenloser Versand", desc: "Ab 50\u00A0€ Bestellwert" },
   { icon: ShieldCheck, title: "2 Jahre Garantie", desc: "Auf alle Produkte" },
   { icon: RotateCcw, title: "14 Tage Rückgabe", desc: "Kostenlos & einfach" },
-  { icon: Headphones, title: "Persönlicher Support", desc: "Mo–So, 9–21 Uhr" },
+  { icon: Headphones, title: "Persönlicher Support", desc: "Mo–So, 9–21\u00A0Uhr" },
 ];
 
 const fadeUp = (delay = 0) => ({
@@ -247,7 +247,7 @@ const HomePage = () => {
                 <div className="flex items-start gap-3">
                   <div className="mt-1.5 h-px w-8 md:w-10 bg-primary shrink-0" />
                   <p className="text-sm md:text-lg text-muted-foreground leading-relaxed">
-                    Formuler & Octagon Hardware aus deutschem Lager. Bis 14 Uhr bestellt — morgen bei dir.
+                    Formuler & Octagon Hardware aus deutschem Lager. In 2–3 Werktagen bei dir — mit DHL versandkostenfrei ab 50\u00A0€.
                   </p>
                 </div>
               </div>
@@ -286,10 +286,10 @@ const HomePage = () => {
                 </div>
                 <div className="border-l-2 border-primary/40 pl-2.5 md:pl-4">
                   <div className="font-mono-data text-xl md:text-3xl font-bold text-foreground tracking-tight">
-                    24<span className="text-primary">h</span>
+                    2–3<span className="text-primary text-xs md:text-base"> Tage</span>
                   </div>
                   <div className="text-[9px] md:text-xs text-muted-foreground uppercase tracking-wider mt-0.5 md:mt-1">
-                    Versand
+                    Lieferzeit
                   </div>
                 </div>
                 <div className="border-l-2 border-primary/40 pl-2.5 md:pl-4">
