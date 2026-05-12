@@ -771,7 +771,7 @@ const HomePage = () => {
               Dein nächster <span className="bg-gradient-to-r from-primary to-primary/40 bg-clip-text text-transparent">Receiver</span> ist nur einen Klick entfernt.
             </h2>
             <p className="text-sm md:text-lg text-muted-foreground max-w-xl mx-auto mb-7 md:mb-10">
-              Bestelle jetzt — bis 14 Uhr versendet, in 1–2 Werktagen bei dir, mit 30 Tagen Rückgaberecht.
+              Bestelle jetzt — in 2–3 Werktagen bei dir, mit 14 Tagen Rückgaberecht.
             </p>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 md:gap-3">
               <Link to="/produkte">
