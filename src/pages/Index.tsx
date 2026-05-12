@@ -218,7 +218,7 @@ const HomePage = () => {
             {/* Left: Display Typography + CTA */}
             <motion.div {...fadeUp(0.05)}>
               <h1 className="text-display text-[clamp(40px,12vw,52px)] sm:text-[64px] md:text-[88px] lg:text-[104px] mb-5 md:mb-6">
-                <span className="block">Streaming.</span>
+                <span className="block">Barbato</span>
                 <span className="block">
                   <span className="text-stroke">Receiver.</span>
                 </span>
