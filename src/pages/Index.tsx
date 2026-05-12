@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/marketplace/ProductCard";
 import { useActiveListings } from "@/hooks/useActiveListings";
+import { useTopProducts } from "@/hooks/useTopProducts";
 import { useShopStats } from "@/hooks/useReviews";
 import { SEOHead, BASE_URL } from "@/components/SEOHead";
 import { TelegramIcon } from "@/components/icons";
