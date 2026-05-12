@@ -307,18 +307,18 @@ const HomePage = () => {
             <motion.div {...fadeUp(0.15)} className="relative lg:justify-self-end w-full max-w-sm md:max-w-md mx-auto lg:mx-0">
               {heroProduct ? (
                 <div className="relative">
-                  <div className="relative grid grid-cols-1 grid-rows-1 overflow-hidden rounded-3xl">
-                    <AnimatePresence initial={false} mode="popLayout">
+                  <div className="relative h-[430px] sm:h-[460px] md:h-[560px] lg:h-[540px] overflow-hidden rounded-3xl contain-layout">
+                    <AnimatePresence initial={false} mode="sync">
                       <motion.div
                         key={heroProduct.id}
                         initial={{ opacity: 0, x: 80 }}
                         animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -80, position: "absolute" }}
+                        exit={{ opacity: 0, x: -80 }}
                         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                        className="col-start-1 row-start-1 inset-0 w-full"
+                        className="absolute inset-0 w-full h-full"
                       >
-                        <Link to={`/produkt/${heroProduct.id}`} className="block group">
-                          <div className="relative rounded-3xl border border-border/50 bg-card/40 backdrop-blur-xl overflow-hidden shadow-[0_20px_80px_-20px_hsl(var(--primary)/0.3)] transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-[0_30px_100px_-20px_hsl(var(--primary)/0.5)]">
+                        <Link to={`/produkt/${heroProduct.id}`} className="block h-full group">
+                          <div className="relative h-full rounded-3xl border border-border/50 bg-card/40 backdrop-blur-xl overflow-hidden shadow-[0_20px_80px_-20px_hsl(var(--primary)/0.3)] transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-[0_30px_100px_-20px_hsl(var(--primary)/0.5)] flex flex-col">
                             {/* Corner crosshairs */}
                             <div className="absolute top-3 left-3 w-4 h-4 border-l-2 border-t-2 border-primary/40 z-10" />
                             <div className="absolute top-3 right-3 w-4 h-4 border-r-2 border-t-2 border-primary/40 z-10" />
@@ -335,8 +335,8 @@ const HomePage = () => {
                             <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5 pointer-events-none" />
 
                             {/* Image */}
-                            <div className="relative">
-                              <div className="p-8 md:p-14">
+                            <div className="relative flex-1 min-h-0">
+                              <div className="absolute inset-0 p-8 md:p-14 flex items-center justify-center">
                                 <img
                                   src={getOptimizedImageUrl(heroProduct.images[0], { width: 600, quality: 80 }) || "/placeholder.svg"}
                                   srcSet={getImageSrcSet(heroProduct.images[0], [400, 600, 800], { quality: 80 })}
@@ -347,7 +347,7 @@ const HomePage = () => {
                                   fetchPriority="high"
                                   decoding="async"
                                   loading="eager"
-                                  className="w-full max-w-[220px] md:max-w-[340px] mx-auto object-contain drop-shadow-[0_30px_30px_hsl(var(--primary)/0.25)] group-hover:scale-105 group-hover:rotate-[-2deg] transition-transform duration-700"
+                                  className="w-full h-full max-w-[220px] md:max-w-[340px] max-h-[220px] md:max-h-[340px] mx-auto object-contain drop-shadow-[0_30px_30px_hsl(var(--primary)/0.25)] group-hover:scale-105 group-hover:rotate-[-2deg] transition-transform duration-700"
                                 />
                               </div>
                             </div>
