@@ -1,6 +1,6 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight, Truck, ShieldCheck, RotateCcw, Star,
   Zap, Flame, Package, CreditCard, Headphones,
@@ -131,7 +131,19 @@ const HomePage = () => {
   const reviewAvg = shopStats && shopStats.count > 0 ? shopStats.avg : 4.9;
   const reviewCount = shopStats?.count ?? 0;
   const highlights = listings.slice(0, 8);
-  const heroProduct = highlights[0];
+  const heroProducts = topProducts.length > 0 ? topProducts : highlights.slice(0, 5);
+  const [heroIndex, setHeroIndex] = useState(0);
+
+  useEffect(() => {
+    if (heroProducts.length <= 1) return;
+    const interval = setInterval(() => {
+      setHeroIndex((i) => (i + 1) % heroProducts.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [heroProducts.length]);
+
+  const safeHeroIndex = heroProducts.length > 0 ? heroIndex % heroProducts.length : 0;
+  const heroProduct = heroProducts[safeHeroIndex];
   const heroImageUrl = heroProduct?.images?.[0];
 
   // Preload LCP hero image as early as possible (during render, not after effect commit)
@@ -294,66 +306,105 @@ const HomePage = () => {
             {/* Right: Hero product card with scan effect */}
             <motion.div {...fadeUp(0.15)} className="relative lg:justify-self-end w-full max-w-sm md:max-w-md mx-auto lg:mx-0">
               {heroProduct ? (
-                <Link to={`/produkt/${heroProduct.id}`} className="block group">
-                  <div className="relative rounded-3xl border border-border/50 bg-card/40 backdrop-blur-xl overflow-hidden shadow-[0_20px_80px_-20px_hsl(var(--primary)/0.3)] transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-[0_30px_100px_-20px_hsl(var(--primary)/0.5)]">
-                    {/* Corner crosshairs (techy detail) */}
-                    <div className="absolute top-3 left-3 w-4 h-4 border-l-2 border-t-2 border-primary/40 z-10" />
-                    <div className="absolute top-3 right-3 w-4 h-4 border-r-2 border-t-2 border-primary/40 z-10" />
-                    <div className="absolute bottom-3 left-3 w-4 h-4 border-l-2 border-b-2 border-primary/40 z-10" />
-                    <div className="absolute bottom-3 right-3 w-4 h-4 border-r-2 border-b-2 border-primary/40 z-10" />
+                <div className="relative">
+                  <div className="relative overflow-hidden rounded-3xl">
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.div
+                        key={heroProduct.id}
+                        initial={{ opacity: 0, x: 60 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -60 }}
+                        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                      >
+                        <Link to={`/produkt/${heroProduct.id}`} className="block group">
+                          <div className="relative rounded-3xl border border-border/50 bg-card/40 backdrop-blur-xl overflow-hidden shadow-[0_20px_80px_-20px_hsl(var(--primary)/0.3)] transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-[0_30px_100px_-20px_hsl(var(--primary)/0.5)]">
+                            {/* Corner crosshairs */}
+                            <div className="absolute top-3 left-3 w-4 h-4 border-l-2 border-t-2 border-primary/40 z-10" />
+                            <div className="absolute top-3 right-3 w-4 h-4 border-r-2 border-t-2 border-primary/40 z-10" />
+                            <div className="absolute bottom-3 left-3 w-4 h-4 border-l-2 border-b-2 border-primary/40 z-10" />
+                            <div className="absolute bottom-3 right-3 w-4 h-4 border-r-2 border-b-2 border-primary/40 z-10" />
 
-                    {/* Gradient bg */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5 pointer-events-none" />
+                            {/* "Bestseller" badge */}
+                            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/90 backdrop-blur-md text-primary-foreground text-[10px] font-semibold uppercase tracking-wider shadow-[0_4px_20px_hsl(var(--primary)/0.4)]">
+                              <Flame className="h-3 w-3" />
+                              <span>Top {safeHeroIndex + 1} · Beliebt</span>
+                            </div>
 
-                    {/* Image container */}
-                    <div className="relative">
-                      <div className="p-8 md:p-14">
-                        <img
-                          src={getOptimizedImageUrl(heroProduct.images[0], { width: 600, quality: 80 }) || "/placeholder.svg"}
-                          srcSet={getImageSrcSet(heroProduct.images[0], [400, 600, 800], { quality: 80 })}
-                          sizes="(min-width: 1024px) 360px, 280px"
-                          alt={heroProduct.title}
-                          width={360}
-                          height={360}
-                          fetchPriority="high"
-                          decoding="async"
-                          loading="eager"
-                          className="w-full max-w-[220px] md:max-w-[340px] mx-auto object-contain drop-shadow-[0_30px_30px_hsl(var(--primary)/0.25)] group-hover:scale-105 group-hover:rotate-[-2deg] transition-transform duration-700"
-                        />
-                      </div>
-                    </div>
+                            {/* Gradient bg */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5 pointer-events-none" />
 
-                    {/* Spec strip */}
-                    <div className="border-t border-border/40 px-5 py-3 flex items-center justify-between text-[10px] font-mono-data uppercase tracking-wider text-muted-foreground/70">
-                      <span>SKU · {heroProduct.id.slice(0, 6).toUpperCase()}</span>
-                      <span className="flex items-center gap-1.5">
-                        <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                        {heroProduct.stock > 0 ? "Auf Lager" : "Vergriffen"}
-                      </span>
-                    </div>
+                            {/* Image */}
+                            <div className="relative">
+                              <div className="p-8 md:p-14">
+                                <img
+                                  src={getOptimizedImageUrl(heroProduct.images[0], { width: 600, quality: 80 }) || "/placeholder.svg"}
+                                  srcSet={getImageSrcSet(heroProduct.images[0], [400, 600, 800], { quality: 80 })}
+                                  sizes="(min-width: 1024px) 360px, 280px"
+                                  alt={heroProduct.title}
+                                  width={360}
+                                  height={360}
+                                  fetchPriority="high"
+                                  decoding="async"
+                                  loading="eager"
+                                  className="w-full max-w-[220px] md:max-w-[340px] mx-auto object-contain drop-shadow-[0_30px_30px_hsl(var(--primary)/0.25)] group-hover:scale-105 group-hover:rotate-[-2deg] transition-transform duration-700"
+                                />
+                              </div>
+                            </div>
 
-                    {/* Info bar at bottom */}
-                    <div className="bg-card/80 backdrop-blur-xl border-t border-border/40 px-5 py-4 flex items-center justify-between gap-3">
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold line-clamp-1 group-hover:text-primary transition-colors">{heroProduct.title}</p>
-                        <div className="flex items-baseline gap-2 mt-0.5">
-                          <span className="text-xl font-bold font-mono-data text-primary whitespace-nowrap">
-                            {formatPrice(heroProduct.price)}
-                          </span>
-                          {heroProduct.originalPrice &&
-                            heroProduct.originalPrice > heroProduct.price && (
-                              <span className="text-xs text-muted-foreground/60 font-mono-data line-through whitespace-nowrap">
-                                {formatPrice(heroProduct.originalPrice)}
+                            {/* Spec strip */}
+                            <div className="border-t border-border/40 px-5 py-3 flex items-center justify-between text-[10px] font-mono-data uppercase tracking-wider text-muted-foreground/70">
+                              <span>SKU · {heroProduct.id.slice(0, 6).toUpperCase()}</span>
+                              <span className="flex items-center gap-1.5">
+                                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                {heroProduct.stock > 0 ? "Auf Lager" : "Vergriffen"}
                               </span>
-                            )}
-                        </div>
-                      </div>
-                      <div className="h-11 w-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:rotate-[-12deg] transition-all duration-300 shadow-[0_4px_20px_hsl(var(--primary)/0.4)]">
-                        <ArrowRight className="h-4 w-4" />
-                      </div>
-                    </div>
+                            </div>
+
+                            {/* Info bar */}
+                            <div className="bg-card/80 backdrop-blur-xl border-t border-border/40 px-5 py-4 flex items-center justify-between gap-3">
+                              <div className="min-w-0 flex-1">
+                                <p className="text-sm font-semibold line-clamp-1 group-hover:text-primary transition-colors">{heroProduct.title}</p>
+                                <div className="flex items-baseline gap-2 mt-0.5">
+                                  <span className="text-xl font-bold font-mono-data text-primary whitespace-nowrap">
+                                    {formatPrice(heroProduct.price)}
+                                  </span>
+                                  {heroProduct.originalPrice &&
+                                    heroProduct.originalPrice > heroProduct.price && (
+                                      <span className="text-xs text-muted-foreground/60 font-mono-data line-through whitespace-nowrap">
+                                        {formatPrice(heroProduct.originalPrice)}
+                                      </span>
+                                    )}
+                                </div>
+                              </div>
+                              <div className="h-11 w-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:rotate-[-12deg] transition-all duration-300 shadow-[0_4px_20px_hsl(var(--primary)/0.4)]">
+                                <ArrowRight className="h-4 w-4" />
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                      </motion.div>
+                    </AnimatePresence>
                   </div>
-                </Link>
+
+                  {/* Dot indicators */}
+                  {heroProducts.length > 1 && (
+                    <div className="flex items-center justify-center gap-2 mt-4">
+                      {heroProducts.map((p, i) => (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onClick={() => setHeroIndex(i)}
+                          aria-label={`Produkt ${i + 1} anzeigen`}
+                          className={`h-1.5 rounded-full transition-all duration-300 ${
+                            i === safeHeroIndex
+                              ? "w-8 bg-primary"
+                              : "w-1.5 bg-border hover:bg-primary/50"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
               ) : (
                 /* Skeleton */
                 <div className="relative rounded-3xl border border-border/40 bg-card/50 overflow-hidden animate-pulse">
