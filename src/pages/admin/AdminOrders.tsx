@@ -71,16 +71,55 @@ export default function AdminOrders() {
   });
 
   const trackingMutation = useMutation({
-    mutationFn: async ({ orderId, trackingNumber }: { orderId: string; trackingNumber: string }) => {
+    mutationFn: async ({
+      orderId,
+      trackingNumber,
+      order,
+    }: {
+      orderId: string;
+      trackingNumber: string;
+      order: OrderDetail;
+    }) => {
+      const trimmed = trackingNumber.trim();
       const { error } = await supabase
         .from("orders")
-        .update({ tracking_number: trackingNumber.trim() || null } as any)
+        .update({ tracking_number: trimmed || null } as any)
         .eq("id", orderId);
       if (error) throw error;
+
+      // Versandbestätigung an Kunden senden, wenn Sendungsnummer neu/geändert
+      // und eine Kunden-E-Mail vorhanden ist.
+      const previous = (order.tracking_number || "").trim();
+      if (trimmed && trimmed !== previous && order.customer_email) {
+        try {
+          await supabase.functions.invoke("send-transactional-email", {
+            body: {
+              templateName: "shipping-confirmation",
+              recipientEmail: order.customer_email,
+              idempotencyKey: `shipping-${orderId}-${trimmed}`,
+              templateData: {
+                customerName: order.customer_name ?? "",
+                orderId,
+                trackingNumber: trimmed,
+                productTitle: order.listings?.title ?? "",
+                shippingAddress: order.shipping_address ?? null,
+              },
+            },
+          });
+        } catch (e) {
+          console.error("Versandbestätigung konnte nicht gesendet werden", e);
+        }
+      }
+
+      return { sentEmail: !!(trimmed && trimmed !== previous && order.customer_email) };
     },
-    onSuccess: () => {
+    onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
-      toast.success("Sendungsnummer gespeichert!");
+      toast.success(
+        result?.sentEmail
+          ? "Sendungsnummer gespeichert · Versandbestätigung an Kunde gesendet"
+          : "Sendungsnummer gespeichert!"
+      );
     },
     onError: (err: any) => toast.error(err.message || "Fehler beim Speichern"),
   });
@@ -552,6 +591,7 @@ export default function AdminOrders() {
                       trackingMutation.mutate({
                         orderId: selectedOrder.id,
                         trackingNumber: trackingInput,
+                        order: selectedOrder,
                       })
                     }
                   >
