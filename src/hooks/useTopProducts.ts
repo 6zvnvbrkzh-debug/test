@@ -41,20 +41,29 @@ export function useTopProducts(limit = 5) {
   return useQuery({
     queryKey: ["top-products", limit],
     queryFn: async (): Promise<Listing[]> => {
-      // 1) Fetch all order listing_ids (only completed/shipped/pending count as "ordered")
+      // 1) Sales counts per listing
       const { data: orders, error: ordersError } = await supabase
         .from("orders")
         .select("listing_id, status");
       if (ordersError) throw ordersError;
 
-      // Count orders per listing
-      const counts = new Map<string, number>();
+      const salesCounts = new Map<string, number>();
       (orders ?? []).forEach((o) => {
         if (!o.listing_id) return;
-        counts.set(o.listing_id, (counts.get(o.listing_id) ?? 0) + 1);
+        salesCounts.set(o.listing_id, (salesCounts.get(o.listing_id) ?? 0) + 1);
       });
 
-      // 2) Fetch active listings excluding "zubehoer"
+      // 2) View counts per listing
+      const { data: viewRows } = await supabase
+        .from("listing_view_counts")
+        .select("listing_id, views");
+
+      const viewCounts = new Map<string, number>();
+      (viewRows ?? []).forEach((v: any) => {
+        viewCounts.set(v.listing_id, Number(v.views) ?? 0);
+      });
+
+      // 3) Active listings excluding "zubehoer"
       const { data: listings, error: listingsError } = await supabase
         .from("listings")
         .select(
@@ -66,11 +75,16 @@ export function useTopProducts(limit = 5) {
 
       const mapped = (listings ?? []).map(mapListing);
 
-      // 3) Sort by order count desc, fallback to created_at desc
+      // 4) Combined popularity score: each sale weighs 5× a view
+      const SALE_WEIGHT = 5;
       const sorted = mapped
-        .map((l) => ({ l, c: counts.get(l.id) ?? 0 }))
+        .map((l) => {
+          const sales = salesCounts.get(l.id) ?? 0;
+          const views = viewCounts.get(l.id) ?? 0;
+          return { l, score: sales * SALE_WEIGHT + views };
+        })
         .sort((a, b) => {
-          if (b.c !== a.c) return b.c - a.c;
+          if (b.score !== a.score) return b.score - a.score;
           return new Date(b.l.createdAt).getTime() - new Date(a.l.createdAt).getTime();
         })
         .slice(0, limit)
