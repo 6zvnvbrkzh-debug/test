@@ -62,10 +62,10 @@ export function SEOHead({
       document.querySelectorAll(`meta[${attr}="${key}"]`).forEach((el) => el.remove());
     };
 
-    setMeta("name", "description", description);
+    setMeta("name", "description", truncatedDescription);
     setMeta("name", "robots", noindex ? "noindex, nofollow" : "index, follow");
     setMeta("property", "og:title", fullTitle);
-    setMeta("property", "og:description", description);
+    setMeta("property", "og:description", truncatedDescription);
     setMeta("property", "og:url", canonicalUrl);
     setMeta("property", "og:type", type);
     setMeta("property", "og:site_name", "Barbato Electronics");
