@@ -37,6 +37,10 @@ export function SEOHead({
 }: SEOHeadProps) {
   const fullTitle = `${title} | Barbato Electronics`;
   const canonicalUrl = `${BASE_URL}${canonical ?? ""}`;
+  // Truncate descriptions to 160 chars (search-result limit) — break at last word boundary.
+  const truncatedDescription = description.length > 160
+    ? description.slice(0, 157).replace(/\s+\S*$/, "").trimEnd() + "…"
+    : description;
   const images = (ogImages && ogImages.length > 0 ? ogImages : [ogImage || DEFAULT_OG_IMAGE]).filter(Boolean) as string[];
   const primaryImage = images[0];
   const imagesKey = images.join("|");
