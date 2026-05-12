@@ -126,6 +126,7 @@ const formatPrice = (price: number) => {
 
 const HomePage = () => {
   const { data: listings = [], isLoading } = useActiveListings();
+  const { data: topProducts = [], isLoading: isLoadingTop } = useTopProducts(5);
   const { data: shopStats } = useShopStats();
   const reviewAvg = shopStats && shopStats.count > 0 ? shopStats.avg : 4.9;
   const reviewCount = shopStats?.count ?? 0;
