@@ -91,7 +91,7 @@ export function SEOHead({
 
     setMeta("name", "twitter:card", "summary_large_image");
     setMeta("name", "twitter:title", fullTitle);
-    setMeta("name", "twitter:description", description);
+    setMeta("name", "twitter:description", truncatedDescription);
     if (primaryImage) setMeta("name", "twitter:image", primaryImage);
 
     // Product-specific OG tags (used by WhatsApp/Telegram/Pinterest for rich previews)
