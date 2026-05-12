@@ -220,7 +220,7 @@ const HomePage = () => {
               <h1 className="text-display text-[clamp(40px,12vw,52px)] sm:text-[64px] md:text-[88px] lg:text-[104px] mb-5 md:mb-6">
                 <span className="block">Barbato</span>
                 <span className="block">
-                  <span className="text-stroke">Receiver.</span>
+                  <span className="text-stroke">Electronics</span>
                 </span>
                 <span className="block">
                   <span className="bg-gradient-to-r from-primary via-primary/90 to-primary/40 bg-clip-text text-transparent">
