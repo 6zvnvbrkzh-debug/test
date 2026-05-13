@@ -246,7 +246,7 @@ const HomePage = () => {
                 <div className="flex items-start gap-3">
                   <div className="mt-1.5 h-px w-8 md:w-10 bg-primary shrink-0" />
                   <p className="text-sm md:text-lg text-muted-foreground leading-relaxed">
-                    Formuler & Octagon Hardware aus deutschem Lager. In 2–3 Werktagen bei dir — mit DHL versandkostenfrei ab 50\u00A0€.
+                    Formuler & Octagon Hardware aus deutschem Lager. In 2–3 Werktagen bei dir — mit DHL versandkostenfrei ab 50 €.
                   </p>
                 </div>
               </div>
