@@ -325,7 +325,7 @@ const HomePage = () => {
                             <div className="absolute bottom-3 right-3 w-4 h-4 border-r-2 border-b-2 border-primary/40 z-10" />
 
                             {/* "Bestseller" badge */}
-                            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/90 backdrop-blur-md text-primary-foreground text-[10px] font-semibold uppercase tracking-wider shadow-[0_4px_20px_hsl(var(--primary)/0.4)]">
+                            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold uppercase tracking-wider shadow-[0_4px_20px_hsl(var(--primary)/0.4)]">
                               <Flame className="h-3 w-3" />
                               <span>Top {safeHeroIndex + 1} · Beliebt</span>
                             </div>
