@@ -192,7 +192,7 @@ export function Header() {
 
         {/* ─── DESKTOP ─── */}
         <div
-          className={`hidden items-center justify-between rounded-2xl border border-primary/30 bg-primary/75 backdrop-blur-2xl backdrop-saturate-150 transition-all duration-500 ease-out lg:flex ${
+          className={`hidden items-center justify-between rounded-2xl border border-primary/30 bg-primary/75 backdrop-blur-2xl backdrop-saturate-150 transition-all duration-500 ease-out lg:flex bg-[#ef0b0b] text-[#14c1f5] ${
             scrolled
               ? "px-6 py-2.5 shadow-[0_4px_20px_-4px_hsl(var(--primary)/0.3)]"
               : "px-8 py-3.5 shadow-[0_8px_40px_-8px_hsl(var(--primary)/0.4)]"
