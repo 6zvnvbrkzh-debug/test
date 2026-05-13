@@ -165,25 +165,7 @@ serve(async (req) => {
           console.error("Order notification email failed:", (e as Error).message);
         }
 
-        if (customerEmail) {
-          try {
-            await invokeEmail({
-              templateName: "order-confirmation-customer",
-              recipientEmail: customerEmail,
-              idempotencyKey: `order-customer-${session.id}`,
-              templateData: {
-                sessionId: session.id,
-                customerName: customerName || "",
-                shippingAddress,
-                items,
-                total,
-              },
-            });
-            console.log("Customer confirmation email enqueued");
-          } catch (e) {
-            console.error("Customer confirmation email failed:", (e as Error).message);
-          }
-        }
+        // Kunden-Bestätigungsmail deaktiviert – Stripe versendet bereits eine Quittung/Rechnung an den Kunden.
       } catch (mailErr) {
         console.error("Order email error:", mailErr);
       }
