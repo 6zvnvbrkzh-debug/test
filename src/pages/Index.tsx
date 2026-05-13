@@ -110,7 +110,7 @@ const trustItems = [
   { icon: Truck, title: "Kostenloser Versand", desc: "Ab 50\u00A0€ Bestellwert" },
   { icon: ShieldCheck, title: "2 Jahre Garantie", desc: "Auf alle Produkte" },
   { icon: RotateCcw, title: "14 Tage Rückgabe", desc: "Kostenlos & einfach" },
-  { icon: Headphones, title: "Persönlicher Support", desc: "Mo–So, 9–21\u00A0Uhr" },
+  { icon: Headphones, title: "Persönlicher Support", desc: "Mo–Fr, 9–20\u00A0Uhr" },
 ];
 
 const fadeUp = (delay = 0) => ({
