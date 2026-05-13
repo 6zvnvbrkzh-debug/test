@@ -146,21 +146,20 @@ const HomePage = () => {
   const heroProduct = heroProducts[safeHeroIndex];
   const heroImageUrl = heroProduct?.images?.[0];
 
-  // Preload LCP hero image as early as possible (during render, not after effect commit)
-  // to eliminate the ~4s resource load delay flagged by Lighthouse.
-  if (typeof document !== "undefined" && heroImageUrl) {
+  // Preload LCP hero image (in effect, not during render – sonst Side-Effect bei jedem State-Change).
+  useEffect(() => {
+    if (typeof document === "undefined" || !heroImageUrl) return;
     const existing = document.head.querySelector(
       `link[rel="preload"][as="image"][href="${heroImageUrl}"]`
     );
-    if (!existing) {
-      const link = document.createElement("link");
-      link.rel = "preload";
-      link.as = "image";
-      link.href = heroImageUrl;
-      link.fetchPriority = "high";
-      document.head.appendChild(link);
-    }
-  }
+    if (existing) return;
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = heroImageUrl;
+    link.fetchPriority = "high";
+    document.head.appendChild(link);
+  }, [heroImageUrl]);
 
   const discountProducts = useMemo(
     () =>
@@ -318,7 +317,7 @@ const HomePage = () => {
                         className="absolute inset-0 w-full h-full"
                       >
                         <Link to={`/produkt/${heroProduct.id}`} className="block h-full group">
-                          <div className="relative h-full rounded-3xl border border-border/50 bg-card/40 backdrop-blur-xl overflow-hidden shadow-[0_20px_80px_-20px_hsl(var(--primary)/0.3)] transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-[0_30px_100px_-20px_hsl(var(--primary)/0.5)] flex flex-col">
+                          <div className="relative h-full rounded-3xl border border-border/50 bg-card overflow-hidden shadow-[0_20px_80px_-20px_hsl(var(--primary)/0.3)] transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-[0_30px_100px_-20px_hsl(var(--primary)/0.5)] flex flex-col will-change-transform">
                             {/* Corner crosshairs */}
                             <div className="absolute top-3 left-3 w-4 h-4 border-l-2 border-t-2 border-primary/40 z-10" />
                             <div className="absolute top-3 right-3 w-4 h-4 border-r-2 border-t-2 border-primary/40 z-10" />
@@ -326,7 +325,7 @@ const HomePage = () => {
                             <div className="absolute bottom-3 right-3 w-4 h-4 border-r-2 border-b-2 border-primary/40 z-10" />
 
                             {/* "Bestseller" badge */}
-                            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/90 backdrop-blur-md text-primary-foreground text-[10px] font-semibold uppercase tracking-wider shadow-[0_4px_20px_hsl(var(--primary)/0.4)]">
+                            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold uppercase tracking-wider shadow-[0_4px_20px_hsl(var(--primary)/0.4)]">
                               <Flame className="h-3 w-3" />
                               <span>Top {safeHeroIndex + 1} · Beliebt</span>
                             </div>
@@ -362,7 +361,7 @@ const HomePage = () => {
                             </div>
 
                             {/* Info bar */}
-                            <div className="bg-card/80 backdrop-blur-xl border-t border-border/40 px-5 py-4 flex items-center justify-between gap-3">
+                            <div className="bg-card border-t border-border/40 px-5 py-4 flex items-center justify-between gap-3">
                               <div className="min-w-0 flex-1">
                                 <p className="text-sm font-semibold line-clamp-1 group-hover:text-primary transition-colors">{heroProduct.title}</p>
                                 <div className="flex items-baseline gap-2 mt-0.5">
