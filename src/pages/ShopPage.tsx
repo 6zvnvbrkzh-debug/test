@@ -341,7 +341,7 @@ const ShopPage = () => {
               {
                 icon: Truck,
                 title: "Schneller Versand",
-                desc: "Bis 14 Uhr bestellt, nächster Werktag versendet — Lieferung in 1–2 Tagen.",
+                desc: "In 2–3 Werktagen bei dir — mit DHL versandkostenfrei ab 50 €.",
               },
               {
                 icon: ShieldCheck,
