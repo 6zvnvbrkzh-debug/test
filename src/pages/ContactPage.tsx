@@ -105,7 +105,7 @@ export default function ContactPage() {
                 <Clock className="h-5 w-5 text-primary mb-3" />
                 <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Support-Zeiten</div>
                 <ul className="text-xs text-muted-foreground space-y-0.5">
-                  <li>Mo – Fr: 09:00 – 20:00 Uhr</li>
+                  <li>Mo – Do: 09:00 – 20:00 Uhr</li>
                   <li>Sa: 10&nbsp;–&nbsp;21 Uhr</li>
                   <li>So: 10&nbsp;–&nbsp;20 Uhr</li>
                 </ul>
