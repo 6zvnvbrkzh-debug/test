@@ -361,7 +361,7 @@ const HomePage = () => {
                             </div>
 
                             {/* Info bar */}
-                            <div className="bg-card/80 backdrop-blur-xl border-t border-border/40 px-5 py-4 flex items-center justify-between gap-3">
+                            <div className="bg-card border-t border-border/40 px-5 py-4 flex items-center justify-between gap-3">
                               <div className="min-w-0 flex-1">
                                 <p className="text-sm font-semibold line-clamp-1 group-hover:text-primary transition-colors">{heroProduct.title}</p>
                                 <div className="flex items-baseline gap-2 mt-0.5">
