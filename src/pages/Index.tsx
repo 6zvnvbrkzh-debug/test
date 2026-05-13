@@ -317,7 +317,7 @@ const HomePage = () => {
                         className="absolute inset-0 w-full h-full"
                       >
                         <Link to={`/produkt/${heroProduct.id}`} className="block h-full group">
-                          <div className="relative h-full rounded-3xl border border-border/50 bg-card/40 backdrop-blur-xl overflow-hidden shadow-[0_20px_80px_-20px_hsl(var(--primary)/0.3)] transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-[0_30px_100px_-20px_hsl(var(--primary)/0.5)] flex flex-col">
+                          <div className="relative h-full rounded-3xl border border-border/50 bg-card overflow-hidden shadow-[0_20px_80px_-20px_hsl(var(--primary)/0.3)] transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-[0_30px_100px_-20px_hsl(var(--primary)/0.5)] flex flex-col will-change-transform">
                             {/* Corner crosshairs */}
                             <div className="absolute top-3 left-3 w-4 h-4 border-l-2 border-t-2 border-primary/40 z-10" />
                             <div className="absolute top-3 right-3 w-4 h-4 border-r-2 border-t-2 border-primary/40 z-10" />
