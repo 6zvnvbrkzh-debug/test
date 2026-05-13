@@ -153,8 +153,7 @@ export function Footer() {
             </ul>
             <h4 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mt-6 mb-3">Öffnungszeiten</h4>
             <ul className="space-y-1 text-sm text-muted-foreground">
-              <li>Mo – Do: 9 – 20 Uhr</li>
-              <li>Fr: 9 – 21 Uhr</li>
+              <li>Mo – Fr: 09:00 – 20:00 Uhr</li>
               <li>Sa: 10 – 21 Uhr</li>
               <li>So: 10 – 20 Uhr</li>
             </ul>
