@@ -14,6 +14,7 @@ import { useTopProducts } from "@/hooks/useTopProducts";
 import { useShopStats } from "@/hooks/useReviews";
 import { SEOHead, BASE_URL } from "@/components/SEOHead";
 import { TelegramIcon } from "@/components/icons";
+import { GoogleReviewsSection } from "@/components/reviews/GoogleReviews";
 import { getOptimizedImageUrl, getImageSrcSet } from "@/lib/supabase-image";
 import categoryHighlights from "@/assets/category-highlights.webp";
 import categoryFormuler from "@/assets/category-formuler.webp";
@@ -753,6 +754,9 @@ const HomePage = () => {
           </a>
         </motion.div>
       </section>
+
+      {/* ─── GOOGLE REVIEWS ─── */}
+      <GoogleReviewsSection variant="full" />
 
       {/* ─── FINAL CTA ─── */}
       <section className="relative container py-12 md:py-28">
