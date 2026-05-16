@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/marketplace/ProductCard";
 import { ReviewsSection } from "@/components/reviews/ReviewsSection";
+import { GoogleReviewsSection } from "@/components/reviews/GoogleReviews";
 import { WishlistButton } from "@/components/marketplace/WishlistButton";
 import { useCart } from "@/contexts/CartContext";
 import { useActiveListings } from "@/hooks/useActiveListings";
@@ -487,6 +488,8 @@ const ProductDetailPage = () => {
         </div>
 
         <ReviewsSection listingId={listing.id} />
+
+        <GoogleReviewsSection variant="compact" />
 
         {relatedProducts.length > 0 && (
           <section className="mt-16 pb-8">
