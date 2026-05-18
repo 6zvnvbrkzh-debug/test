@@ -73,6 +73,8 @@ serve(async (req) => {
       console.log("Customer:", customerName, customerEmail);
       console.log("Shipping address:", JSON.stringify(shippingAddress));
 
+      let insertedCount = 0;
+      let expectedCount = 0;
       for (let i = 0; i < listingIds.length; i++) {
         const { data: listing } = await supabase
           .from("listings")
@@ -82,7 +84,8 @@ serve(async (req) => {
 
         if (listing) {
           const qty = quantities[i] || 1;
-          
+          expectedCount += qty;
+
           for (let q = 0; q < qty; q++) {
             const { error: insErr } = await supabase.from("orders").insert({
               buyer_id: userId,
@@ -95,9 +98,24 @@ serve(async (req) => {
               customer_email: customerEmail,
               shipping_address: shippingAddress,
             });
-            if (insErr) console.error("Order insert failed:", insErr);
+            if (insErr) {
+              console.error(
+                `Order insert failed (listing=${listingIds[i]}, unit ${q + 1}/${qty}):`,
+                insErr,
+              );
+            } else {
+              insertedCount++;
+            }
           }
+        } else {
+          console.error(`Listing not found: ${listingIds[i]}`);
         }
+      }
+
+      if (insertedCount !== expectedCount) {
+        console.error(
+          `ORDER COUNT MISMATCH for session ${session.id}: expected ${expectedCount}, inserted ${insertedCount}. Manual check required!`,
+        );
       }
 
       console.log(`Orders created for session ${session.id}`);
