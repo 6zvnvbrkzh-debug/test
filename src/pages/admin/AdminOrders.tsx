@@ -133,37 +133,41 @@ export default function AdminOrders() {
 
   const trackingMutation = useMutation({
     mutationFn: async ({
-      orderId,
+      orderIds,
       trackingNumber,
-      order,
+      group,
     }: {
-      orderId: string;
+      orderIds: string[];
       trackingNumber: string;
-      order: OrderDetail;
+      group: GroupedOrder;
     }) => {
       const trimmed = trackingNumber.trim();
       const { error } = await supabase
         .from("orders")
         .update({ tracking_number: trimmed || null } as any)
-        .eq("id", orderId);
+        .in("id", orderIds);
       if (error) throw error;
 
-      // Versandbestätigung an Kunden senden, wenn Sendungsnummer neu/geändert
-      // und eine Kunden-E-Mail vorhanden ist.
-      const previous = (order.tracking_number || "").trim();
-      if (trimmed && trimmed !== previous && order.customer_email) {
+      // Versandbestätigung an Kunden senden – nur EINE E-Mail pro Gruppe
+      const previous = (group.primary.tracking_number || "").trim();
+      const customerEmail = group.primary.customer_email;
+      if (trimmed && trimmed !== previous && customerEmail) {
         try {
+          const productTitle =
+            group.items.length === 1
+              ? group.items[0].title
+              : group.items.map((i) => `${i.quantity}× ${i.title}`).join(", ");
           await supabase.functions.invoke("send-transactional-email", {
             body: {
               templateName: "shipping-confirmation",
-              recipientEmail: order.customer_email,
-              idempotencyKey: `shipping-${orderId}-${trimmed}`,
+              recipientEmail: customerEmail,
+              idempotencyKey: `shipping-${group.groupKey}-${trimmed}`,
               templateData: {
-                customerName: order.customer_name ?? "",
-                orderId,
+                customerName: group.primary.customer_name ?? "",
+                orderId: group.primary.id,
                 trackingNumber: trimmed,
-                productTitle: order.listings?.title ?? "",
-                shippingAddress: order.shipping_address ?? null,
+                productTitle,
+                shippingAddress: group.primary.shipping_address ?? null,
               },
             },
           });
@@ -172,7 +176,7 @@ export default function AdminOrders() {
         }
       }
 
-      return { sentEmail: !!(trimmed && trimmed !== previous && order.customer_email) };
+      return { sentEmail: !!(trimmed && trimmed !== previous && customerEmail) };
     },
     onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
@@ -186,43 +190,48 @@ export default function AdminOrders() {
   });
 
   const statusMutation = useMutation({
-    mutationFn: async ({ orderId, status }: { orderId: string; status: string }) => {
+    mutationFn: async ({ orderIds, status }: { orderIds: string[]; status: string }) => {
       const { error } = await supabase
         .from("orders")
         .update({ status } as any)
-        .eq("id", orderId);
+        .in("id", orderIds);
       if (error) throw error;
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
-      setSelectedOrder((prev) => prev ? { ...prev, status: variables.status } : null);
+      setSelectedGroup((prev) =>
+        prev
+          ? {
+              ...prev,
+              primary: { ...prev.primary, status: variables.status },
+            }
+          : null
+      );
       toast.success("Status aktualisiert!");
     },
     onError: (err: any) => toast.error(err.message || "Fehler beim Aktualisieren"),
   });
 
-  const handleOpenDetail = (order: OrderDetail) => {
-    setSelectedOrder(order);
-    setTrackingInput(order.tracking_number || "");
+  const handleOpenDetail = (group: GroupedOrder) => {
+    setSelectedGroup(group);
+    setTrackingInput(group.primary.tracking_number || "");
   };
 
-  const filtered = statusFilter === "all"
-    ? orders.filter((o) => o.status !== "ARCHIVED")
-    : statusFilter === "ALL_INCL_ARCHIVED"
-    ? orders
-    : orders.filter((o) => o.status === statusFilter);
+  const groupedOrders = groupOrders(orders);
+
+  const filtered: GroupedOrder[] =
+    statusFilter === "all"
+      ? groupedOrders.filter((g) => g.primary.status !== "ARCHIVED")
+      : statusFilter === "ALL_INCL_ARCHIVED"
+      ? groupedOrders
+      : groupedOrders.filter((g) => g.primary.status === statusFilter);
 
   const totalRevenue = orders
     .filter((o) => o.status === "COMPLETED")
     .reduce((sum, o) => sum + Number(o.amount), 0);
 
-  const pendingCount = orders.filter((o) => o.status === "PENDING").length;
+  const pendingCount = groupedOrders.filter((g) => g.primary.status === "PENDING").length;
 
-  const formatAddress = (addr: ShippingAddress | null) => {
-    if (!addr) return null;
-    const parts = [addr.line1, addr.line2, `${addr.postal_code || ""} ${addr.city || ""}`.trim(), addr.country].filter(Boolean);
-    return parts.join(", ");
-  };
 
   const handleExportCSV = () => {
     if (filtered.length === 0) {
