@@ -110,7 +110,7 @@ function groupOrders(rows: OrderDetail[]): GroupedOrder[] {
 
 export default function AdminOrders() {
   const [statusFilter, setStatusFilter] = useState("all");
-  const [selectedOrder, setSelectedOrder] = useState<OrderDetail | null>(null);
+  const [selectedGroup, setSelectedGroup] = useState<GroupedOrder | null>(null);
   const [trackingInput, setTrackingInput] = useState("");
   const queryClient = useQueryClient();
 
