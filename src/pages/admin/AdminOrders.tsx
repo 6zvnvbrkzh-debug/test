@@ -576,15 +576,22 @@ export default function AdminOrders() {
       )}
 
       {/* Detail Dialog */}
-      <Dialog open={!!selectedOrder} onOpenChange={(open) => !open && setSelectedOrder(null)}>
+      <Dialog open={!!selectedGroup} onOpenChange={(open) => !open && setSelectedGroup(null)}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Hash className="h-4 w-4" />
-              Bestellung {selectedOrder?.id.slice(0, 8)}
+              Bestellung {selectedGroup?.primary.id.slice(0, 8)}
+              {selectedGroup && selectedGroup.itemCount > 1 && (
+                <Badge variant="outline" className="ml-1 text-[10px]">
+                  {selectedGroup.itemCount} Artikel
+                </Badge>
+              )}
             </DialogTitle>
           </DialogHeader>
-          {selectedOrder && (
+          {selectedGroup && (() => {
+            const primary = selectedGroup.primary;
+            return (
             <div className="space-y-5 pt-2">
               {/* Customer Info */}
               <div className="p-4 rounded-xl bg-muted/50 border border-border/50 space-y-2">
@@ -592,28 +599,28 @@ export default function AdminOrders() {
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
                     <User className="h-3.5 w-3.5 text-muted-foreground" />
-                    <span className="text-sm font-medium">{selectedOrder.customer_name || "Nicht verfügbar"}</span>
+                    <span className="text-sm font-medium">{primary.customer_name || "Nicht verfügbar"}</span>
                   </div>
-                  {selectedOrder.customer_email && (
+                  {primary.customer_email && (
                     <div className="flex items-center gap-2">
                       <Mail className="h-3.5 w-3.5 text-muted-foreground" />
-                      <span className="text-sm">{selectedOrder.customer_email}</span>
+                      <span className="text-sm">{primary.customer_email}</span>
                     </div>
                   )}
-                  {selectedOrder.shipping_address && (
+                  {primary.shipping_address && (
                     <div className="flex items-start gap-2">
                       <MapPin className="h-3.5 w-3.5 text-muted-foreground mt-0.5" />
                       <div className="text-sm">
-                        {selectedOrder.shipping_address.name && (
-                          <p className="font-medium">{selectedOrder.shipping_address.name}</p>
+                        {primary.shipping_address.name && (
+                          <p className="font-medium">{primary.shipping_address.name}</p>
                         )}
-                        {selectedOrder.shipping_address.line1 && <p>{selectedOrder.shipping_address.line1}</p>}
-                        {selectedOrder.shipping_address.line2 && <p>{selectedOrder.shipping_address.line2}</p>}
+                        {primary.shipping_address.line1 && <p>{primary.shipping_address.line1}</p>}
+                        {primary.shipping_address.line2 && <p>{primary.shipping_address.line2}</p>}
                         <p>
-                          {selectedOrder.shipping_address.postal_code} {selectedOrder.shipping_address.city}
+                          {primary.shipping_address.postal_code} {primary.shipping_address.city}
                         </p>
-                        {selectedOrder.shipping_address.country && (
-                          <p className="text-muted-foreground">{selectedOrder.shipping_address.country}</p>
+                        {primary.shipping_address.country && (
+                          <p className="text-muted-foreground">{primary.shipping_address.country}</p>
                         )}
                       </div>
                     </div>
@@ -621,36 +628,57 @@ export default function AdminOrders() {
                 </div>
               </div>
 
-              {/* Product */}
-              <div className="flex items-start gap-4 p-4 rounded-xl bg-muted/50 border border-border/50">
-                {selectedOrder.listings?.images?.[0] && (
-                  <img
-                    src={selectedOrder.listings.images[0]}
-                    alt=""
-                    className="w-16 h-16 rounded-lg object-contain bg-card"
-                  />
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-sm">{selectedOrder.listings?.title || "Gelöschtes Produkt"}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Produktpreis: {selectedOrder.listings?.price
-                      ? `${Number(selectedOrder.listings.price).toFixed(2).replace(".", ",")} €`
-                      : "–"}
-                  </p>
-                </div>
+              {/* Products */}
+              <div className="p-4 rounded-xl bg-muted/50 border border-border/50 space-y-3">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  Artikel ({selectedGroup.itemCount})
+                </p>
+                {selectedGroup.items.map((item) => (
+                  <div key={item.listing_id} className="flex items-start gap-3">
+                    {item.image && (
+                      <img
+                        src={item.image}
+                        alt=""
+                        className="w-12 h-12 rounded-lg object-contain bg-card shrink-0"
+                      />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-sm">
+                        {item.quantity > 1 && (
+                          <span className="text-primary mr-1">{item.quantity}×</span>
+                        )}
+                        {item.title}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Einzelpreis: {item.price.toFixed(2).replace(".", ",")} €
+                        {item.quantity > 1 && (
+                          <span className="ml-2">
+                            · Summe: {(item.price * item.quantity).toFixed(2).replace(".", ",")} €
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
 
               {/* Details grid */}
               <div className="grid grid-cols-2 gap-4">
-                <DetailItem icon={CreditCard} label="Betrag" value={`${Number(selectedOrder.amount).toFixed(2).replace(".", ",")} €`} />
+                <DetailItem
+                  icon={CreditCard}
+                  label="Gesamtbetrag"
+                  value={`${selectedGroup.totalAmount.toFixed(2).replace(".", ",")} €`}
+                />
                 <div className="space-y-1">
                   <div className="flex items-center gap-1.5 text-muted-foreground">
                     <Package className="h-3.5 w-3.5" />
                     <span className="text-xs">Status</span>
                   </div>
                   <Select
-                    value={selectedOrder.status}
-                    onValueChange={(val) => statusMutation.mutate({ orderId: selectedOrder.id, status: val })}
+                    value={primary.status}
+                    onValueChange={(val) =>
+                      statusMutation.mutate({ orderIds: selectedGroup.allIds, status: val })
+                    }
                   >
                     <SelectTrigger className="h-8 text-sm w-full">
                       <SelectValue />
@@ -667,12 +695,12 @@ export default function AdminOrders() {
                 <DetailItem
                   icon={Calendar}
                   label="Erstellt"
-                  value={new Date(selectedOrder.created_at).toLocaleString("de-DE")}
+                  value={new Date(primary.created_at).toLocaleString("de-DE")}
                 />
                 <DetailItem
                   icon={Calendar}
                   label="Aktualisiert"
-                  value={new Date(selectedOrder.updated_at).toLocaleString("de-DE")}
+                  value={new Date(primary.updated_at).toLocaleString("de-DE")}
                 />
               </div>
 
@@ -681,6 +709,11 @@ export default function AdminOrders() {
                 <label className="text-xs font-medium flex items-center gap-1.5">
                   <Truck className="h-3.5 w-3.5 text-primary" />
                   DHL Sendungsnummer
+                  {selectedGroup.itemCount > 1 && (
+                    <span className="text-[10px] text-muted-foreground font-normal">
+                      (wird auf alle {selectedGroup.itemCount} Artikel angewendet)
+                    </span>
+                  )}
                 </label>
                 <div className="flex gap-2">
                   <Input
@@ -694,9 +727,9 @@ export default function AdminOrders() {
                     disabled={trackingMutation.isPending}
                     onClick={() =>
                       trackingMutation.mutate({
-                        orderId: selectedOrder.id,
+                        orderIds: selectedGroup.allIds,
                         trackingNumber: trackingInput,
-                        order: selectedOrder,
+                        group: selectedGroup,
                       })
                     }
                   >
@@ -710,9 +743,9 @@ export default function AdminOrders() {
                     )}
                   </Button>
                 </div>
-                {selectedOrder.tracking_number && (
+                {primary.tracking_number && (
                   <a
-                    href={`https://www.dhl.de/de/privatkunden/pakete-empfangen/verfolgen.html?piececode=${selectedOrder.tracking_number}`}
+                    href={`https://www.dhl.de/de/privatkunden/pakete-empfangen/verfolgen.html?piececode=${primary.tracking_number}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-xs text-primary hover:underline inline-flex items-center gap-1"
@@ -728,12 +761,12 @@ export default function AdminOrders() {
                   <div>
                     <p className="text-xs font-medium">Rechnung</p>
                     <p className="text-xs text-muted-foreground font-mono-data">
-                      {selectedOrder.invoice_number || "Wird beim Öffnen erstellt"}
+                      {primary.invoice_number || "Wird beim Öffnen erstellt"}
                     </p>
                   </div>
                   <InvoiceButton
-                    orderId={selectedOrder.id}
-                    invoiceNumber={selectedOrder.invoice_number}
+                    orderId={primary.id}
+                    invoiceNumber={primary.invoice_number}
                     label="PDF öffnen"
                     size="sm"
                     variant="outline"
@@ -745,25 +778,35 @@ export default function AdminOrders() {
               <div className="space-y-2 pt-2 border-t border-border/50">
                 <p className="text-xs text-muted-foreground">
                   <span className="font-medium text-foreground">Bestell-ID:</span>{" "}
-                  <span className="font-mono-data">{selectedOrder.id}</span>
+                  <span className="font-mono-data">{primary.id}</span>
                 </p>
-                {selectedOrder.stripe_session_id && (
+                {selectedGroup.allIds.length > 1 && (
+                  <p className="text-xs text-muted-foreground">
+                    <span className="font-medium text-foreground">Weitere Positionen:</span>{" "}
+                    <span className="font-mono-data">
+                      {selectedGroup.allIds.filter((id) => id !== primary.id).map((id) => id.slice(0, 8)).join(", ")}
+                    </span>
+                  </p>
+                )}
+                {primary.stripe_session_id && (
                   <p className="text-xs text-muted-foreground">
                     <span className="font-medium text-foreground">Stripe Session:</span>{" "}
-                    <span className="font-mono-data">{selectedOrder.stripe_session_id}</span>
+                    <span className="font-mono-data">{primary.stripe_session_id}</span>
                   </p>
                 )}
               </div>
 
               {/* Archive Action */}
               <div className="pt-2 border-t border-border/50">
-                {selectedOrder.status === "ARCHIVED" ? (
+                {primary.status === "ARCHIVED" ? (
                   <Button
                     variant="outline"
                     size="sm"
                     className="w-full gap-2"
                     disabled={statusMutation.isPending}
-                    onClick={() => statusMutation.mutate({ orderId: selectedOrder.id, status: "COMPLETED" })}
+                    onClick={() =>
+                      statusMutation.mutate({ orderIds: selectedGroup.allIds, status: "COMPLETED" })
+                    }
                   >
                     <ArchiveRestore className="h-4 w-4" />
                     Aus Archiv wiederherstellen
@@ -774,7 +817,9 @@ export default function AdminOrders() {
                     size="sm"
                     className="w-full gap-2"
                     disabled={statusMutation.isPending}
-                    onClick={() => statusMutation.mutate({ orderId: selectedOrder.id, status: "ARCHIVED" })}
+                    onClick={() =>
+                      statusMutation.mutate({ orderIds: selectedGroup.allIds, status: "ARCHIVED" })
+                    }
                   >
                     <Archive className="h-4 w-4" />
                     Bestellung archivieren
@@ -782,9 +827,11 @@ export default function AdminOrders() {
                 )}
               </div>
             </div>
-          )}
+            );
+          })()}
         </DialogContent>
       </Dialog>
+
     </div>
   );
 }
