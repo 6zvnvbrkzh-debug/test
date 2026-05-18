@@ -47,9 +47,70 @@ interface OrderDetail {
   listings: { title: string; price: number; images: string[] | null } | null;
 }
 
+interface GroupedOrderItem {
+  listing_id: string;
+  title: string;
+  price: number;
+  image: string | null;
+  quantity: number;
+  order_ids: string[];
+}
+
+interface GroupedOrder {
+  groupKey: string;
+  primary: OrderDetail;
+  allIds: string[];
+  totalAmount: number;
+  items: GroupedOrderItem[];
+  itemCount: number;
+}
+
+function groupOrders(rows: OrderDetail[]): GroupedOrder[] {
+  const map = new Map<string, GroupedOrder>();
+  for (const o of rows) {
+    const key = o.stripe_session_id || `single-${o.id}`;
+    let g = map.get(key);
+    if (!g) {
+      g = {
+        groupKey: key,
+        primary: o,
+        allIds: [],
+        totalAmount: 0,
+        items: [],
+        itemCount: 0,
+      };
+      map.set(key, g);
+    }
+    // Use earliest created_at as primary
+    if (new Date(o.created_at).getTime() < new Date(g.primary.created_at).getTime()) {
+      g.primary = o;
+    }
+    g.allIds.push(o.id);
+    g.totalAmount += Number(o.amount);
+    g.itemCount += 1;
+    const existing = g.items.find((i) => i.listing_id === o.listing_id);
+    if (existing) {
+      existing.quantity += 1;
+      existing.order_ids.push(o.id);
+    } else {
+      g.items.push({
+        listing_id: o.listing_id,
+        title: o.listings?.title || "Gelöschtes Produkt",
+        price: Number(o.listings?.price ?? o.amount),
+        image: o.listings?.images?.[0] ?? null,
+        quantity: 1,
+        order_ids: [o.id],
+      });
+    }
+  }
+  return Array.from(map.values()).sort(
+    (a, b) => new Date(b.primary.created_at).getTime() - new Date(a.primary.created_at).getTime()
+  );
+}
+
 export default function AdminOrders() {
   const [statusFilter, setStatusFilter] = useState("all");
-  const [selectedOrder, setSelectedOrder] = useState<OrderDetail | null>(null);
+  const [selectedGroup, setSelectedGroup] = useState<GroupedOrder | null>(null);
   const [trackingInput, setTrackingInput] = useState("");
   const queryClient = useQueryClient();
 
@@ -72,37 +133,41 @@ export default function AdminOrders() {
 
   const trackingMutation = useMutation({
     mutationFn: async ({
-      orderId,
+      orderIds,
       trackingNumber,
-      order,
+      group,
     }: {
-      orderId: string;
+      orderIds: string[];
       trackingNumber: string;
-      order: OrderDetail;
+      group: GroupedOrder;
     }) => {
       const trimmed = trackingNumber.trim();
       const { error } = await supabase
         .from("orders")
         .update({ tracking_number: trimmed || null } as any)
-        .eq("id", orderId);
+        .in("id", orderIds);
       if (error) throw error;
 
-      // Versandbestätigung an Kunden senden, wenn Sendungsnummer neu/geändert
-      // und eine Kunden-E-Mail vorhanden ist.
-      const previous = (order.tracking_number || "").trim();
-      if (trimmed && trimmed !== previous && order.customer_email) {
+      // Versandbestätigung an Kunden senden – nur EINE E-Mail pro Gruppe
+      const previous = (group.primary.tracking_number || "").trim();
+      const customerEmail = group.primary.customer_email;
+      if (trimmed && trimmed !== previous && customerEmail) {
         try {
+          const productTitle =
+            group.items.length === 1
+              ? group.items[0].title
+              : group.items.map((i) => `${i.quantity}× ${i.title}`).join(", ");
           await supabase.functions.invoke("send-transactional-email", {
             body: {
               templateName: "shipping-confirmation",
-              recipientEmail: order.customer_email,
-              idempotencyKey: `shipping-${orderId}-${trimmed}`,
+              recipientEmail: customerEmail,
+              idempotencyKey: `shipping-${group.groupKey}-${trimmed}`,
               templateData: {
-                customerName: order.customer_name ?? "",
-                orderId,
+                customerName: group.primary.customer_name ?? "",
+                orderId: group.primary.id,
                 trackingNumber: trimmed,
-                productTitle: order.listings?.title ?? "",
-                shippingAddress: order.shipping_address ?? null,
+                productTitle,
+                shippingAddress: group.primary.shipping_address ?? null,
               },
             },
           });
@@ -111,7 +176,7 @@ export default function AdminOrders() {
         }
       }
 
-      return { sentEmail: !!(trimmed && trimmed !== previous && order.customer_email) };
+      return { sentEmail: !!(trimmed && trimmed !== previous && customerEmail) };
     },
     onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
@@ -125,43 +190,48 @@ export default function AdminOrders() {
   });
 
   const statusMutation = useMutation({
-    mutationFn: async ({ orderId, status }: { orderId: string; status: string }) => {
+    mutationFn: async ({ orderIds, status }: { orderIds: string[]; status: string }) => {
       const { error } = await supabase
         .from("orders")
         .update({ status } as any)
-        .eq("id", orderId);
+        .in("id", orderIds);
       if (error) throw error;
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
-      setSelectedOrder((prev) => prev ? { ...prev, status: variables.status } : null);
+      setSelectedGroup((prev) =>
+        prev
+          ? {
+              ...prev,
+              primary: { ...prev.primary, status: variables.status },
+            }
+          : null
+      );
       toast.success("Status aktualisiert!");
     },
     onError: (err: any) => toast.error(err.message || "Fehler beim Aktualisieren"),
   });
 
-  const handleOpenDetail = (order: OrderDetail) => {
-    setSelectedOrder(order);
-    setTrackingInput(order.tracking_number || "");
+  const handleOpenDetail = (group: GroupedOrder) => {
+    setSelectedGroup(group);
+    setTrackingInput(group.primary.tracking_number || "");
   };
 
-  const filtered = statusFilter === "all"
-    ? orders.filter((o) => o.status !== "ARCHIVED")
-    : statusFilter === "ALL_INCL_ARCHIVED"
-    ? orders
-    : orders.filter((o) => o.status === statusFilter);
+  const groupedOrders = groupOrders(orders);
+
+  const filtered: GroupedOrder[] =
+    statusFilter === "all"
+      ? groupedOrders.filter((g) => g.primary.status !== "ARCHIVED")
+      : statusFilter === "ALL_INCL_ARCHIVED"
+      ? groupedOrders
+      : groupedOrders.filter((g) => g.primary.status === statusFilter);
 
   const totalRevenue = orders
     .filter((o) => o.status === "COMPLETED")
     .reduce((sum, o) => sum + Number(o.amount), 0);
 
-  const pendingCount = orders.filter((o) => o.status === "PENDING").length;
+  const pendingCount = groupedOrders.filter((g) => g.primary.status === "PENDING").length;
 
-  const formatAddress = (addr: ShippingAddress | null) => {
-    if (!addr) return null;
-    const parts = [addr.line1, addr.line2, `${addr.postal_code || ""} ${addr.city || ""}`.trim(), addr.country].filter(Boolean);
-    return parts.join(", ");
-  };
 
   const handleExportCSV = () => {
     if (filtered.length === 0) {
@@ -192,21 +262,27 @@ export default function AdminOrders() {
       "Stripe Session ID",
     ];
 
-    const rows = filtered.map((o) => [
-      o.id,
-      new Date(o.created_at).toLocaleString("de-DE"),
-      STATUS_MAP[o.status]?.label ?? o.status,
-      o.customer_name ?? "",
-      o.customer_email ?? "",
-      o.listings?.title ?? "",
-      Number(o.amount).toFixed(2).replace(".", ","),
-      o.tracking_number ?? "",
-      [o.shipping_address?.line1, o.shipping_address?.line2].filter(Boolean).join(" "),
-      o.shipping_address?.postal_code ?? "",
-      o.shipping_address?.city ?? "",
-      o.shipping_address?.country ?? "",
-      o.stripe_session_id ?? "",
-    ]);
+    const rows = filtered.map((g) => {
+      const o = g.primary;
+      const productSummary = g.items
+        .map((i) => (i.quantity > 1 ? `${i.quantity}× ${i.title}` : i.title))
+        .join(" | ");
+      return [
+        o.id,
+        new Date(o.created_at).toLocaleString("de-DE"),
+        STATUS_MAP[o.status]?.label ?? o.status,
+        o.customer_name ?? "",
+        o.customer_email ?? "",
+        productSummary,
+        g.totalAmount.toFixed(2).replace(".", ","),
+        o.tracking_number ?? "",
+        [o.shipping_address?.line1, o.shipping_address?.line2].filter(Boolean).join(" "),
+        o.shipping_address?.postal_code ?? "",
+        o.shipping_address?.city ?? "",
+        o.shipping_address?.country ?? "",
+        o.stripe_session_id ?? "",
+      ];
+    });
 
     // Semikolon-Trennzeichen für DE-Excel, BOM für UTF-8 Erkennung
     const csv =
@@ -227,6 +303,7 @@ export default function AdminOrders() {
 
     toast.success(`${filtered.length} Bestellungen exportiert`);
   };
+
 
   return (
     <div className="space-y-6">
@@ -290,12 +367,13 @@ export default function AdminOrders() {
         <>
           {/* Mobile: Card list */}
           <div className="md:hidden space-y-3">
-            {filtered.map((order) => {
+            {filtered.map((g) => {
+              const order = g.primary;
               const status = STATUS_MAP[order.status] || { label: order.status, variant: "outline" as const };
               return (
                 <button
-                  key={order.id}
-                  onClick={() => handleOpenDetail(order)}
+                  key={g.groupKey}
+                  onClick={() => handleOpenDetail(g)}
                   className="w-full text-left border rounded-lg p-3 bg-card hover:bg-muted/30 transition-colors"
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -307,6 +385,11 @@ export default function AdminOrders() {
                         <Badge variant={status.variant} className="text-[10px] h-4 px-1.5">
                           {status.label}
                         </Badge>
+                        {g.itemCount > 1 && (
+                          <Badge variant="outline" className="text-[10px] h-4 px-1.5">
+                            {g.itemCount} Artikel
+                          </Badge>
+                        )}
                       </div>
                       <p className="text-sm font-medium truncate mt-1">
                         {order.customer_name || "–"}
@@ -319,21 +402,28 @@ export default function AdminOrders() {
                     </div>
                     <div className="text-right shrink-0">
                       <p className="font-bold font-mono-data text-base">
-                        {Number(order.amount).toFixed(2).replace(".", ",")} €
+                        {g.totalAmount.toFixed(2).replace(".", ",")} €
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 mt-3 pt-3 border-t">
-                    {order.listings?.images?.[0] && (
-                      <img
-                        src={order.listings.images[0]}
-                        alt=""
-                        className="w-8 h-8 rounded object-contain bg-muted shrink-0"
-                      />
-                    )}
-                    <span className="text-xs line-clamp-1 flex-1 min-w-0">
-                      {order.listings?.title || "Gelöschtes Produkt"}
-                    </span>
+                  <div className="mt-3 pt-3 border-t space-y-1.5">
+                    {g.items.map((item) => (
+                      <div key={item.listing_id} className="flex items-center gap-2">
+                        {item.image && (
+                          <img
+                            src={item.image}
+                            alt=""
+                            className="w-8 h-8 rounded object-contain bg-muted shrink-0"
+                          />
+                        )}
+                        <span className="text-xs line-clamp-1 flex-1 min-w-0">
+                          {item.quantity > 1 && (
+                            <span className="font-semibold text-foreground mr-1">{item.quantity}×</span>
+                          )}
+                          {item.title}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                   <div className="flex items-center justify-between gap-2 mt-2 text-[11px] text-muted-foreground">
                     <span className="whitespace-nowrap">
@@ -353,6 +443,7 @@ export default function AdminOrders() {
                 </button>
               );
             })}
+
             {filtered.length === 0 && (
               <div className="text-center py-12 text-muted-foreground border rounded-lg">
                 Keine Bestellungen gefunden
@@ -376,14 +467,20 @@ export default function AdminOrders() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map((order) => {
+                {filtered.map((g) => {
+                  const order = g.primary;
                   const status = STATUS_MAP[order.status] || { label: order.status, variant: "outline" as const };
                   return (
-                    <TableRow key={order.id} className="group">
-                      <TableCell className="font-mono-data text-xs">
+                    <TableRow key={g.groupKey} className="group">
+                      <TableCell className="font-mono-data text-xs align-top pt-3">
                         #{order.id.slice(0, 8)}
+                        {g.itemCount > 1 && (
+                          <Badge variant="outline" className="ml-2 text-[10px] h-4 px-1.5">
+                            {g.itemCount}
+                          </Badge>
+                        )}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="align-top pt-3">
                         <div className="min-w-[140px]">
                           <p className="text-sm font-medium truncate">
                             {order.customer_name || "–"}
@@ -396,26 +493,33 @@ export default function AdminOrders() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-2">
-                          {order.listings?.images?.[0] && (
-                            <img
-                              src={order.listings.images[0]}
-                              alt=""
-                              className="w-8 h-8 rounded object-contain bg-muted"
-                            />
-                          )}
-                          <span className="text-sm line-clamp-1 max-w-[200px]">
-                            {order.listings?.title || "Gelöschtes Produkt"}
-                          </span>
+                        <div className="space-y-1.5">
+                          {g.items.map((item) => (
+                            <div key={item.listing_id} className="flex items-center gap-2">
+                              {item.image && (
+                                <img
+                                  src={item.image}
+                                  alt=""
+                                  className="w-7 h-7 rounded object-contain bg-muted shrink-0"
+                                />
+                              )}
+                              <span className="text-sm line-clamp-1 max-w-[220px]">
+                                {item.quantity > 1 && (
+                                  <span className="font-semibold mr-1">{item.quantity}×</span>
+                                )}
+                                {item.title}
+                              </span>
+                            </div>
+                          ))}
                         </div>
                       </TableCell>
-                      <TableCell className="text-right font-semibold font-mono-data">
-                        {Number(order.amount).toFixed(2).replace(".", ",")} €
+                      <TableCell className="text-right font-semibold font-mono-data align-top pt-3">
+                        {g.totalAmount.toFixed(2).replace(".", ",")} €
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="align-top pt-3">
                         <Badge variant={status.variant}>{status.label}</Badge>
                       </TableCell>
-                      <TableCell className="text-xs text-muted-foreground">
+                      <TableCell className="text-xs text-muted-foreground align-top pt-3">
                         {order.tracking_number ? (
                           <span className="flex items-center gap-1 text-primary font-medium">
                             <Truck className="h-3.5 w-3.5" />
@@ -425,7 +529,7 @@ export default function AdminOrders() {
                           <span className="text-muted-foreground">–</span>
                         )}
                       </TableCell>
-                      <TableCell className="text-muted-foreground text-sm whitespace-nowrap">
+                      <TableCell className="text-muted-foreground text-sm whitespace-nowrap align-top pt-3">
                         {new Date(order.created_at).toLocaleDateString("de-DE", {
                           day: "2-digit",
                           month: "2-digit",
@@ -434,7 +538,7 @@ export default function AdminOrders() {
                           minute: "2-digit",
                         })}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="align-top pt-2">
                         <div className="flex items-center gap-1 justify-end">
                           <InvoiceButton
                             orderId={order.id}
@@ -448,7 +552,7 @@ export default function AdminOrders() {
                             variant="ghost"
                             size="icon"
                             className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                            onClick={() => handleOpenDetail(order)}
+                            onClick={() => handleOpenDetail(g)}
                           >
                             <Eye className="h-4 w-4" />
                           </Button>
@@ -457,6 +561,7 @@ export default function AdminOrders() {
                     </TableRow>
                   );
                 })}
+
                 {filtered.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
@@ -471,15 +576,22 @@ export default function AdminOrders() {
       )}
 
       {/* Detail Dialog */}
-      <Dialog open={!!selectedOrder} onOpenChange={(open) => !open && setSelectedOrder(null)}>
+      <Dialog open={!!selectedGroup} onOpenChange={(open) => !open && setSelectedGroup(null)}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Hash className="h-4 w-4" />
-              Bestellung {selectedOrder?.id.slice(0, 8)}
+              Bestellung {selectedGroup?.primary.id.slice(0, 8)}
+              {selectedGroup && selectedGroup.itemCount > 1 && (
+                <Badge variant="outline" className="ml-1 text-[10px]">
+                  {selectedGroup.itemCount} Artikel
+                </Badge>
+              )}
             </DialogTitle>
           </DialogHeader>
-          {selectedOrder && (
+          {selectedGroup && (() => {
+            const primary = selectedGroup.primary;
+            return (
             <div className="space-y-5 pt-2">
               {/* Customer Info */}
               <div className="p-4 rounded-xl bg-muted/50 border border-border/50 space-y-2">
@@ -487,28 +599,28 @@ export default function AdminOrders() {
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
                     <User className="h-3.5 w-3.5 text-muted-foreground" />
-                    <span className="text-sm font-medium">{selectedOrder.customer_name || "Nicht verfügbar"}</span>
+                    <span className="text-sm font-medium">{primary.customer_name || "Nicht verfügbar"}</span>
                   </div>
-                  {selectedOrder.customer_email && (
+                  {primary.customer_email && (
                     <div className="flex items-center gap-2">
                       <Mail className="h-3.5 w-3.5 text-muted-foreground" />
-                      <span className="text-sm">{selectedOrder.customer_email}</span>
+                      <span className="text-sm">{primary.customer_email}</span>
                     </div>
                   )}
-                  {selectedOrder.shipping_address && (
+                  {primary.shipping_address && (
                     <div className="flex items-start gap-2">
                       <MapPin className="h-3.5 w-3.5 text-muted-foreground mt-0.5" />
                       <div className="text-sm">
-                        {selectedOrder.shipping_address.name && (
-                          <p className="font-medium">{selectedOrder.shipping_address.name}</p>
+                        {primary.shipping_address.name && (
+                          <p className="font-medium">{primary.shipping_address.name}</p>
                         )}
-                        {selectedOrder.shipping_address.line1 && <p>{selectedOrder.shipping_address.line1}</p>}
-                        {selectedOrder.shipping_address.line2 && <p>{selectedOrder.shipping_address.line2}</p>}
+                        {primary.shipping_address.line1 && <p>{primary.shipping_address.line1}</p>}
+                        {primary.shipping_address.line2 && <p>{primary.shipping_address.line2}</p>}
                         <p>
-                          {selectedOrder.shipping_address.postal_code} {selectedOrder.shipping_address.city}
+                          {primary.shipping_address.postal_code} {primary.shipping_address.city}
                         </p>
-                        {selectedOrder.shipping_address.country && (
-                          <p className="text-muted-foreground">{selectedOrder.shipping_address.country}</p>
+                        {primary.shipping_address.country && (
+                          <p className="text-muted-foreground">{primary.shipping_address.country}</p>
                         )}
                       </div>
                     </div>
@@ -516,36 +628,57 @@ export default function AdminOrders() {
                 </div>
               </div>
 
-              {/* Product */}
-              <div className="flex items-start gap-4 p-4 rounded-xl bg-muted/50 border border-border/50">
-                {selectedOrder.listings?.images?.[0] && (
-                  <img
-                    src={selectedOrder.listings.images[0]}
-                    alt=""
-                    className="w-16 h-16 rounded-lg object-contain bg-card"
-                  />
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-sm">{selectedOrder.listings?.title || "Gelöschtes Produkt"}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Produktpreis: {selectedOrder.listings?.price
-                      ? `${Number(selectedOrder.listings.price).toFixed(2).replace(".", ",")} €`
-                      : "–"}
-                  </p>
-                </div>
+              {/* Products */}
+              <div className="p-4 rounded-xl bg-muted/50 border border-border/50 space-y-3">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  Artikel ({selectedGroup.itemCount})
+                </p>
+                {selectedGroup.items.map((item) => (
+                  <div key={item.listing_id} className="flex items-start gap-3">
+                    {item.image && (
+                      <img
+                        src={item.image}
+                        alt=""
+                        className="w-12 h-12 rounded-lg object-contain bg-card shrink-0"
+                      />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-sm">
+                        {item.quantity > 1 && (
+                          <span className="text-primary mr-1">{item.quantity}×</span>
+                        )}
+                        {item.title}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Einzelpreis: {item.price.toFixed(2).replace(".", ",")} €
+                        {item.quantity > 1 && (
+                          <span className="ml-2">
+                            · Summe: {(item.price * item.quantity).toFixed(2).replace(".", ",")} €
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
 
               {/* Details grid */}
               <div className="grid grid-cols-2 gap-4">
-                <DetailItem icon={CreditCard} label="Betrag" value={`${Number(selectedOrder.amount).toFixed(2).replace(".", ",")} €`} />
+                <DetailItem
+                  icon={CreditCard}
+                  label="Gesamtbetrag"
+                  value={`${selectedGroup.totalAmount.toFixed(2).replace(".", ",")} €`}
+                />
                 <div className="space-y-1">
                   <div className="flex items-center gap-1.5 text-muted-foreground">
                     <Package className="h-3.5 w-3.5" />
                     <span className="text-xs">Status</span>
                   </div>
                   <Select
-                    value={selectedOrder.status}
-                    onValueChange={(val) => statusMutation.mutate({ orderId: selectedOrder.id, status: val })}
+                    value={primary.status}
+                    onValueChange={(val) =>
+                      statusMutation.mutate({ orderIds: selectedGroup.allIds, status: val })
+                    }
                   >
                     <SelectTrigger className="h-8 text-sm w-full">
                       <SelectValue />
@@ -562,12 +695,12 @@ export default function AdminOrders() {
                 <DetailItem
                   icon={Calendar}
                   label="Erstellt"
-                  value={new Date(selectedOrder.created_at).toLocaleString("de-DE")}
+                  value={new Date(primary.created_at).toLocaleString("de-DE")}
                 />
                 <DetailItem
                   icon={Calendar}
                   label="Aktualisiert"
-                  value={new Date(selectedOrder.updated_at).toLocaleString("de-DE")}
+                  value={new Date(primary.updated_at).toLocaleString("de-DE")}
                 />
               </div>
 
@@ -576,6 +709,11 @@ export default function AdminOrders() {
                 <label className="text-xs font-medium flex items-center gap-1.5">
                   <Truck className="h-3.5 w-3.5 text-primary" />
                   DHL Sendungsnummer
+                  {selectedGroup.itemCount > 1 && (
+                    <span className="text-[10px] text-muted-foreground font-normal">
+                      (wird auf alle {selectedGroup.itemCount} Artikel angewendet)
+                    </span>
+                  )}
                 </label>
                 <div className="flex gap-2">
                   <Input
@@ -589,9 +727,9 @@ export default function AdminOrders() {
                     disabled={trackingMutation.isPending}
                     onClick={() =>
                       trackingMutation.mutate({
-                        orderId: selectedOrder.id,
+                        orderIds: selectedGroup.allIds,
                         trackingNumber: trackingInput,
-                        order: selectedOrder,
+                        group: selectedGroup,
                       })
                     }
                   >
@@ -605,9 +743,9 @@ export default function AdminOrders() {
                     )}
                   </Button>
                 </div>
-                {selectedOrder.tracking_number && (
+                {primary.tracking_number && (
                   <a
-                    href={`https://www.dhl.de/de/privatkunden/pakete-empfangen/verfolgen.html?piececode=${selectedOrder.tracking_number}`}
+                    href={`https://www.dhl.de/de/privatkunden/pakete-empfangen/verfolgen.html?piececode=${primary.tracking_number}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-xs text-primary hover:underline inline-flex items-center gap-1"
@@ -623,12 +761,12 @@ export default function AdminOrders() {
                   <div>
                     <p className="text-xs font-medium">Rechnung</p>
                     <p className="text-xs text-muted-foreground font-mono-data">
-                      {selectedOrder.invoice_number || "Wird beim Öffnen erstellt"}
+                      {primary.invoice_number || "Wird beim Öffnen erstellt"}
                     </p>
                   </div>
                   <InvoiceButton
-                    orderId={selectedOrder.id}
-                    invoiceNumber={selectedOrder.invoice_number}
+                    orderId={primary.id}
+                    invoiceNumber={primary.invoice_number}
                     label="PDF öffnen"
                     size="sm"
                     variant="outline"
@@ -640,25 +778,35 @@ export default function AdminOrders() {
               <div className="space-y-2 pt-2 border-t border-border/50">
                 <p className="text-xs text-muted-foreground">
                   <span className="font-medium text-foreground">Bestell-ID:</span>{" "}
-                  <span className="font-mono-data">{selectedOrder.id}</span>
+                  <span className="font-mono-data">{primary.id}</span>
                 </p>
-                {selectedOrder.stripe_session_id && (
+                {selectedGroup.allIds.length > 1 && (
+                  <p className="text-xs text-muted-foreground">
+                    <span className="font-medium text-foreground">Weitere Positionen:</span>{" "}
+                    <span className="font-mono-data">
+                      {selectedGroup.allIds.filter((id) => id !== primary.id).map((id) => id.slice(0, 8)).join(", ")}
+                    </span>
+                  </p>
+                )}
+                {primary.stripe_session_id && (
                   <p className="text-xs text-muted-foreground">
                     <span className="font-medium text-foreground">Stripe Session:</span>{" "}
-                    <span className="font-mono-data">{selectedOrder.stripe_session_id}</span>
+                    <span className="font-mono-data">{primary.stripe_session_id}</span>
                   </p>
                 )}
               </div>
 
               {/* Archive Action */}
               <div className="pt-2 border-t border-border/50">
-                {selectedOrder.status === "ARCHIVED" ? (
+                {primary.status === "ARCHIVED" ? (
                   <Button
                     variant="outline"
                     size="sm"
                     className="w-full gap-2"
                     disabled={statusMutation.isPending}
-                    onClick={() => statusMutation.mutate({ orderId: selectedOrder.id, status: "COMPLETED" })}
+                    onClick={() =>
+                      statusMutation.mutate({ orderIds: selectedGroup.allIds, status: "COMPLETED" })
+                    }
                   >
                     <ArchiveRestore className="h-4 w-4" />
                     Aus Archiv wiederherstellen
@@ -669,7 +817,9 @@ export default function AdminOrders() {
                     size="sm"
                     className="w-full gap-2"
                     disabled={statusMutation.isPending}
-                    onClick={() => statusMutation.mutate({ orderId: selectedOrder.id, status: "ARCHIVED" })}
+                    onClick={() =>
+                      statusMutation.mutate({ orderIds: selectedGroup.allIds, status: "ARCHIVED" })
+                    }
                   >
                     <Archive className="h-4 w-4" />
                     Bestellung archivieren
@@ -677,9 +827,11 @@ export default function AdminOrders() {
                 )}
               </div>
             </div>
-          )}
+            );
+          })()}
         </DialogContent>
       </Dialog>
+
     </div>
   );
 }
