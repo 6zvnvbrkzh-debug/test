@@ -47,6 +47,67 @@ interface OrderDetail {
   listings: { title: string; price: number; images: string[] | null } | null;
 }
 
+interface GroupedOrderItem {
+  listing_id: string;
+  title: string;
+  price: number;
+  image: string | null;
+  quantity: number;
+  order_ids: string[];
+}
+
+interface GroupedOrder {
+  groupKey: string;
+  primary: OrderDetail;
+  allIds: string[];
+  totalAmount: number;
+  items: GroupedOrderItem[];
+  itemCount: number;
+}
+
+function groupOrders(rows: OrderDetail[]): GroupedOrder[] {
+  const map = new Map<string, GroupedOrder>();
+  for (const o of rows) {
+    const key = o.stripe_session_id || `single-${o.id}`;
+    let g = map.get(key);
+    if (!g) {
+      g = {
+        groupKey: key,
+        primary: o,
+        allIds: [],
+        totalAmount: 0,
+        items: [],
+        itemCount: 0,
+      };
+      map.set(key, g);
+    }
+    // Use earliest created_at as primary
+    if (new Date(o.created_at).getTime() < new Date(g.primary.created_at).getTime()) {
+      g.primary = o;
+    }
+    g.allIds.push(o.id);
+    g.totalAmount += Number(o.amount);
+    g.itemCount += 1;
+    const existing = g.items.find((i) => i.listing_id === o.listing_id);
+    if (existing) {
+      existing.quantity += 1;
+      existing.order_ids.push(o.id);
+    } else {
+      g.items.push({
+        listing_id: o.listing_id,
+        title: o.listings?.title || "Gelöschtes Produkt",
+        price: Number(o.listings?.price ?? o.amount),
+        image: o.listings?.images?.[0] ?? null,
+        quantity: 1,
+        order_ids: [o.id],
+      });
+    }
+  }
+  return Array.from(map.values()).sort(
+    (a, b) => new Date(b.primary.created_at).getTime() - new Date(a.primary.created_at).getTime()
+  );
+}
+
 export default function AdminOrders() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState<OrderDetail | null>(null);
