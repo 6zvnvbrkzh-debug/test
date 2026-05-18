@@ -467,14 +467,20 @@ export default function AdminOrders() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map((order) => {
+                {filtered.map((g) => {
+                  const order = g.primary;
                   const status = STATUS_MAP[order.status] || { label: order.status, variant: "outline" as const };
                   return (
-                    <TableRow key={order.id} className="group">
-                      <TableCell className="font-mono-data text-xs">
+                    <TableRow key={g.groupKey} className="group">
+                      <TableCell className="font-mono-data text-xs align-top pt-3">
                         #{order.id.slice(0, 8)}
+                        {g.itemCount > 1 && (
+                          <Badge variant="outline" className="ml-2 text-[10px] h-4 px-1.5">
+                            {g.itemCount}
+                          </Badge>
+                        )}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="align-top pt-3">
                         <div className="min-w-[140px]">
                           <p className="text-sm font-medium truncate">
                             {order.customer_name || "–"}
@@ -487,26 +493,33 @@ export default function AdminOrders() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-2">
-                          {order.listings?.images?.[0] && (
-                            <img
-                              src={order.listings.images[0]}
-                              alt=""
-                              className="w-8 h-8 rounded object-contain bg-muted"
-                            />
-                          )}
-                          <span className="text-sm line-clamp-1 max-w-[200px]">
-                            {order.listings?.title || "Gelöschtes Produkt"}
-                          </span>
+                        <div className="space-y-1.5">
+                          {g.items.map((item) => (
+                            <div key={item.listing_id} className="flex items-center gap-2">
+                              {item.image && (
+                                <img
+                                  src={item.image}
+                                  alt=""
+                                  className="w-7 h-7 rounded object-contain bg-muted shrink-0"
+                                />
+                              )}
+                              <span className="text-sm line-clamp-1 max-w-[220px]">
+                                {item.quantity > 1 && (
+                                  <span className="font-semibold mr-1">{item.quantity}×</span>
+                                )}
+                                {item.title}
+                              </span>
+                            </div>
+                          ))}
                         </div>
                       </TableCell>
-                      <TableCell className="text-right font-semibold font-mono-data">
-                        {Number(order.amount).toFixed(2).replace(".", ",")} €
+                      <TableCell className="text-right font-semibold font-mono-data align-top pt-3">
+                        {g.totalAmount.toFixed(2).replace(".", ",")} €
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="align-top pt-3">
                         <Badge variant={status.variant}>{status.label}</Badge>
                       </TableCell>
-                      <TableCell className="text-xs text-muted-foreground">
+                      <TableCell className="text-xs text-muted-foreground align-top pt-3">
                         {order.tracking_number ? (
                           <span className="flex items-center gap-1 text-primary font-medium">
                             <Truck className="h-3.5 w-3.5" />
@@ -516,7 +529,7 @@ export default function AdminOrders() {
                           <span className="text-muted-foreground">–</span>
                         )}
                       </TableCell>
-                      <TableCell className="text-muted-foreground text-sm whitespace-nowrap">
+                      <TableCell className="text-muted-foreground text-sm whitespace-nowrap align-top pt-3">
                         {new Date(order.created_at).toLocaleDateString("de-DE", {
                           day: "2-digit",
                           month: "2-digit",
@@ -525,7 +538,7 @@ export default function AdminOrders() {
                           minute: "2-digit",
                         })}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="align-top pt-2">
                         <div className="flex items-center gap-1 justify-end">
                           <InvoiceButton
                             orderId={order.id}
@@ -539,7 +552,7 @@ export default function AdminOrders() {
                             variant="ghost"
                             size="icon"
                             className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                            onClick={() => handleOpenDetail(order)}
+                            onClick={() => handleOpenDetail(g)}
                           >
                             <Eye className="h-4 w-4" />
                           </Button>
@@ -548,6 +561,7 @@ export default function AdminOrders() {
                     </TableRow>
                   );
                 })}
+
                 {filtered.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
