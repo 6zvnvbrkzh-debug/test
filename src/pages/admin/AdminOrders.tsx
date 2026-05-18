@@ -367,12 +367,13 @@ export default function AdminOrders() {
         <>
           {/* Mobile: Card list */}
           <div className="md:hidden space-y-3">
-            {filtered.map((order) => {
+            {filtered.map((g) => {
+              const order = g.primary;
               const status = STATUS_MAP[order.status] || { label: order.status, variant: "outline" as const };
               return (
                 <button
-                  key={order.id}
-                  onClick={() => handleOpenDetail(order)}
+                  key={g.groupKey}
+                  onClick={() => handleOpenDetail(g)}
                   className="w-full text-left border rounded-lg p-3 bg-card hover:bg-muted/30 transition-colors"
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -384,6 +385,11 @@ export default function AdminOrders() {
                         <Badge variant={status.variant} className="text-[10px] h-4 px-1.5">
                           {status.label}
                         </Badge>
+                        {g.itemCount > 1 && (
+                          <Badge variant="outline" className="text-[10px] h-4 px-1.5">
+                            {g.itemCount} Artikel
+                          </Badge>
+                        )}
                       </div>
                       <p className="text-sm font-medium truncate mt-1">
                         {order.customer_name || "–"}
@@ -396,21 +402,28 @@ export default function AdminOrders() {
                     </div>
                     <div className="text-right shrink-0">
                       <p className="font-bold font-mono-data text-base">
-                        {Number(order.amount).toFixed(2).replace(".", ",")} €
+                        {g.totalAmount.toFixed(2).replace(".", ",")} €
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 mt-3 pt-3 border-t">
-                    {order.listings?.images?.[0] && (
-                      <img
-                        src={order.listings.images[0]}
-                        alt=""
-                        className="w-8 h-8 rounded object-contain bg-muted shrink-0"
-                      />
-                    )}
-                    <span className="text-xs line-clamp-1 flex-1 min-w-0">
-                      {order.listings?.title || "Gelöschtes Produkt"}
-                    </span>
+                  <div className="mt-3 pt-3 border-t space-y-1.5">
+                    {g.items.map((item) => (
+                      <div key={item.listing_id} className="flex items-center gap-2">
+                        {item.image && (
+                          <img
+                            src={item.image}
+                            alt=""
+                            className="w-8 h-8 rounded object-contain bg-muted shrink-0"
+                          />
+                        )}
+                        <span className="text-xs line-clamp-1 flex-1 min-w-0">
+                          {item.quantity > 1 && (
+                            <span className="font-semibold text-foreground mr-1">{item.quantity}×</span>
+                          )}
+                          {item.title}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                   <div className="flex items-center justify-between gap-2 mt-2 text-[11px] text-muted-foreground">
                     <span className="whitespace-nowrap">
@@ -430,6 +443,7 @@ export default function AdminOrders() {
                 </button>
               );
             })}
+
             {filtered.length === 0 && (
               <div className="text-center py-12 text-muted-foreground border rounded-lg">
                 Keine Bestellungen gefunden
