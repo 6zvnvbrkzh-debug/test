@@ -262,21 +262,27 @@ export default function AdminOrders() {
       "Stripe Session ID",
     ];
 
-    const rows = filtered.map((o) => [
-      o.id,
-      new Date(o.created_at).toLocaleString("de-DE"),
-      STATUS_MAP[o.status]?.label ?? o.status,
-      o.customer_name ?? "",
-      o.customer_email ?? "",
-      o.listings?.title ?? "",
-      Number(o.amount).toFixed(2).replace(".", ","),
-      o.tracking_number ?? "",
-      [o.shipping_address?.line1, o.shipping_address?.line2].filter(Boolean).join(" "),
-      o.shipping_address?.postal_code ?? "",
-      o.shipping_address?.city ?? "",
-      o.shipping_address?.country ?? "",
-      o.stripe_session_id ?? "",
-    ]);
+    const rows = filtered.map((g) => {
+      const o = g.primary;
+      const productSummary = g.items
+        .map((i) => (i.quantity > 1 ? `${i.quantity}× ${i.title}` : i.title))
+        .join(" | ");
+      return [
+        o.id,
+        new Date(o.created_at).toLocaleString("de-DE"),
+        STATUS_MAP[o.status]?.label ?? o.status,
+        o.customer_name ?? "",
+        o.customer_email ?? "",
+        productSummary,
+        g.totalAmount.toFixed(2).replace(".", ","),
+        o.tracking_number ?? "",
+        [o.shipping_address?.line1, o.shipping_address?.line2].filter(Boolean).join(" "),
+        o.shipping_address?.postal_code ?? "",
+        o.shipping_address?.city ?? "",
+        o.shipping_address?.country ?? "",
+        o.stripe_session_id ?? "",
+      ];
+    });
 
     // Semikolon-Trennzeichen für DE-Excel, BOM für UTF-8 Erkennung
     const csv =
@@ -297,6 +303,7 @@ export default function AdminOrders() {
 
     toast.success(`${filtered.length} Bestellungen exportiert`);
   };
+
 
   return (
     <div className="space-y-6">
