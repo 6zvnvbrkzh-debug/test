@@ -161,10 +161,21 @@ export default function CheckoutSuccess() {
               variant="outline"
               className="w-full"
               disabled={!sessionId}
-              onClick={() => {
+              onClick={async () => {
                 if (!sessionId) return;
-                const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-invoice?session_id=${encodeURIComponent(sessionId)}&apikey=${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`;
-                window.open(url, "_blank", "noopener,noreferrer");
+                try {
+                  const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-invoice?session_id=${encodeURIComponent(sessionId)}`;
+                  const res = await fetch(url, {
+                    headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string },
+                  });
+                  if (!res.ok) throw new Error(`Status ${res.status}`);
+                  const blob = await res.blob();
+                  const objectUrl = URL.createObjectURL(blob);
+                  window.open(objectUrl, "_blank", "noopener,noreferrer");
+                  setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
+                } catch (err) {
+                  console.error("Invoice download failed", err);
+                }
               }}
             >
               <FileText className="h-4 w-4 mr-2" />
