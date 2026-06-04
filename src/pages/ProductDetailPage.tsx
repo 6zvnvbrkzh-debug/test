@@ -466,18 +466,24 @@ const ProductDetailPage = () => {
                 <h3 className="text-sm font-semibold mb-3">Technische Daten</h3>
                 <div className="rounded-xl border border-border/60 overflow-hidden">
                   {specEntries.map(([key, value], index) => {
-                    const isLongValue = String(value).length > 40;
+                    const valStr = String(value);
+                    const len = valStr.length;
+                    const sizeClass =
+                      len > 55 ? "text-[9px]" : len > 35 ? "text-[10px]" : len > 20 ? "text-[11px]" : "text-xs";
                     return (
                       <div
                         key={key}
-                        className={`px-4 py-2.5 text-sm ${
-                          isLongValue ? "flex flex-col gap-1" : "flex items-center justify-between"
-                        } ${
+                        className={`px-4 py-2.5 text-sm flex items-center justify-between gap-3 ${
                           index % 2 === 0 ? "bg-muted/30" : "bg-transparent"
                         } ${index < specEntries.length - 1 ? "border-b border-border/30" : ""}`}
                       >
-                        <span className="text-muted-foreground">{key}</span>
-                        <span className={`font-mono-data text-xs font-medium text-foreground ${isLongValue ? "" : "text-right"}`}>{value}</span>
+                        <span className="text-muted-foreground flex-shrink-0">{key}</span>
+                        <span
+                          className={`font-mono-data font-medium text-foreground text-right whitespace-nowrap overflow-hidden text-ellipsis min-w-0 ${sizeClass}`}
+                          title={valStr}
+                        >
+                          {valStr}
+                        </span>
                       </div>
                     );
                   })}
