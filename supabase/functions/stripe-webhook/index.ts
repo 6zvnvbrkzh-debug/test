@@ -22,12 +22,24 @@ serve(async (req) => {
     const signature = req.headers.get("stripe-signature");
     const webhookSecret = Deno.env.get("webhook_stripe");
 
-    let event: Stripe.Event;
+    // STRICT signature verification — never trust unsigned payloads.
+    if (!webhookSecret || !signature) {
+      console.error("Webhook rejected: missing signature or secret");
+      return new Response(
+        JSON.stringify({ error: "Missing webhook signature" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
 
-    if (webhookSecret && signature) {
+    let event: Stripe.Event;
+    try {
       event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
-    } else {
-      event = JSON.parse(body);
+    } catch (err) {
+      console.error("Webhook signature verification failed:", err);
+      return new Response(
+        JSON.stringify({ error: "Invalid signature" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
 
     console.log(`Received event: ${event.type}`);
@@ -143,11 +155,10 @@ serve(async (req) => {
           .replace(".", ",");
         const phone = (session.customer_details as any)?.phone || "";
 
-        // Call send-transactional-email via fetch with the anon JWT.
-        // The new Supabase service-role key format (sb_secret_…) is NOT a
-        // JWT and the Function Gateway rejects it with INVALID_JWT_FORMAT
-        // when verify_jwt = true.
+        // Call send-transactional-email with the service-role key — the
+        // function rejects anon callers to prevent phishing abuse.
         const FN_URL = `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-transactional-email`;
+        const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
         const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
         const invokeEmail = async (payload: Record<string, unknown>) => {
           const res = await fetch(FN_URL, {
@@ -155,7 +166,7 @@ serve(async (req) => {
             headers: {
               "Content-Type": "application/json",
               apikey: ANON,
-              Authorization: `Bearer ${ANON}`,
+              Authorization: `Bearer ${SERVICE_KEY}`,
             },
             body: JSON.stringify(payload),
           });

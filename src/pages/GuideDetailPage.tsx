@@ -1,4 +1,5 @@
 import { useParams, Link } from "react-router-dom";
+import DOMPurify from "dompurify";
 import { Layout } from "@/components/layout/Layout";
 import { SEOHead } from "@/components/SEOHead";
 import { useGuideBySlug } from "@/hooks/useGuides";
@@ -103,7 +104,12 @@ export default function GuideDetailPage() {
 
           <div
             className="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl"
-            dangerouslySetInnerHTML={{ __html: guide.content }}
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(guide.content, {
+                FORBID_TAGS: ["script", "style", "iframe", "object", "embed", "form"],
+                FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover", "onfocus", "onblur", "style"],
+              }),
+            }}
           />
 
           <div className="mt-16 pt-8 border-t border-border/40 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">

@@ -157,9 +157,8 @@ export default function AdminOrders() {
             group.items.length === 1
               ? group.items[0].title
               : group.items.map((i) => `${i.quantity}× ${i.title}`).join(", ");
-          await supabase.functions.invoke("send-transactional-email", {
+          await supabase.functions.invoke("admin-send-shipping-confirmation", {
             body: {
-              templateName: "shipping-confirmation",
               recipientEmail: customerEmail,
               idempotencyKey: `shipping-${group.groupKey}-${trimmed}`,
               templateData: {
