@@ -463,30 +463,48 @@ const ProductDetailPage = () => {
 
             {specEntries.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold mb-3">Technische Daten</h3>
-                <div className="rounded-xl border border-border/60 overflow-hidden">
-                  {specEntries.map(([key, value], index) => {
-                    const valStr = String(value);
-                    const len = valStr.length;
-                    const sizeClass =
-                      len > 55 ? "text-[9px]" : len > 35 ? "text-[10px]" : len > 20 ? "text-[11px]" : "text-xs";
-                    return (
-                      <div
-                        key={key}
-                        className={`px-4 py-2.5 text-sm flex items-center justify-between gap-3 ${
-                          index % 2 === 0 ? "bg-muted/30" : "bg-transparent"
-                        } ${index < specEntries.length - 1 ? "border-b border-border/30" : ""}`}
-                      >
-                        <span className="text-muted-foreground flex-shrink-0">{key}</span>
-                        <span
-                          className={`font-mono-data font-medium text-foreground text-right whitespace-nowrap overflow-hidden text-ellipsis min-w-0 ${sizeClass}`}
-                          title={valStr}
+                <div className="flex items-baseline justify-between mb-3">
+                  <h3 className="text-sm font-semibold">Technische Daten</h3>
+                  <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
+                    {specEntries.length} Merkmale
+                  </span>
+                </div>
+                <div className="rounded-xl border border-border/60 bg-card/30 overflow-hidden">
+                  <dl className="grid grid-cols-1 sm:grid-cols-2 divide-y divide-border/30 sm:divide-y-0">
+                    {specEntries.map(([key, value], index) => {
+                      const valStr = String(value);
+                      const isWide = valStr.length > 24;
+                      return (
+                        <div
+                          key={key}
+                          className={`group relative px-4 py-3 transition-colors hover:bg-muted/40 ${
+                            isWide ? "sm:col-span-2" : ""
+                          } ${
+                            // border between rows on sm+
+                            index < specEntries.length - 1
+                              ? "sm:border-b sm:border-border/30"
+                              : ""
+                          } ${
+                            // vertical divider between the two columns
+                            !isWide && index % 2 === 0
+                              ? "sm:border-r sm:border-border/30"
+                              : ""
+                          }`}
                         >
-                          {valStr}
-                        </span>
-                      </div>
-                    );
-                  })}
+                          <dt className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground/80 mb-1">
+                            {key}
+                          </dt>
+                          <dd className="font-mono-data text-sm text-foreground break-words leading-snug">
+                            {valStr}
+                          </dd>
+                          <span
+                            aria-hidden
+                            className="absolute left-0 top-3 bottom-3 w-px bg-primary/40 opacity-0 group-hover:opacity-100 transition-opacity"
+                          />
+                        </div>
+                      );
+                    })}
+                  </dl>
                 </div>
               </div>
             )}
