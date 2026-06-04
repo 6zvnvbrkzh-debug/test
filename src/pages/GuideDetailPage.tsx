@@ -59,6 +59,7 @@ export default function GuideDetailPage() {
         title={guide.seo_title ?? guide.title}
         description={guide.seo_description ?? guide.excerpt}
         canonical={`/ratgeber/${guide.slug}`}
+        type="article"
         ogImage={guide.cover_image_url ?? undefined}
         jsonLd={articleJsonLd}
       />
