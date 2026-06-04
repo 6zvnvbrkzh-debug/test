@@ -14,9 +14,8 @@ interface Props {
 }
 
 /**
- * Opens the generated invoice PDF in a new tab.
- * Sends the user's auth token via query param so the edge function can
- * authorize buyers and admins (Supabase strips Authorization on window.open).
+ * Downloads the invoice PDF via authenticated fetch and opens it as a Blob.
+ * This keeps the user's JWT in the Authorization header — never in the URL.
  */
 export function InvoiceButton({
   orderId,
@@ -38,12 +37,21 @@ export function InvoiceButton({
       }
       const base = import.meta.env.VITE_SUPABASE_URL as string;
       const apikey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
-      const url =
-        `${base}/functions/v1/generate-invoice` +
-        `?order_id=${encodeURIComponent(orderId)}` +
-        `&apikey=${encodeURIComponent(apikey)}` +
-        `&token=${encodeURIComponent(session.access_token)}`;
-      window.open(url, "_blank", "noopener,noreferrer");
+      const url = `${base}/functions/v1/generate-invoice?order_id=${encodeURIComponent(orderId)}`;
+      const res = await fetch(url, {
+        headers: {
+          apikey,
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+      if (!res.ok) {
+        throw new Error(`Rechnung konnte nicht geladen werden (${res.status})`);
+      }
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      window.open(objectUrl, "_blank", "noopener,noreferrer");
+      // Revoke after a delay to give the browser time to load it.
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
     } catch (err: any) {
       toast.error(err.message || "Rechnung konnte nicht geöffnet werden.");
     } finally {
