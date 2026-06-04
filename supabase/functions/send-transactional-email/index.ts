@@ -37,6 +37,10 @@ function generateToken(): string {
 function isServiceRole(authHeader: string | null): boolean {
   if (!authHeader?.startsWith('Bearer ')) return false
   const token = authHeader.slice(7).trim()
+  const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+  // Direct match (handles new sb_secret_* keys which are not JWTs).
+  if (serviceKey && token === serviceKey) return true
+  // JWT path: decode payload and verify role claim.
   try {
     const payload = token.split('.')[1]
     if (!payload) return false
@@ -55,11 +59,13 @@ Deno.serve(async (req) => {
   }
 
   if (!isServiceRole(req.headers.get('Authorization'))) {
+    console.warn('send-transactional-email: forbidden (non-service-role caller)')
     return new Response(
       JSON.stringify({ error: 'Forbidden' }),
       { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     )
   }
+
 
 
   const supabaseUrl = Deno.env.get('SUPABASE_URL')
