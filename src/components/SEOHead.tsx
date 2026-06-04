@@ -13,7 +13,7 @@ interface SEOHeadProps {
   title: string;
   description: string;
   canonical?: string;
-  type?: "website" | "product";
+  type?: "website" | "product" | "article";
   noindex?: boolean;
   ogImage?: string;
   ogImages?: string[];
@@ -35,7 +35,9 @@ export function SEOHead({
   jsonLd,
   product,
 }: SEOHeadProps) {
-  const fullTitle = `${title} | Barbato Electronics`;
+  // Keep <title> under 60 chars: append brand suffix only when there's room.
+  const BRAND_SUFFIX = " | Barbato Electronics";
+  const fullTitle = title.length + BRAND_SUFFIX.length <= 60 ? `${title}${BRAND_SUFFIX}` : title.slice(0, 60);
   const canonicalUrl = `${BASE_URL}${canonical ?? ""}`;
   // Truncate descriptions to 160 chars (search-result limit) — break at last word boundary.
   const truncatedDescription = description.length > 160

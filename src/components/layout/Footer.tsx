@@ -262,7 +262,7 @@ export function Footer() {
             </span>
             <ArrowUpRight className="h-3.5 w-3.5 text-primary/60 group-hover:text-primary transition-colors" />
           </a>
-          <p className="text-xs text-muted-foreground/50">
+          <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} Barbato Electronics — Alle Rechte vorbehalten
           </p>
         </div>
