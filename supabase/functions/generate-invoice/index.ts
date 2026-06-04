@@ -64,15 +64,14 @@ serve(async (req) => {
       });
     }
 
-    // Auth: try to identify user (optional — guests can use session_id)
-    // Token can come from Authorization header OR `?token=` query param
-    // (window.open cannot set custom headers, so we accept both).
+    // Auth: prefer the Authorization header. We no longer accept tokens via
+    // ?token= query param — putting JWTs in URLs exposes them in logs, browser
+    // history, and Referer headers.
     const authHeader = req.headers.get("Authorization");
-    const tokenParam = url.searchParams.get("token");
     const anonClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!);
     let userId: string | null = null;
-    const token = tokenParam || (authHeader ? authHeader.replace("Bearer ", "") : null);
-    if (token) {
+    if (authHeader?.startsWith("Bearer ")) {
+      const token = authHeader.slice(7);
       const { data } = await anonClient.auth.getUser(token);
       userId = data.user?.id ?? null;
     }
@@ -105,27 +104,44 @@ serve(async (req) => {
     const rows = orders as OrderRow[];
     const primary = rows[0];
 
-    // Authorization check: buyer or admin
-    if (userId && userId !== primary.buyer_id) {
-      const { data: roleRow } = await admin
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", userId)
-        .eq("role", "admin")
-        .maybeSingle();
-      if (!roleRow) {
-        return new Response(JSON.stringify({ error: "Forbidden" }), {
-          status: 403,
+    // Authorization rules:
+    // 1. Authenticated buyer of the order — always allowed.
+    // 2. Admin — always allowed.
+    // 3. Anonymous caller with session_id — only allowed if the order is fresh
+    //    (<= 60 minutes old). This narrows the window where a leaked session_id
+    //    (visible in the Stripe redirect URL) can expose invoice PII.
+    if (userId) {
+      if (userId !== primary.buyer_id) {
+        const { data: roleRow } = await admin
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", userId)
+          .eq("role", "admin")
+          .maybeSingle();
+        if (!roleRow) {
+          return new Response(JSON.stringify({ error: "Forbidden" }), {
+            status: 403,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+      }
+    } else {
+      if (!sessionId) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), {
+          status: 401,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-    }
-    // If no auth at all, require session_id (proves the user just completed checkout)
-    if (!userId && !sessionId) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      const ageMs = Date.now() - new Date(primary.created_at).getTime();
+      const MAX_AGE_MS = 60 * 60 * 1000; // 60 minutes
+      if (ageMs > MAX_AGE_MS) {
+        return new Response(
+          JSON.stringify({
+            error: "Invoice download link expired. Please sign in to your account to download invoices.",
+          }),
+          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
     }
 
     // Get/create invoice number — anchor on first order in the group
