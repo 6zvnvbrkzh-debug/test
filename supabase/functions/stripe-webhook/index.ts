@@ -22,12 +22,24 @@ serve(async (req) => {
     const signature = req.headers.get("stripe-signature");
     const webhookSecret = Deno.env.get("webhook_stripe");
 
-    let event: Stripe.Event;
+    // STRICT signature verification — never trust unsigned payloads.
+    if (!webhookSecret || !signature) {
+      console.error("Webhook rejected: missing signature or secret");
+      return new Response(
+        JSON.stringify({ error: "Missing webhook signature" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
 
-    if (webhookSecret && signature) {
+    let event: Stripe.Event;
+    try {
       event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
-    } else {
-      event = JSON.parse(body);
+    } catch (err) {
+      console.error("Webhook signature verification failed:", err);
+      return new Response(
+        JSON.stringify({ error: "Invalid signature" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
 
     console.log(`Received event: ${event.type}`);
