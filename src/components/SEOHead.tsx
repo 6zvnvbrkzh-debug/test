@@ -13,7 +13,7 @@ interface SEOHeadProps {
   title: string;
   description: string;
   canonical?: string;
-  type?: "website" | "product";
+  type?: "website" | "product" | "article";
   noindex?: boolean;
   ogImage?: string;
   ogImages?: string[];
