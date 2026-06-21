@@ -221,8 +221,9 @@ export default function AdminOrders() {
                 : group.items.map((i) => `${i.quantity}× ${i.title}`).join(", ");
             await supabase.functions.invoke("admin-send-shipping-confirmation", {
               body: {
+                templateName: "shipping-confirmation",
                 recipientEmail: customerEmail,
-                idempotencyKey: `shipping-${group.groupKey}-${tracking}`,
+                idempotencyKey: `shipped-${group.groupKey}-${tracking}`,
                 templateData: {
                   customerName: group.primary.customer_name ?? "",
                   orderId: group.primary.id,
