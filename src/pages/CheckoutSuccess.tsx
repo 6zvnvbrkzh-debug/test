@@ -84,15 +84,35 @@ export default function CheckoutSuccess() {
           <div className="mx-auto w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center">
             <CheckCircle2 className="h-8 w-8 text-green-500" />
           </div>
-          <h1 className="text-2xl font-bold">Bestellung erfolgreich!</h1>
+          <h1 className="text-2xl font-bold">
+            {searchParams.get("gift") === "1" ? "Gutschein gekauft!" : "Bestellung erfolgreich!"}
+          </h1>
           <p className="text-muted-foreground">
-            Vielen Dank für deinen Einkauf. Du erhältst in Kürze eine Bestätigungs-E-Mail.
+            {searchParams.get("gift") === "1"
+              ? "Danke für deinen Kauf. Dein Gutschein-Code ist sofort einlösbar im Warenkorb."
+              : "Vielen Dank für deinen Einkauf. Du erhältst in Kürze eine Bestätigungs-E-Mail."}
           </p>
+
+          {searchParams.get("gift") === "1" && searchParams.get("code") && (
+            <div className="rounded-xl border-2 border-primary/40 bg-primary/5 p-5 space-y-2 text-left">
+              <div className="text-[10px] font-mono-data uppercase tracking-[0.2em] text-primary/80">
+                Dein Gutschein-Code · {searchParams.get("amount")}{"\u00A0€"}
+              </div>
+              <div className="font-mono-data text-xl md:text-2xl font-bold tracking-wider text-foreground select-all break-all">
+                {searchParams.get("code")}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Bitte sicher aufbewahren. Den Code kannst du im Warenkorb beim nächsten Einkauf einlösen.
+              </p>
+            </div>
+          )}
+
           {sessionId && (
             <p className="text-xs text-muted-foreground font-mono">
               Referenz: {sessionId.slice(0, 20)}...
             </p>
           )}
+
 
           {/* Direkt-Bewertung */}
           {user && (

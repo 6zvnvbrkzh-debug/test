@@ -57,6 +57,28 @@ serve(async (req) => {
         Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
       );
 
+      // ---- Gift voucher PURCHASE flow (separate from regular orders) ----
+      if (metadata.voucher_purchase === "1" && metadata.voucher_id) {
+        const initial = Number(metadata.voucher_amount);
+        const { error: actErr } = await supabase
+          .from("vouchers")
+          .update({
+            is_active: true,
+            balance: initial,
+            initial_amount: initial,
+            note: `Geschenkgutschein gekauft (Stripe ${session.id})`,
+          })
+          .eq("id", metadata.voucher_id);
+        if (actErr) {
+          console.error("Voucher activation failed:", actErr);
+        } else {
+          console.log(`Gift voucher activated: ${metadata.voucher_code} (${initial} EUR)`);
+        }
+        return new Response(JSON.stringify({ received: true, gift: true }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
       const rawUserId = metadata.supabase_user_id;
       // Guests pass "guest" — store as NULL since buyer_id is a uuid column
       const userId =
