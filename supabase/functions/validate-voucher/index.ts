@@ -7,7 +7,6 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// Simple per-IP rate limit
 const ipRequests = new Map<string, number[]>();
 const RATE_LIMIT = 20;
 const RATE_WINDOW = 60_000;
@@ -24,6 +23,13 @@ function checkRateLimit(ip: string) {
   return true;
 }
 
+function jsonRes(payload: unknown, status = 200) {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -31,10 +37,7 @@ serve(async (req) => {
 
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
   if (!checkRateLimit(ip)) {
-    return new Response(
-      JSON.stringify({ error: "Zu viele Versuche. Bitte warte einen Moment." }),
-      { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-    );
+    return jsonRes({ error: "Zu viele Versuche. Bitte warte einen Moment." }, 429);
   }
 
   try {
@@ -44,16 +47,10 @@ serve(async (req) => {
     const code = codeRaw.trim().toUpperCase();
 
     if (!code || code.length < 3 || code.length > 64) {
-      return new Response(
-        JSON.stringify({ valid: false, error: "Bitte gib einen gültigen Gutschein-Code ein." }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      return jsonRes({ valid: false, error: "Bitte gib einen gültigen Gutschein-Code ein." });
     }
     if (!Number.isFinite(orderTotal) || orderTotal < 0) {
-      return new Response(
-        JSON.stringify({ valid: false, error: "Ungültiger Bestellbetrag." }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      return jsonRes({ valid: false, error: "Ungültiger Bestellbetrag." }, 400);
     }
 
     const supabase = createClient(
@@ -61,72 +58,79 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
+    // Identify the calling user (if any) via the forwarded Authorization header.
+    let userId: string | null = null;
+    const authHeader = req.headers.get("Authorization");
+    if (authHeader?.startsWith("Bearer ")) {
+      const token = authHeader.slice(7);
+      const { data: { user } } = await supabase.auth.getUser(token);
+      userId = user?.id ?? null;
+    }
+
     const { data: voucher, error } = await supabase
       .from("vouchers")
-      .select("id, code, balance, valid_from, valid_until, is_active")
+      .select("id, code, balance, valid_from, valid_until, is_active, user_id")
       .eq("code", code)
       .maybeSingle();
 
     if (error) {
       console.error("validate-voucher db error", error);
-      return new Response(
-        JSON.stringify({ valid: false, error: "Gutschein konnte nicht geprüft werden." }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      return jsonRes({ valid: false, error: "Gutschein konnte nicht geprüft werden." });
     }
-
     if (!voucher) {
-      return new Response(
-        JSON.stringify({ valid: false, error: "Gutschein-Code unbekannt." }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      return jsonRes({ valid: false, error: "Gutschein-Code unbekannt." });
     }
 
     const now = Date.now();
     if (!voucher.is_active) {
-      return new Response(
-        JSON.stringify({ valid: false, error: "Dieser Gutschein ist deaktiviert." }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      return jsonRes({ valid: false, error: "Dieser Gutschein ist deaktiviert." });
     }
     if (voucher.valid_from && now < new Date(voucher.valid_from).getTime()) {
-      return new Response(
-        JSON.stringify({ valid: false, error: "Dieser Gutschein ist noch nicht gültig." }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      return jsonRes({ valid: false, error: "Dieser Gutschein ist noch nicht gültig." });
     }
     if (voucher.valid_until && now > new Date(voucher.valid_until).getTime()) {
-      return new Response(
-        JSON.stringify({ valid: false, error: "Dieser Gutschein ist abgelaufen." }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      return jsonRes({ valid: false, error: "Dieser Gutschein ist abgelaufen." });
+    }
+
+    // Account binding: if voucher already belongs to a user, only they may use it.
+    if (voucher.user_id && voucher.user_id !== userId) {
+      return jsonRes({
+        valid: false,
+        error: "Dieser Gutschein ist einem anderen Konto zugeordnet. Bitte melde dich mit dem passenden Konto an.",
+      });
+    }
+
+    // Bind to current user (claim) if logged in and voucher is unclaimed.
+    if (userId && !voucher.user_id) {
+      try {
+        await supabase.rpc("claim_voucher", { _code: voucher.code, _user_id: userId });
+        voucher.user_id = userId;
+      } catch (e) {
+        console.warn("claim_voucher failed:", (e as Error).message);
+      }
     }
 
     const balance = Number(voucher.balance);
     if (balance <= 0) {
-      return new Response(
-        JSON.stringify({ valid: false, error: "Dieser Gutschein hat kein Guthaben mehr." }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      return jsonRes({ valid: false, error: "Dieser Gutschein hat kein Guthaben mehr." });
     }
 
-    // Maximum discount = min(balance, orderTotal)
     const applicable = Math.min(balance, orderTotal);
+    const remainingAfter = Math.max(balance - applicable, 0);
 
-    return new Response(
-      JSON.stringify({
-        valid: true,
-        code: voucher.code,
-        balance,
-        applicableAmount: Math.round(applicable * 100) / 100,
-      }),
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-    );
+    return jsonRes({
+      valid: true,
+      code: voucher.code,
+      balance,
+      applicableAmount: Math.round(applicable * 100) / 100,
+      remainingAfter: Math.round(remainingAfter * 100) / 100,
+      // True if voucher already bound OR will leave residual balance —
+      // in both cases the client must require a logged-in checkout.
+      requiresAccount: Boolean(voucher.user_id) || remainingAfter > 0.005,
+      boundToCurrentUser: Boolean(userId && voucher.user_id === userId),
+    });
   } catch (e) {
     console.error("validate-voucher error", e);
-    return new Response(
-      JSON.stringify({ valid: false, error: "Ein Fehler ist aufgetreten." }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-    );
+    return jsonRes({ valid: false, error: "Ein Fehler ist aufgetreten." }, 500);
   }
 });

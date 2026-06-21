@@ -37,6 +37,15 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
+    // Identify caller — vouchers purchased while logged in are bound to that account.
+    let userId: string | null = null;
+    const authHeader = req.headers.get("Authorization");
+    if (authHeader?.startsWith("Bearer ")) {
+      const token = authHeader.slice(7);
+      const { data: { user } } = await supabase.auth.getUser(token);
+      userId = user?.id ?? null;
+    }
+
     // Generate a unique code (retry on collision)
     let code = "";
     for (let i = 0; i < 5; i++) {
@@ -62,11 +71,13 @@ serve(async (req) => {
         initial_amount: amount,
         currency: "EUR",
         is_active: false,
+        user_id: userId,
         note: `Geschenkgutschein-Kauf (ausstehend)${recipientEmail ? ` – für ${recipientEmail}` : ""}`,
       })
       .select()
       .single();
     if (vErr || !voucher) throw vErr ?? new Error("Voucher-Insert fehlgeschlagen");
+
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
       apiVersion: "2025-08-27.basil",
