@@ -96,7 +96,7 @@ export default function CheckoutSuccess() {
           {searchParams.get("gift") === "1" && searchParams.get("code") && (
             <div className="rounded-xl border-2 border-primary/40 bg-primary/5 p-5 space-y-2 text-left">
               <div className="text-[10px] font-mono-data uppercase tracking-[0.2em] text-primary/80">
-                Dein Gutschein-Code · {searchParams.get("amount")}\u00A0€
+                Dein Gutschein-Code · {searchParams.get("amount")}{"\u00A0€"}
               </div>
               <div className="font-mono-data text-xl md:text-2xl font-bold tracking-wider text-foreground select-all break-all">
                 {searchParams.get("code")}
