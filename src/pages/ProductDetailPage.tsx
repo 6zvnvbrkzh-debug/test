@@ -431,19 +431,19 @@ const ProductDetailPage = () => {
                       href={`https://wa.me/4917622551230?text=${encodeURIComponent(`Hallo Barbato Electronics, ich interessiere mich für "${listing.title}" (aktuell ausverkauft). Wann ist es wieder verfügbar?`)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 min-w-0 inline-flex items-center justify-center gap-3 h-14 px-5 sm:px-6 rounded-2xl bg-[#25D366] text-white text-sm sm:text-base font-semibold hover:bg-[#1ebe5d] hover:-translate-y-0.5 active:translate-y-0 transition-all shadow-[0_8px_24px_-8px_rgba(37,211,102,0.35)] border border-white/10"
+                      className="flex-1 min-w-0 inline-flex items-center justify-center gap-3 h-auto min-h-14 py-3.5 px-5 sm:px-6 rounded-2xl bg-[#25D366] text-white text-sm sm:text-base font-semibold text-center leading-tight hover:bg-[#1ebe5d] hover:-translate-y-0.5 active:translate-y-0 transition-all shadow-[0_8px_24px_-8px_rgba(37,211,102,0.35)] border border-white/10"
                     >
                       <WhatsAppIcon className="h-6 w-6 shrink-0" />
-                      <span className="truncate">Per WhatsApp anfragen</span>
+                      <span>Per WhatsApp anfragen</span>
                     </a>
                     <a
                       href={`https://t.me/bElectronicsshop?text=${encodeURIComponent(`Hallo Barbato Electronics, ich interessiere mich für "${listing.title}" (aktuell ausverkauft). Wann ist es wieder verfügbar?`)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 min-w-0 inline-flex items-center justify-center gap-3 h-14 px-5 sm:px-6 rounded-2xl bg-[#229ED9] text-white text-sm sm:text-base font-semibold hover:bg-[#1c87b8] hover:-translate-y-0.5 active:translate-y-0 transition-all shadow-[0_8px_24px_-8px_rgba(34,158,217,0.35)] border border-white/10"
+                      className="flex-1 min-w-0 inline-flex items-center justify-center gap-3 h-auto min-h-14 py-3.5 px-5 sm:px-6 rounded-2xl bg-[#229ED9] text-white text-sm sm:text-base font-semibold text-center leading-tight hover:bg-[#1c87b8] hover:-translate-y-0.5 active:translate-y-0 transition-all shadow-[0_8px_24px_-8px_rgba(34,158,217,0.35)] border border-white/10"
                     >
                       <TelegramIcon className="h-6 w-6 shrink-0" />
-                      <span className="truncate">Per Telegram anfragen</span>
+                      <span>Per Telegram anfragen</span>
                     </a>
                   </div>
                 </div>
