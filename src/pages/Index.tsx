@@ -15,6 +15,7 @@ import { useShopStats } from "@/hooks/useReviews";
 import { SEOHead, BASE_URL } from "@/components/SEOHead";
 import { TelegramIcon } from "@/components/icons";
 import { GoogleReviewsSection } from "@/components/reviews/GoogleReviews";
+import { GiftVoucherSection } from "@/components/GiftVoucherSection";
 import { getOptimizedImageUrl, getImageSrcSet } from "@/lib/supabase-image";
 import categoryHighlights from "@/assets/category-highlights.webp";
 import categoryFormuler from "@/assets/category-formuler.webp";
