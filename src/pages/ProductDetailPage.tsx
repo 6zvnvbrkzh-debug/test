@@ -426,33 +426,59 @@ const ProductDetailPage = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-2">
-                <Button
-                  className="flex-1 font-semibold text-base h-12 shadow-[0_0_20px_-4px_hsl(var(--primary)/0.4)] transition-all duration-300"
-                  size="lg"
-                  disabled={isSold || remainingStock === 0}
-                  onClick={handleAddToCart}
-                >
-                  {isSold ? (
-                    "Ausverkauft"
-                  ) : addedToCart ? (
-                    <motion.span
-                      initial={{ scale: 0.8 }}
-                      animate={{ scale: 1 }}
-                      className="inline-flex items-center gap-2"
+              {isSold ? (
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">
+                    Dieses Produkt ist aktuell ausverkauft. Schreib uns – wir informieren dich, sobald es wieder verfügbar ist.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <a
+                      href={`https://wa.me/4917622551230?text=${encodeURIComponent(`Hallo Barbato Electronics, ich interessiere mich für "${listing.title}" (aktuell ausverkauft). Wann ist es wieder verfügbar?`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 inline-flex items-center justify-center gap-2 h-12 px-5 rounded-md bg-[#25D366] text-white text-base font-semibold hover:bg-[#1ebe5d] transition-colors shadow-[0_0_20px_-4px_rgba(37,211,102,0.5)]"
                     >
-                      <Check className="h-4 w-4" />
-                      Hinzugefügt!
-                    </motion.span>
-                  ) : (
-                    <span className="inline-flex items-center gap-2">
-                      <ShoppingCart className="h-4 w-4" />
-                      In den Warenkorb · {formatPrice(listing.price * quantity)}
-                    </span>
-                  )}
-                </Button>
-                {!isSold && <WishlistButton listingId={listing.id} variant="detail" />}
-              </div>
+                      <WhatsAppIcon className="h-5 w-5" />
+                      Per WhatsApp anfragen
+                    </a>
+                    <a
+                      href={`https://t.me/bElectronicsshop?text=${encodeURIComponent(`Hallo Barbato Electronics, ich interessiere mich für "${listing.title}" (aktuell ausverkauft). Wann ist es wieder verfügbar?`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 inline-flex items-center justify-center gap-2 h-12 px-5 rounded-md bg-[#229ED9] text-white text-base font-semibold hover:bg-[#1c87b8] transition-colors shadow-[0_0_20px_-4px_rgba(34,158,217,0.5)]"
+                    >
+                      <TelegramIcon className="h-5 w-5" />
+                      Per Telegram anfragen
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Button
+                    className="flex-1 font-semibold text-base h-12 shadow-[0_0_20px_-4px_hsl(var(--primary)/0.4)] transition-all duration-300"
+                    size="lg"
+                    disabled={remainingStock === 0}
+                    onClick={handleAddToCart}
+                  >
+                    {addedToCart ? (
+                      <motion.span
+                        initial={{ scale: 0.8 }}
+                        animate={{ scale: 1 }}
+                        className="inline-flex items-center gap-2"
+                      >
+                        <Check className="h-4 w-4" />
+                        Hinzugefügt!
+                      </motion.span>
+                    ) : (
+                      <span className="inline-flex items-center gap-2">
+                        <ShoppingCart className="h-4 w-4" />
+                        In den Warenkorb · {formatPrice(listing.price * quantity)}
+                      </span>
+                    )}
+                  </Button>
+                  <WishlistButton listingId={listing.id} variant="detail" />
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-3 gap-3">
