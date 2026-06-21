@@ -25,7 +25,8 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
 
   const stockStatus = useMemo(() => {
     if (isSold || listing.stock === 0) return null;
-    if (listing.stock >= 5) {
+    if (listing.stock >= 6) return null;
+    if (listing.stock >= 4) {
       return {
         label: "Begrenzter Bestand",
         dotClass: "bg-orange-500",
