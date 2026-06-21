@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
+import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { ShoppingCart, Flame, ArrowUpRight, Star } from "lucide-react";
+import { ShoppingCart, ArrowUpRight, Star } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import type { Listing } from "@/lib/mock-data";
@@ -21,7 +22,35 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
     : 0;
   const savings = hasDiscount ? (listing.originalPrice! - listing.price) : 0;
   const { addItem } = useCart();
-  const isLowStock = !isSold && listing.stock > 0 && listing.stock <= 3;
+
+  const stockStatus = useMemo(() => {
+    if (isSold || listing.stock === 0) return null;
+    if (listing.stock >= 10) {
+      return {
+        label: "Genügend verfügbar",
+        dotClass: "bg-green-600",
+        textClass: "text-green-600",
+        borderClass: "border-green-600/30",
+        bgClass: "bg-green-600/10",
+      };
+    }
+    if (listing.stock >= 5) {
+      return {
+        label: "Begrenzter Bestand",
+        dotClass: "bg-orange-500",
+        textClass: "text-orange-500",
+        borderClass: "border-orange-500/30",
+        bgClass: "bg-orange-500/10",
+      };
+    }
+    return {
+      label: "Wenig verfügbar",
+      dotClass: "bg-red-600",
+      textClass: "text-red-600",
+      borderClass: "border-red-600/30",
+      bgClass: "bg-red-600/10",
+    };
+  }, [isSold, listing.stock]);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -74,10 +103,14 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
                   -{discountPercent}%
                 </span>
               )}
-              {isLowStock && (
-                <span className="text-[10px] font-semibold uppercase tracking-wide bg-destructive/90 text-destructive-foreground px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full flex items-center gap-1 whitespace-nowrap">
-                  <Flame className="h-2.5 w-2.5 md:h-3 md:w-3" />
-                  <span>Wenig&nbsp;verfügbar</span>
+              {stockStatus && (
+                <span
+                  className={`text-[10px] font-semibold uppercase tracking-wide px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full flex items-center gap-1 whitespace-nowrap border ${stockStatus.borderClass} ${stockStatus.bgClass} ${stockStatus.textClass}`}
+                >
+                  <span
+                    className={`inline-block w-1.5 h-1.5 rounded-full ${stockStatus.dotClass}`}
+                  />
+                  <span>{stockStatus.label.replace(" ", "\u00A0")}</span>
                 </span>
               )}
             </div>
