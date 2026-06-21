@@ -26,12 +26,30 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
   const stockStatus = useMemo(() => {
     if (isSold || listing.stock === 0) return null;
     if (listing.stock >= 10) {
-      return { label: "Genügend verfügbar", color: "bg-green-600 text-green-600" };
+      return {
+        label: "Genügend verfügbar",
+        dotClass: "bg-green-600",
+        textClass: "text-green-600",
+        borderClass: "border-green-600/30",
+        bgClass: "bg-green-600/10",
+      };
     }
     if (listing.stock >= 5) {
-      return { label: "Begrenzter Bestand", color: "bg-orange-500 text-orange-500" };
+      return {
+        label: "Begrenzter Bestand",
+        dotClass: "bg-orange-500",
+        textClass: "text-orange-500",
+        borderClass: "border-orange-500/30",
+        bgClass: "bg-orange-500/10",
+      };
     }
-    return { label: "Wenig verfügbar", color: "bg-red-600 text-red-600" };
+    return {
+      label: "Wenig verfügbar",
+      dotClass: "bg-red-600",
+      textClass: "text-red-600",
+      borderClass: "border-red-600/30",
+      bgClass: "bg-red-600/10",
+    };
   }, [isSold, listing.stock]);
 
   const handleAddToCart = (e: React.MouseEvent) => {
