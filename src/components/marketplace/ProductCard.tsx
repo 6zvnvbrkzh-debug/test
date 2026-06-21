@@ -105,16 +105,10 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
               )}
               {stockStatus && (
                 <span
-                  className={`text-[10px] font-semibold uppercase tracking-wide px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full flex items-center gap-1 whitespace-nowrap border ${
-                    stockStatus.color.split(" ")[1].replace("text-", "border-")
-                  }/30 bg-opacity-10 ${
-                    stockStatus.color.split(" ")[1].replace("text-", "bg-")
-                  } ${stockStatus.color.split(" ")[1]}`}
+                  className={`text-[10px] font-semibold uppercase tracking-wide px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full flex items-center gap-1 whitespace-nowrap border ${stockStatus.borderClass} ${stockStatus.bgClass} ${stockStatus.textClass}`}
                 >
                   <span
-                    className={`inline-block w-1.5 h-1.5 rounded-full ${
-                      stockStatus.color.split(" ")[0]
-                    }`}
+                    className={`inline-block w-1.5 h-1.5 rounded-full ${stockStatus.dotClass}`}
                   />
                   <span>{stockStatus.label.replace(" ", "\u00A0")}</span>
                 </span>
