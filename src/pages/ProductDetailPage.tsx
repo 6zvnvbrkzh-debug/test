@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ShieldCheck, Truck, Package, ChevronLeft, ChevronRight, Minus, Plus, ShoppingCart, Check, Loader2, Star } from "lucide-react";
+import { TelegramIcon, WhatsAppIcon } from "@/components/icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
