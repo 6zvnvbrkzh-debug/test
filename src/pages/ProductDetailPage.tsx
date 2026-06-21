@@ -377,15 +377,10 @@ const ProductDetailPage = () => {
                 </p>
               )}
               {!isSold && (() => {
-                if (listing.stock >= 10) {
-                  return (
-                    <p className="text-sm text-green-600 font-medium mt-1 flex items-center gap-1.5">
-                      <span className="inline-block w-2 h-2 rounded-full bg-green-600" />
-                      Genügend verfügbar
-                    </p>
-                  );
+                if (listing.stock >= 6) {
+                  return null;
                 }
-                if (listing.stock >= 5) {
+                if (listing.stock >= 4) {
                   return (
                     <p className="text-sm text-orange-500 font-medium mt-1 flex items-center gap-1.5">
                       <span className="inline-block w-2 h-2 rounded-full bg-orange-500" />
@@ -427,16 +422,16 @@ const ProductDetailPage = () => {
               </div>
 
               {isSold ? (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <p className="text-sm text-muted-foreground">
                     Dieses Produkt ist aktuell ausverkauft. Schreib uns – wir informieren dich, sobald es wieder verfügbar ist.
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-2">
+                  <div className="flex flex-col sm:flex-row gap-3">
                     <a
                       href={`https://wa.me/4917622551230?text=${encodeURIComponent(`Hallo Barbato Electronics, ich interessiere mich für "${listing.title}" (aktuell ausverkauft). Wann ist es wieder verfügbar?`)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 inline-flex items-center justify-center gap-2 h-12 px-5 rounded-md bg-[#25D366] text-white text-base font-semibold hover:bg-[#1ebe5d] transition-colors shadow-[0_0_20px_-4px_rgba(37,211,102,0.5)]"
+                      className="flex-1 inline-flex items-center justify-center gap-2.5 h-14 px-6 rounded-xl bg-[#25D366] text-white text-base font-semibold hover:bg-[#1ebe5d] hover:-translate-y-0.5 active:translate-y-0 transition-all shadow-[0_6px_18px_-5px_rgba(37,211,102,0.45)]"
                     >
                       <WhatsAppIcon className="h-5 w-5" />
                       Per WhatsApp anfragen
@@ -445,7 +440,7 @@ const ProductDetailPage = () => {
                       href={`https://t.me/bElectronicsshop?text=${encodeURIComponent(`Hallo Barbato Electronics, ich interessiere mich für "${listing.title}" (aktuell ausverkauft). Wann ist es wieder verfügbar?`)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 inline-flex items-center justify-center gap-2 h-12 px-5 rounded-md bg-[#229ED9] text-white text-base font-semibold hover:bg-[#1c87b8] transition-colors shadow-[0_0_20px_-4px_rgba(34,158,217,0.5)]"
+                      className="flex-1 inline-flex items-center justify-center gap-2.5 h-14 px-6 rounded-xl bg-[#229ED9] text-white text-base font-semibold hover:bg-[#1c87b8] hover:-translate-y-0.5 active:translate-y-0 transition-all shadow-[0_6px_18px_-5px_rgba(34,158,217,0.45)]"
                     >
                       <TelegramIcon className="h-5 w-5" />
                       Per Telegram anfragen
