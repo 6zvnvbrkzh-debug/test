@@ -14,6 +14,7 @@ import { template as orderNotification } from './order-notification.tsx'
 import { template as orderConfirmationCustomer } from './order-confirmation-customer.tsx'
 import { template as shippingConfirmation } from './shipping-confirmation.tsx'
 import { template as trackingCreated } from './tracking-created.tsx'
+import { template as giftVoucherCode } from './gift-voucher-code.tsx'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'contact-message': contactMessage,
@@ -21,4 +22,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'order-confirmation-customer': orderConfirmationCustomer,
   'shipping-confirmation': shippingConfirmation,
   'tracking-created': trackingCreated,
+  'gift-voucher-code': giftVoucherCode,
 }
