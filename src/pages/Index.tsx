@@ -681,6 +681,9 @@ const HomePage = () => {
         )}
       </section>
 
+      {/* ─── GIFT VOUCHERS ─── */}
+      <GiftVoucherSection />
+
       {/* ─── WHY US (EDITORIAL) ─── */}
       <section className="relative bg-surface-sunken border-y border-border/30 overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[600px] bg-primary/8 rounded-full blur-[180px] pointer-events-none aurora-glow" />
