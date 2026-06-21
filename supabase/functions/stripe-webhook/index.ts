@@ -60,7 +60,7 @@ serve(async (req) => {
       // ---- Gift voucher PURCHASE flow (separate from regular orders) ----
       if (metadata.voucher_purchase === "1" && metadata.voucher_id) {
         const initial = Number(metadata.voucher_amount);
-        const { error: actErr } = await supabase
+        const { data: vRow, error: actErr } = await supabase
           .from("vouchers")
           .update({
             is_active: true,
@@ -68,16 +68,70 @@ serve(async (req) => {
             initial_amount: initial,
             note: `Geschenkgutschein gekauft (Stripe ${session.id})`,
           })
-          .eq("id", metadata.voucher_id);
+          .eq("id", metadata.voucher_id)
+          .select("code, valid_until")
+          .maybeSingle();
         if (actErr) {
           console.error("Voucher activation failed:", actErr);
         } else {
           console.log(`Gift voucher activated: ${metadata.voucher_code} (${initial} EUR)`);
         }
+
+        // Send gift voucher code email to buyer
+        const buyerEmail =
+          session.customer_details?.email ||
+          metadata.recipient_email ||
+          null;
+
+        if (buyerEmail && vRow) {
+          try {
+            const validUntil = vRow.valid_until
+              ? new Date(vRow.valid_until).toLocaleDateString("de-DE", {
+                  day: "2-digit", month: "2-digit", year: "numeric",
+                })
+              : null;
+            const amountStr = initial.toFixed(2).replace(".", ",");
+
+            const FN_URL = `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-transactional-email`;
+            const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+            const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
+            const res = await fetch(FN_URL, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                apikey: ANON,
+                Authorization: `Bearer ${SERVICE_KEY}`,
+              },
+              body: JSON.stringify({
+                templateName: "gift-voucher-code",
+                recipientEmail: buyerEmail,
+                idempotencyKey: `gift-voucher-${metadata.voucher_id}`,
+                templateData: {
+                  code: vRow.code || metadata.voucher_code,
+                  amount: amountStr,
+                  validUntil,
+                  shopUrl: "https://b-electronics.shop",
+                },
+              }),
+            });
+            const text = await res.text();
+            if (!res.ok) {
+              console.error(`Gift voucher email failed: ${res.status} ${text}`);
+            } else {
+              console.log(`Gift voucher email enqueued to ${buyerEmail}`);
+            }
+          } catch (e) {
+            console.error("Gift voucher email error:", (e as Error).message);
+          }
+        } else {
+          console.warn("No buyer email available for gift voucher delivery");
+        }
+
         return new Response(JSON.stringify({ received: true, gift: true }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
+
 
       const rawUserId = metadata.supabase_user_id;
       // Guests pass "guest" — store as NULL since buyer_id is a uuid column
