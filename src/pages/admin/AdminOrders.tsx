@@ -148,7 +148,7 @@ export default function AdminOrders() {
         .in("id", orderIds);
       if (error) throw error;
 
-      // Versandbestätigung an Kunden senden – nur EINE E-Mail pro Gruppe
+      // "Versandetikett erstellt"-Mail an Kunden – nur EINE pro Gruppe
       const previous = (group.primary.tracking_number || "").trim();
       const customerEmail = group.primary.customer_email;
       if (trimmed && trimmed !== previous && customerEmail) {
@@ -159,19 +159,19 @@ export default function AdminOrders() {
               : group.items.map((i) => `${i.quantity}× ${i.title}`).join(", ");
           await supabase.functions.invoke("admin-send-shipping-confirmation", {
             body: {
+              templateName: "tracking-created",
               recipientEmail: customerEmail,
-              idempotencyKey: `shipping-${group.groupKey}-${trimmed}`,
+              idempotencyKey: `tracking-${group.groupKey}-${trimmed}`,
               templateData: {
                 customerName: group.primary.customer_name ?? "",
                 orderId: group.primary.id,
                 trackingNumber: trimmed,
                 productTitle,
-                shippingAddress: group.primary.shipping_address ?? null,
               },
             },
           });
         } catch (e) {
-          console.error("Versandbestätigung konnte nicht gesendet werden", e);
+          console.error("Sendungsnummer-Mail konnte nicht gesendet werden", e);
         }
       }
 
@@ -181,7 +181,7 @@ export default function AdminOrders() {
       queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
       toast.success(
         result?.sentEmail
-          ? "Sendungsnummer gespeichert · Versandbestätigung an Kunde gesendet"
+          ? "Sendungsnummer gespeichert · Kunde wurde über das erstellte Versandetikett informiert"
           : "Sendungsnummer gespeichert!"
       );
     },
@@ -221,8 +221,9 @@ export default function AdminOrders() {
                 : group.items.map((i) => `${i.quantity}× ${i.title}`).join(", ");
             await supabase.functions.invoke("admin-send-shipping-confirmation", {
               body: {
+                templateName: "shipping-confirmation",
                 recipientEmail: customerEmail,
-                idempotencyKey: `shipping-${group.groupKey}-${tracking}`,
+                idempotencyKey: `shipped-${group.groupKey}-${tracking}`,
                 templateData: {
                   customerName: group.primary.customer_name ?? "",
                   orderId: group.primary.id,
