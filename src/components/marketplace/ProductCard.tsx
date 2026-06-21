@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ShoppingCart, Flame, ArrowUpRight, Star } from "lucide-react";
+import { ShoppingCart, ArrowUpRight, Star } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import type { Listing } from "@/lib/mock-data";
@@ -21,7 +21,17 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
     : 0;
   const savings = hasDiscount ? (listing.originalPrice! - listing.price) : 0;
   const { addItem } = useCart();
-  const isLowStock = !isSold && listing.stock > 0 && listing.stock <= 3;
+
+  const stockStatus = useMemo(() => {
+    if (isSold || listing.stock === 0) return null;
+    if (listing.stock >= 10) {
+      return { label: "Genügend verfügbar", color: "bg-green-600 text-green-600" };
+    }
+    if (listing.stock >= 5) {
+      return { label: "Begrenzter Bestand", color: "bg-orange-500 text-orange-500" };
+    }
+    return { label: "Wenig verfügbar", color: "bg-red-600 text-red-600" };
+  }, [isSold, listing.stock]);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
