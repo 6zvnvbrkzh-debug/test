@@ -1,89 +1,66 @@
-# 🚀 Optimierungs-Roadmap – Barbato Electronics Shop
+# Plan – Schritt für Schritt
 
-Ein priorisierter Plan zur Steigerung von Vertrauen, Conversion und Umsatz.
-
----
-
-## 🔴 Phase 1 – Vertrauen & Conversion (Höchste Priorität)
-
-### 1.1 Produktbewertungssystem
-- Käufer können nach abgeschlossener Bestellung Sterne (1–5) und einen Kommentar abgeben
-- Sterne-Durchschnitt + Anzahl auf Produktkarten (`ProductCard.tsx`)
-- Eigene Reviews-Sektion auf der Produktdetailseite
-- "Bewerten"-Button im Konto bei Bestellungen mit Status `COMPLETED`
-- Nutzung der bestehenden `reviews`-Tabelle, RLS-Policy anpassen (nur eigene Bestellungen bewerten)
-
-### 1.2 Trust-Elemente & Versandinfos
-- Trust-Badges-Leiste auf Produktdetailseite & Checkout (Sichere Zahlung, Käuferschutz, Versand aus DE, 14 Tage Widerruf)
-- Versandinfo-Box: Lieferzeit, Versandkosten, DHL als Versanddienstleister
-- Lagerbestand-Anzeige: "Nur noch X verfügbar" wenn `stock < 5`
-
-### 1.3 Tracking-Link für Kunden
-- DHL-Sendungsverfolgungs-Link im Konto klickbar machen
-- Format: `https://www.dhl.de/...?piececode={tracking_number}`
+Ich gehe die 4 offenen Punkte einzeln durch (Punkt 2 Gutscheine überspringen wir – läuft bereits). Nach jedem Schritt kannst du testen, bevor wir den nächsten anfangen.
 
 ---
 
-## 🟡 Phase 2 – Cross-Selling & UX
+## Schritt 1 – Benutzerverwaltung (`/admin/users`)
 
-### 2.1 Verwandte Produkte
-- Auf Produktdetailseite 4 weitere Produkte aus derselben Kategorie anzeigen
-- Reuse von `ProductCard.tsx` in horizontalem Grid
+**Status heute:** Die Seite zeigt nur `display_name`, `location`, Datum und Rolle. E-Mail/Telefon fehlen, weil diese in `auth.users` liegen (nicht direkt vom Client lesbar).
 
-### 2.2 Wunschliste / Favoriten
-- Neue Tabelle `wishlists` (user_id, listing_id)
-- Herz-Icon auf `ProductCard` und Detailseite
-- Neue Sektion im Konto "Meine Wunschliste"
-
-### 2.3 FAQ- & Kontaktseite
-- `/faq` mit Accordion: Versand, Garantie, Rückgabe, Zahlung, Geräte-Fragen
-- `/kontakt` mit Formular (sendet via Edge Function E-Mail an Shop-Inhaber)
-
----
-
-## 🟢 Phase 3 – SEO & Sichtbarkeit
-
-### 3.1 Strukturierte Daten (Schema.org)
-- JSON-LD `Product` auf Produktdetailseite (Preis, Verfügbarkeit, Bewertungen)
-- JSON-LD `Organization` auf Startseite
-- → bessere Google-Rich-Snippets
-
-### 3.2 Open-Graph-Bilder pro Produkt
-- Dynamische OG-Tags in `SEOHead.tsx` mit Produktbild
-- Hübsche Vorschau bei Shares auf WhatsApp / Telegram
-
-### 3.3 Blog / Ratgeber (optional, später)
-- Einfacher Blog-Bereich für SEO-Traffic ("IPTV einrichten", "Beste Streaming-Box 2025")
+**Was ich ändere:**
+- Neue Edge Function `admin-list-users` (admin-geschützt via `has_role`), die per Service-Role aus `auth.users` (`email`, `phone`, `last_sign_in_at`, `created_at`) + `profiles` + `user_roles` eine gemeinsame Liste liefert.
+- `AdminUsers.tsx` ruft diese Function statt direkt `profiles` ab und zeigt zusätzlich:
+  - E-Mail
+  - Telefon (falls vorhanden)
+  - Letzter Login
+  - Anzahl Bestellungen (optional, aus `orders` per `customer_email`)
+- Rollen-Dropdown bleibt wie bisher (Kein / User / Moderator / Admin) – funktioniert schon.
+- Suche/Filter nach Name oder E-Mail.
 
 ---
 
-## ⚙️ Phase 4 – Admin & Backoffice
+## Schritt 3 – Neue Bestellungen automatisch „Ausstehend"
 
-### 4.1 Bestellexport (CSV)
-- Button im Admin-Bestellbereich → CSV-Download für Buchhaltung
+**Problem:** `stripe-webhook` setzt aktuell `status: "COMPLETED"` beim Anlegen. In der DB existieren bisher nur `SHIPPED` und `ARCHIVED` als Werte, das Admin-UI kennt aber bereits `PENDING`.
 
-### 4.2 Rechnungs-PDF
-- Edge Function generiert PDF nach Bestellung
-- Link im Konto + automatischer E-Mail-Versand (sobald neue Domain steht)
-
-### 4.3 Mehrere Produktbilder im Admin
-- Falls aktuell nur 1 Bild upload-bar → Multi-Upload mit Reihenfolge
+**Was ich ändere:**
+- Migration: Sicherstellen, dass der `order_status`-Enum den Wert `PENDING` enthält (hinzufügen falls fehlend).
+- `supabase/functions/stripe-webhook/index.ts`: beim Insert `status: "PENDING"` statt `"COMPLETED"`.
+- Stats im Admin-Dashboard („Umsatz", „Abgeschlossen") bleiben funktional – sie zählen weiterhin den jeweiligen Status, jetzt wandern Bestellungen erst manuell zu COMPLETED/SHIPPED.
 
 ---
 
-## 📊 Empfohlene Reihenfolge
+## Schritt 4 – Versandbestätigung auch bei Statuswechsel „Versendet"
 
-1. **Phase 1.1** – Bewertungen (größter Trust-Boost)
-2. **Phase 1.2** – Trust-Badges & Versandinfos
-3. **Phase 2.1** – Verwandte Produkte (schnelle Umsatzsteigerung)
-4. **Phase 1.3** – Tracking-Link
-5. **Phase 3.1** – Schema.org strukturierte Daten
-6. **Phase 2.3** – FAQ & Kontakt
-7. **Phase 2.2** – Wunschliste
-8. **Phase 4.x** – Admin-Tools nach Bedarf
+**Status heute:** E-Mail wird nur beim **Eintragen der Sendungsnummer** verschickt. Wenn der Admin nur den Status auf SHIPPED setzt, geht keine Mail raus.
+
+**Was ich ändere in `AdminOrders.tsx` (`statusMutation`):**
+- Wenn neuer Status = `SHIPPED`:
+  - Sendungsnummer vorhanden + Kunde hat E-Mail → `admin-send-shipping-confirmation` aufrufen (Idempotency-Key `shipping-<groupKey>-<tracking>` verhindert Doppelversand, falls der Kunde sie schon beim Eintragen der Tracking-Nr. bekommen hat).
+  - Sendungsnummer fehlt → Toast-Warnung „Bitte zuerst Sendungsnummer eintragen", keine Mail.
+- `trackingMutation` bleibt wie bisher (sendet sofort beim Eintragen).
 
 ---
 
-## ⏸️ Verschoben auf später (deine Entscheidung)
-- 🔍 Produktsuche & Filter (zu wenig Produkte aktuell)
-- 📧 Newsletter & E-Mail-Automation (wartet auf neue Domain)
+## Schritt 5 – Lagerbestand-Anzeige (Produktseite)
+
+**Was ich ändere in `ProductDetailPage.tsx` (Zeilen ~378–387):**
+Die genauen Zahlen entfernen und durch farbige Ampel ersetzen:
+
+| Bestand | Anzeige | Farbe |
+|---|---|---|
+| ≥ 10 | „Genügend verfügbar" | Grün |
+| 5–9 | „Begrenzter Bestand" | Orange |
+| 1–4 | „Wenig verfügbar" | Rot |
+| 0 | „Ausverkauft" (wie bisher) | Rot/Grau |
+
+- Konkrete Stückzahl wird nicht mehr angezeigt.
+- Die interne Cart-Logik (`remainingStock`, Toast „Nur noch X verfügbar") bleibt unverändert – nur die Public-Anzeige ändert sich.
+- JSON-LD `availability` bleibt `in stock` / `out of stock`.
+
+---
+
+## Reihenfolge & Bestätigung
+
+Ich starte mit **Schritt 1 (Benutzerverwaltung)**. Sag Bescheid, wenn ich gleich alle 4 Schritte nacheinander in einem Rutsch ausrollen soll, oder ob du nach jedem Schritt testen willst.
