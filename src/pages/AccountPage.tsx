@@ -357,6 +357,9 @@ export default function AccountPage() {
             Hier siehst du dein Restguthaben. Gutscheine bleiben deinem Konto dauerhaft erhalten und werden im Warenkorb automatisch erkannt.
           </p>
           {user && <MyVouchers userId={user.id} />}
+        </section>
+
+
 
         {/* Sign out */}
         <Button
