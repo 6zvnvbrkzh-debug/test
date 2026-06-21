@@ -132,6 +132,33 @@ serve(async (req) => {
 
       console.log(`Orders created for session ${session.id}`);
 
+      // ---- Redeem voucher (if used) ----
+      if (metadata.voucher_id && metadata.voucher_amount) {
+        const amountUsed = Number(metadata.voucher_amount);
+        if (Number.isFinite(amountUsed) && amountUsed > 0) {
+          // Find first order for this session to link
+          const { data: firstOrder } = await supabase
+            .from("orders")
+            .select("id")
+            .eq("stripe_session_id", session.id)
+            .limit(1)
+            .maybeSingle();
+
+          const { data: redeemed, error: redeemErr } = await supabase.rpc("redeem_voucher", {
+            _voucher_id: metadata.voucher_id,
+            _amount: amountUsed,
+            _stripe_session_id: session.id,
+            _order_id: firstOrder?.id ?? null,
+            _customer_email: customerEmail,
+          });
+          if (redeemErr) {
+            console.error("Voucher redemption failed:", redeemErr);
+          } else {
+            console.log(`Voucher ${metadata.voucher_code} redeemed: ${amountUsed} EUR (success=${redeemed})`);
+          }
+        }
+      }
+
       // Send order notification email to shop owner via Lovable Emails
       try {
         const { data: orderListings } = await supabase

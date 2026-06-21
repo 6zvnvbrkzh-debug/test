@@ -68,7 +68,8 @@ serve(async (req) => {
       }
     }
 
-    const { items, successUrl, cancelUrl } = await req.json();
+    const { items, successUrl, cancelUrl, voucherCode: voucherCodeRaw } = await req.json();
+    const voucherCode = typeof voucherCodeRaw === "string" ? voucherCodeRaw.trim().toUpperCase() : "";
 
     if (!items || !Array.isArray(items) || items.length === 0 || items.length > 50) {
       return new Response(JSON.stringify({ error: "Ungültige Artikelliste" }), {
@@ -171,6 +172,45 @@ serve(async (req) => {
       });
     }
 
+    // ---- Voucher (Geschenkgutschein) ----
+    const orderTotal = subtotal + shippingCost;
+    let voucherDiscount = 0;
+    let voucherId: string | null = null;
+    let voucherCodeFinal: string | null = null;
+    const discounts: Array<{ coupon: string }> = [];
+
+    if (voucherCode) {
+      const { data: voucher } = await adminClient
+        .from("vouchers")
+        .select("id, code, balance, valid_from, valid_until, is_active")
+        .eq("code", voucherCode)
+        .maybeSingle();
+
+      const now = Date.now();
+      const isValid =
+        voucher &&
+        voucher.is_active &&
+        Number(voucher.balance) > 0 &&
+        (!voucher.valid_from || now >= new Date(voucher.valid_from).getTime()) &&
+        (!voucher.valid_until || now <= new Date(voucher.valid_until).getTime());
+
+      if (isValid) {
+        voucherDiscount = Math.min(Number(voucher.balance), orderTotal);
+        voucherDiscount = Math.round(voucherDiscount * 100) / 100;
+        if (voucherDiscount > 0) {
+          const coupon = await stripe.coupons.create({
+            amount_off: Math.round(voucherDiscount * 100),
+            currency: "eur",
+            duration: "once",
+            name: `Geschenkgutschein ${voucher.code}`,
+          });
+          discounts.push({ coupon: coupon.id });
+          voucherId = voucher.id;
+          voucherCodeFinal = voucher.code;
+        }
+      }
+    }
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : userEmail,
@@ -179,12 +219,20 @@ serve(async (req) => {
       shipping_address_collection: { allowed_countries: ["DE", "AT", "CH"] },
       billing_address_collection: "required",
       phone_number_collection: { enabled: true },
+      ...(discounts.length ? { discounts } : { allow_promotion_codes: false }),
       success_url: successUrl || `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl || `${origin}/checkout/cancel`,
       metadata: {
         supabase_user_id: userId,
         listing_ids: JSON.stringify(listingIds),
         quantities: JSON.stringify(items.map((item: { quantity: number }) => item.quantity)),
+        ...(voucherId
+          ? {
+              voucher_id: voucherId,
+              voucher_code: voucherCodeFinal ?? "",
+              voucher_amount: voucherDiscount.toFixed(2),
+            }
+          : {}),
       },
     });
 
