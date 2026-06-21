@@ -189,14 +189,58 @@ export default function AdminOrders() {
   });
 
   const statusMutation = useMutation({
-    mutationFn: async ({ orderIds, status }: { orderIds: string[]; status: string }) => {
+    mutationFn: async ({
+      orderIds,
+      status,
+      group,
+    }: {
+      orderIds: string[];
+      status: string;
+      group?: GroupedOrder;
+    }) => {
       const { error } = await supabase
         .from("orders")
         .update({ status } as any)
         .in("id", orderIds);
       if (error) throw error;
+
+      // Auto-Versandbestätigung beim Wechsel auf SHIPPED
+      let emailResult: "sent" | "missing-tracking" | "no-email" | "skipped" = "skipped";
+      if (status === "SHIPPED" && group) {
+        const tracking = (group.primary.tracking_number || "").trim();
+        const customerEmail = group.primary.customer_email;
+        if (!tracking) {
+          emailResult = "missing-tracking";
+        } else if (!customerEmail) {
+          emailResult = "no-email";
+        } else {
+          try {
+            const productTitle =
+              group.items.length === 1
+                ? group.items[0].title
+                : group.items.map((i) => `${i.quantity}× ${i.title}`).join(", ");
+            await supabase.functions.invoke("admin-send-shipping-confirmation", {
+              body: {
+                recipientEmail: customerEmail,
+                idempotencyKey: `shipping-${group.groupKey}-${tracking}`,
+                templateData: {
+                  customerName: group.primary.customer_name ?? "",
+                  orderId: group.primary.id,
+                  trackingNumber: tracking,
+                  productTitle,
+                  shippingAddress: group.primary.shipping_address ?? null,
+                },
+              },
+            });
+            emailResult = "sent";
+          } catch (e) {
+            console.error("Versandbestätigung konnte nicht gesendet werden", e);
+          }
+        }
+      }
+      return { emailResult, status };
     },
-    onSuccess: (_data, variables) => {
+    onSuccess: (result, variables) => {
       queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
       setSelectedGroup((prev) =>
         prev
@@ -206,7 +250,15 @@ export default function AdminOrders() {
             }
           : null
       );
-      toast.success("Status aktualisiert!");
+      if (result?.emailResult === "sent") {
+        toast.success("Status aktualisiert · Versandbestätigung an Kunde gesendet");
+      } else if (result?.emailResult === "missing-tracking") {
+        toast.warning("Status auf 'Versendet' gesetzt – bitte Sendungsnummer eintragen, damit der Kunde benachrichtigt wird");
+      } else if (result?.emailResult === "no-email") {
+        toast.warning("Status aktualisiert – Kunde hat keine E-Mail-Adresse hinterlegt");
+      } else {
+        toast.success("Status aktualisiert!");
+      }
     },
     onError: (err: any) => toast.error(err.message || "Fehler beim Aktualisieren"),
   });
@@ -676,7 +728,7 @@ export default function AdminOrders() {
                   <Select
                     value={primary.status}
                     onValueChange={(val) =>
-                      statusMutation.mutate({ orderIds: selectedGroup.allIds, status: val })
+                      statusMutation.mutate({ orderIds: selectedGroup.allIds, status: val, group: selectedGroup })
                     }
                   >
                     <SelectTrigger className="h-8 text-sm w-full">

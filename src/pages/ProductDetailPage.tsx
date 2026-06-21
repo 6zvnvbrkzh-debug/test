@@ -375,16 +375,30 @@ const ProductDetailPage = () => {
                   Du sparst&nbsp;{formatPrice(listing.originalPrice! - listing.price)}
                 </p>
               )}
-              {lowStock && (
-                <p className="text-sm text-orange-500 font-medium mt-1">
-                  Nur noch {listing.stock} auf Lager!
-                </p>
-              )}
-              {listing.stock > 3 && (
-                <p className="text-sm text-green-600 font-medium mt-1">
-                  Auf Lager ({listing.stock} verfügbar)
-                </p>
-              )}
+              {!isSold && (() => {
+                if (listing.stock >= 10) {
+                  return (
+                    <p className="text-sm text-green-600 font-medium mt-1 flex items-center gap-1.5">
+                      <span className="inline-block w-2 h-2 rounded-full bg-green-600" />
+                      Genügend verfügbar
+                    </p>
+                  );
+                }
+                if (listing.stock >= 5) {
+                  return (
+                    <p className="text-sm text-orange-500 font-medium mt-1 flex items-center gap-1.5">
+                      <span className="inline-block w-2 h-2 rounded-full bg-orange-500" />
+                      Begrenzter Bestand
+                    </p>
+                  );
+                }
+                return (
+                  <p className="text-sm text-red-600 font-medium mt-1 flex items-center gap-1.5">
+                    <span className="inline-block w-2 h-2 rounded-full bg-red-600" />
+                    Wenig verfügbar
+                  </p>
+                );
+              })()}
             </div>
 
             <div className="space-y-3">
