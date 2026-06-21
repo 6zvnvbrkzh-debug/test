@@ -9,6 +9,12 @@ verify_jwt = false
 [functions.send-transactional-email]
 verify_jwt = false
 
+[functions.admin-list-users]
+verify_jwt = false
+
+[functions.admin-send-shipping-confirmation]
+verify_jwt = false
+
 [functions.preview-transactional-email]
 verify_jwt = false
 
