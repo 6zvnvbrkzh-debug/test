@@ -484,6 +484,96 @@ export type Database = {
         }
         Relationships: []
       }
+      voucher_redemptions: {
+        Row: {
+          amount_used: number
+          created_at: string
+          customer_email: string | null
+          id: string
+          order_id: string | null
+          stripe_session_id: string | null
+          voucher_id: string
+        }
+        Insert: {
+          amount_used: number
+          created_at?: string
+          customer_email?: string | null
+          id?: string
+          order_id?: string | null
+          stripe_session_id?: string | null
+          voucher_id: string
+        }
+        Update: {
+          amount_used?: number
+          created_at?: string
+          customer_email?: string | null
+          id?: string
+          order_id?: string | null
+          stripe_session_id?: string | null
+          voucher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voucher_redemptions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "voucher_redemptions_voucher_id_fkey"
+            columns: ["voucher_id"]
+            isOneToOne: false
+            referencedRelation: "vouchers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vouchers: {
+        Row: {
+          balance: number
+          code: string
+          created_at: string
+          created_by: string | null
+          currency: string
+          id: string
+          initial_amount: number
+          is_active: boolean
+          note: string | null
+          updated_at: string
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          balance: number
+          code: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          id?: string
+          initial_amount: number
+          is_active?: boolean
+          note?: string | null
+          updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          balance?: number
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          id?: string
+          initial_amount?: number
+          is_active?: boolean
+          note?: string | null
+          updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
       wishlists: {
         Row: {
           created_at: string
@@ -549,6 +639,16 @@ export type Database = {
           msg_id: number
           read_ct: number
         }[]
+      }
+      redeem_voucher: {
+        Args: {
+          _amount: number
+          _customer_email: string
+          _order_id: string
+          _stripe_session_id: string
+          _voucher_id: string
+        }
+        Returns: boolean
       }
     }
     Enums: {

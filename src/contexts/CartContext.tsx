@@ -6,6 +6,14 @@ export interface CartItem {
   quantity: number;
 }
 
+export interface AppliedVoucher {
+  code: string;
+  /** Restguthaben des Gutscheins zum Zeitpunkt der Anwendung */
+  balance: number;
+  /** Auf diese Bestellung anwendbarer Rabattbetrag (Server-berechnet) */
+  applicableAmount: number;
+}
+
 interface CartContextType {
   items: CartItem[];
   isOpen: boolean;
@@ -17,6 +25,8 @@ interface CartContextType {
   totalItems: number;
   totalPrice: number;
   getItemQuantity: (listingId: string) => number;
+  voucher: AppliedVoucher | null;
+  setVoucher: (v: AppliedVoucher | null) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -24,6 +34,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [voucher, setVoucher] = useState<AppliedVoucher | null>(null);
 
   const getItemQuantity = useCallback((listingId: string) => {
     return items.find((item) => item.listing.id === listingId)?.quantity ?? 0;
@@ -32,7 +43,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const addItem = useCallback((listing: Listing, qty: number = 1): boolean => {
     const currentQty = items.find((item) => item.listing.id === listing.id)?.quantity ?? 0;
     const newQty = Math.min(currentQty + qty, listing.stock);
-    if (newQty <= currentQty) return false; // already at max
+    if (newQty <= currentQty) return false;
 
     setItems((prev) => {
       const existing = prev.find((item) => item.listing.id === listing.id);
@@ -65,7 +76,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
-  const clearCart = useCallback(() => setItems([]), []);
+  const clearCart = useCallback(() => {
+    setItems([]);
+    setVoucher(null);
+  }, []);
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce(
@@ -86,6 +100,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
         totalItems,
         totalPrice,
         getItemQuantity,
+        voucher,
+        setVoucher,
       }}
     >
       {children}
