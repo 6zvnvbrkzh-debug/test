@@ -177,24 +177,22 @@ export function CartDrawer() {
             <div className="border-t pt-4 space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Zwischensumme</span>
-                <span className="text-sm font-medium">{totalPrice.toFixed(2).replace(".", ",")} €</span>
+                <span className="text-sm font-medium whitespace-nowrap">{fmtEUR(totalPrice)}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Versand</span>
-                <span className="text-sm font-medium">
-                  {totalPrice >= 50 ? (
+                <span className="text-sm font-medium whitespace-nowrap">
+                  {shippingCost === 0 ? (
                     <span className="text-emerald-600 dark:text-emerald-400">Kostenlos</span>
                   ) : (
-                    "5,99 €"
+                    fmtEUR(shippingCost)
                   )}
                 </span>
               </div>
+
               {/* Free shipping progress bar */}
               <div className="space-y-1.5">
-                <Progress
-                  value={Math.min((totalPrice / 50) * 100, 100)}
-                  className="h-2"
-                />
+                <Progress value={Math.min((totalPrice / 50) * 100, 100)} className="h-2" />
                 <p className="text-xs text-muted-foreground text-center">
                   {totalPrice >= 50 ? (
                     <span className="text-emerald-600 dark:text-emerald-400 font-medium">
@@ -202,16 +200,68 @@ export function CartDrawer() {
                     </span>
                   ) : (
                     <>
-                      Noch <span className="font-semibold">{(50 - totalPrice).toFixed(2).replace(".", ",")} €</span> bis zum kostenlosen Versand
+                      Noch <span className="font-semibold whitespace-nowrap">{fmtEUR(50 - totalPrice)}</span> bis zum kostenlosen Versand
                     </>
                   )}
                 </p>
               </div>
+
+              {/* Gutschein */}
+              {voucher ? (
+                <div className="rounded-lg border border-primary/30 bg-primary/5 px-3 py-2.5 flex items-start gap-2">
+                  <Ticket className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold font-mono-data">{voucher.code}</p>
+                    <p className="text-xs text-muted-foreground">
+                      Rabatt: <span className="font-medium text-foreground whitespace-nowrap">−{fmtEUR(voucherApplied)}</span>
+                      {voucher.balance - voucherApplied > 0.005 && (
+                        <> · Restguthaben nach Bestellung: <span className="whitespace-nowrap">{fmtEUR(voucher.balance - voucherApplied)}</span></>
+                      )}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setVoucher(null)}
+                    className="h-6 w-6 flex items-center justify-center text-muted-foreground hover:text-destructive transition-colors shrink-0"
+                    aria-label="Gutschein entfernen"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Gutschein-Code"
+                    value={voucherInput}
+                    onChange={(e) => setVoucherInput(e.target.value.toUpperCase())}
+                    onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleApplyVoucher(); } }}
+                    className="h-10 font-mono-data uppercase"
+                    maxLength={64}
+                    disabled={isApplyingVoucher}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleApplyVoucher}
+                    disabled={isApplyingVoucher || !voucherInput.trim()}
+                    className="h-10 shrink-0"
+                  >
+                    {isApplyingVoucher ? <Loader2 className="h-4 w-4 animate-spin" /> : "Einlösen"}
+                  </Button>
+                </div>
+              )}
+
+              {voucherApplied > 0 && (
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Gutschein-Rabatt</span>
+                  <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
+                    −{fmtEUR(voucherApplied)}
+                  </span>
+                </div>
+              )}
+
               <div className="flex items-center justify-between border-t pt-2">
                 <span className="text-sm font-semibold">Gesamt</span>
-                <span className="text-lg font-bold">
-                  {(totalPrice + (totalPrice >= 50 ? 0 : 5.99)).toFixed(2).replace(".", ",")} €
-                </span>
+                <span className="text-lg font-bold whitespace-nowrap">{fmtEUR(orderTotal)}</span>
               </div>
               <Button
                 className="w-full font-semibold press-scale transition-signal"
