@@ -9,13 +9,14 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Loader2, User, MapPin, FileText, Save, LogOut, Package, ShoppingBag, Truck, ExternalLink, Star, Heart } from "lucide-react";
+import { Loader2, User, MapPin, FileText, Save, LogOut, Package, ShoppingBag, Truck, ExternalLink, Star, Heart, Ticket } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { ReviewDialog } from "@/components/reviews/ReviewDialog";
 import { InvoiceButton } from "@/components/InvoiceButton";
+import { MyVouchers } from "@/components/account/MyVouchers";
 
 const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
   PENDING: { label: "In Bearbeitung", variant: "secondary" },
@@ -345,6 +346,20 @@ export default function AccountPage() {
             </div>
           )}
         </section>
+
+        {/* Vouchers Section */}
+        <section className="space-y-4">
+          <h2 className="text-lg font-semibold flex items-center gap-2">
+            <Ticket className="h-5 w-5 text-primary" />
+            Meine Gutscheine
+          </h2>
+          <p className="text-xs text-muted-foreground -mt-2">
+            Hier siehst du dein Restguthaben. Gutscheine bleiben deinem Konto dauerhaft erhalten und werden im Warenkorb automatisch erkannt.
+          </p>
+          {user && <MyVouchers userId={user.id} />}
+        </section>
+
+
 
         {/* Sign out */}
         <Button

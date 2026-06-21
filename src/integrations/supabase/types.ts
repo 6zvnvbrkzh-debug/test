@@ -541,6 +541,7 @@ export type Database = {
           is_active: boolean
           note: string | null
           updated_at: string
+          user_id: string | null
           valid_from: string | null
           valid_until: string | null
         }
@@ -555,6 +556,7 @@ export type Database = {
           is_active?: boolean
           note?: string | null
           updated_at?: string
+          user_id?: string | null
           valid_from?: string | null
           valid_until?: string | null
         }
@@ -569,6 +571,7 @@ export type Database = {
           is_active?: boolean
           note?: string | null
           updated_at?: string
+          user_id?: string | null
           valid_from?: string | null
           valid_until?: string | null
         }
@@ -600,6 +603,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_voucher: {
+        Args: { _code: string; _user_id: string }
+        Returns: {
+          balance: number
+          code: string
+          id: string
+          is_active: boolean
+          user_id: string
+          valid_from: string
+          valid_until: string
+        }[]
+      }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
