@@ -67,7 +67,15 @@ export function CartDrawer() {
     }
   };
 
+  const mustLoginForVoucher = Boolean(voucher && voucher.requiresAccount && !user);
+
   const handleCheckout = async () => {
+    if (mustLoginForVoucher) {
+      toast.info("Bitte melde dich an, damit dein Gutschein-Restguthaben deinem Konto gutgeschrieben wird.");
+      setIsOpen(false);
+      navigate(`/anmelden?redirect=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
     setIsCheckingOut(true);
     try {
       const checkoutItems = items.map(({ listing, quantity }) => ({
@@ -95,6 +103,7 @@ export function CartDrawer() {
       setIsCheckingOut(false);
     }
   };
+
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
