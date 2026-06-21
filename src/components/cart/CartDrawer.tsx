@@ -1,16 +1,60 @@
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { Minus, Plus, Trash2, ShoppingBag, Loader2 } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, Loader2, Ticket, X } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+const fmtEUR = (n: number) =>
+  `${n.toFixed(2).replace(".", ",")}\u00A0€`;
+
 export function CartDrawer() {
-  const { items, isOpen, setIsOpen, updateQuantity, removeItem, totalPrice, totalItems } = useCart();
+  const {
+    items, isOpen, setIsOpen, updateQuantity, removeItem,
+    totalPrice, totalItems, voucher, setVoucher,
+  } = useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [voucherInput, setVoucherInput] = useState("");
+  const [isApplyingVoucher, setIsApplyingVoucher] = useState(false);
+
+  const shippingCost = totalPrice >= 50 ? 0 : 5.99;
+  const orderTotalBeforeVoucher = totalPrice + shippingCost;
+  const voucherApplied = voucher
+    ? Math.min(voucher.applicableAmount, orderTotalBeforeVoucher)
+    : 0;
+  const orderTotal = Math.max(orderTotalBeforeVoucher - voucherApplied, 0);
+
+  const handleApplyVoucher = async () => {
+    const code = voucherInput.trim().toUpperCase();
+    if (!code) return;
+    setIsApplyingVoucher(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("validate-voucher", {
+        body: { code, orderTotal: orderTotalBeforeVoucher },
+      });
+      if (error) throw error;
+      if (!data?.valid) {
+        toast.error(data?.error || "Gutschein ungültig.");
+        return;
+      }
+      setVoucher({
+        code: data.code,
+        balance: Number(data.balance),
+        applicableAmount: Number(data.applicableAmount),
+      });
+      setVoucherInput("");
+      toast.success(`Gutschein eingelöst: ${fmtEUR(Number(data.applicableAmount))} Rabatt`);
+    } catch (err: any) {
+      console.error("voucher error", err);
+      toast.error("Gutschein konnte nicht geprüft werden.");
+    } finally {
+      setIsApplyingVoucher(false);
+    }
+  };
 
   const handleCheckout = async () => {
     setIsCheckingOut(true);
@@ -21,7 +65,10 @@ export function CartDrawer() {
       }));
 
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { items: checkoutItems },
+        body: {
+          items: checkoutItems,
+          voucherCode: voucher?.code,
+        },
       });
 
       if (error) throw error;
