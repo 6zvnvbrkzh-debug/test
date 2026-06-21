@@ -77,8 +77,7 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
               {isLowStock && (
                 <span className="text-[10px] font-semibold uppercase tracking-wide bg-destructive/90 text-destructive-foreground px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full flex items-center gap-1 whitespace-nowrap">
                   <Flame className="h-2.5 w-2.5 md:h-3 md:w-3" />
-                  <span className="md:hidden">{listing.stock}×</span>
-                  <span className="hidden md:inline">Nur&nbsp;{listing.stock}×</span>
+                  <span>Wenig&nbsp;verfügbar</span>
                 </span>
               )}
             </div>
