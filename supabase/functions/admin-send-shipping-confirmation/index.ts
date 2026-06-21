@@ -10,7 +10,10 @@ interface Payload {
   recipientEmail?: string;
   idempotencyKey?: string;
   templateData?: Record<string, unknown>;
+  templateName?: "shipping-confirmation" | "tracking-created";
 }
+
+const ALLOWED_TEMPLATES = new Set(["shipping-confirmation", "tracking-created"]);
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -54,9 +57,10 @@ Deno.serve(async (req) => {
     }
 
     const body = (await req.json()) as Payload;
-    const { recipientEmail, idempotencyKey, templateData } = body;
-    if (!recipientEmail || !idempotencyKey || !templateData) {
-      return new Response(JSON.stringify({ error: "Missing fields" }), {
+    const { recipientEmail, idempotencyKey, templateData, templateName } = body;
+    const tpl = templateName ?? "shipping-confirmation";
+    if (!recipientEmail || !idempotencyKey || !templateData || !ALLOWED_TEMPLATES.has(tpl)) {
+      return new Response(JSON.stringify({ error: "Missing or invalid fields" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -71,7 +75,7 @@ Deno.serve(async (req) => {
         Authorization: `Bearer ${SERVICE_KEY}`,
       },
       body: JSON.stringify({
-        templateName: "shipping-confirmation",
+        templateName: tpl,
         recipientEmail,
         idempotencyKey,
         templateData,
