@@ -728,7 +728,7 @@ export default function AdminOrders() {
                   <Select
                     value={primary.status}
                     onValueChange={(val) =>
-                      statusMutation.mutate({ orderIds: selectedGroup.allIds, status: val })
+                      statusMutation.mutate({ orderIds: selectedGroup.allIds, status: val, group: selectedGroup })
                     }
                   >
                     <SelectTrigger className="h-8 text-sm w-full">

@@ -104,7 +104,7 @@ serve(async (req) => {
               seller_id: listing.seller_id,
               listing_id: listingIds[i],
               amount: listing.price,
-              status: "COMPLETED",
+              status: "PENDING",
               stripe_session_id: session.id,
               customer_name: customerName,
               customer_email: customerEmail,
