@@ -2,11 +2,12 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { Minus, Plus, Trash2, ShoppingBag, Loader2, Ticket, X } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, Loader2, Ticket, X, LogIn, Info } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
 const fmtEUR = (n: number) =>
@@ -17,6 +18,8 @@ export function CartDrawer() {
     items, isOpen, setIsOpen, updateQuantity, removeItem,
     totalPrice, totalItems, voucher, setVoucher,
   } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [voucherInput, setVoucherInput] = useState("");
   const [isApplyingVoucher, setIsApplyingVoucher] = useState(false);
@@ -45,9 +48,17 @@ export function CartDrawer() {
         code: data.code,
         balance: Number(data.balance),
         applicableAmount: Number(data.applicableAmount),
+        requiresAccount: Boolean(data.requiresAccount),
       });
       setVoucherInput("");
-      toast.success(`Gutschein eingelöst: ${fmtEUR(Number(data.applicableAmount))} Rabatt`);
+      const remainder = Number(data.balance) - Number(data.applicableAmount);
+      if (remainder > 0.005 && !user) {
+        toast.success(
+          `Gutschein eingelöst: ${fmtEUR(Number(data.applicableAmount))} Rabatt. Restguthaben ${fmtEUR(remainder)} – bitte einloggen, um es zu sichern.`
+        );
+      } else {
+        toast.success(`Gutschein eingelöst: ${fmtEUR(Number(data.applicableAmount))} Rabatt`);
+      }
     } catch (err: any) {
       console.error("voucher error", err);
       toast.error("Gutschein konnte nicht geprüft werden.");

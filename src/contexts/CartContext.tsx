@@ -12,6 +12,8 @@ export interface AppliedVoucher {
   balance: number;
   /** Auf diese Bestellung anwendbarer Rabattbetrag (Server-berechnet) */
   applicableAmount: number;
+  /** True wenn der Gutschein an ein Konto gebunden ist ODER Restguthaben übrig bleibt */
+  requiresAccount: boolean;
 }
 
 interface CartContextType {
