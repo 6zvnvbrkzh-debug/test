@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { ShoppingCart, ArrowUpRight, Star } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
@@ -84,10 +85,20 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
                   -{discountPercent}%
                 </span>
               )}
-              {isLowStock && (
-                <span className="text-[10px] font-semibold uppercase tracking-wide bg-destructive/90 text-destructive-foreground px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full flex items-center gap-1 whitespace-nowrap">
-                  <Flame className="h-2.5 w-2.5 md:h-3 md:w-3" />
-                  <span>Wenig&nbsp;verfügbar</span>
+              {stockStatus && (
+                <span
+                  className={`text-[10px] font-semibold uppercase tracking-wide px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full flex items-center gap-1 whitespace-nowrap border ${
+                    stockStatus.color.split(" ")[1].replace("text-", "border-")
+                  }/30 bg-opacity-10 ${
+                    stockStatus.color.split(" ")[1].replace("text-", "bg-")
+                  } ${stockStatus.color.split(" ")[1]}`}
+                >
+                  <span
+                    className={`inline-block w-1.5 h-1.5 rounded-full ${
+                      stockStatus.color.split(" ")[0]
+                    }`}
+                  />
+                  <span>{stockStatus.label.replace(" ", "\u00A0")}</span>
                 </span>
               )}
             </div>
