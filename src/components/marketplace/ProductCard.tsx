@@ -25,15 +25,6 @@ export function ProductCard({ listing, index = 0, rating }: ProductCardProps) {
 
   const stockStatus = useMemo(() => {
     if (isSold || listing.stock === 0) return null;
-    if (listing.stock >= 10) {
-      return {
-        label: "Genügend verfügbar",
-        dotClass: "bg-green-600",
-        textClass: "text-green-600",
-        borderClass: "border-green-600/30",
-        bgClass: "bg-green-600/10",
-      };
-    }
     if (listing.stock >= 5) {
       return {
         label: "Begrenzter Bestand",
