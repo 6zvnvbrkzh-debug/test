@@ -283,21 +283,39 @@ export function CartDrawer() {
                 <span className="text-sm font-semibold">Gesamt</span>
                 <span className="text-lg font-bold whitespace-nowrap">{fmtEUR(orderTotal)}</span>
               </div>
+
+              {mustLoginForVoucher && (
+                <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2.5 flex items-start gap-2">
+                  <Info className="h-4 w-4 mt-0.5 text-amber-600 dark:text-amber-400 shrink-0" />
+                  <p className="text-xs text-foreground/90 leading-relaxed">
+                    Dieser Gutschein behält Restguthaben oder ist einem Konto zugeordnet.
+                    Bitte <strong>anmelden oder registrieren</strong>, damit dein Guthaben dauerhaft erhalten bleibt – als Gast geht es verloren.
+                  </p>
+                </div>
+              )}
+
               <Button
                 className="w-full font-semibold press-scale transition-signal"
                 size="lg"
                 onClick={handleCheckout}
                 disabled={isCheckingOut}
+                variant={mustLoginForVoucher ? "secondary" : "default"}
               >
                 {isCheckingOut ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                     Wird geladen...
                   </>
+                ) : mustLoginForVoucher ? (
+                  <>
+                    <LogIn className="h-4 w-4 mr-2" />
+                    Anmelden & weiter
+                  </>
                 ) : (
                   "Zur Kasse"
                 )}
               </Button>
+
               <Button variant="ghost" className="w-full text-sm" onClick={() => setIsOpen(false)}>
                 Weiter einkaufen
               </Button>
