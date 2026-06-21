@@ -11,7 +11,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Package, Users, LayoutDashboard, ArrowLeft, ShoppingCart, FolderOpen, BarChart3, Star, BookOpen } from "lucide-react";
+import { Package, Users, LayoutDashboard, ArrowLeft, ShoppingCart, FolderOpen, BarChart3, Star, BookOpen, Ticket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -20,6 +20,7 @@ const navItems = [
   { title: "Produkte", url: "/admin/produkte", icon: Package },
   { title: "Benutzer", url: "/admin/benutzer", icon: Users },
   { title: "Bestellungen", url: "/admin/bestellungen", icon: ShoppingCart },
+  { title: "Gutscheine", url: "/admin/gutscheine", icon: Ticket },
   { title: "Bewertungen", url: "/admin/bewertungen", icon: Star },
   { title: "Ratgeber", url: "/admin/ratgeber", icon: BookOpen },
   { title: "Kategorien", url: "/admin/kategorien", icon: FolderOpen },
