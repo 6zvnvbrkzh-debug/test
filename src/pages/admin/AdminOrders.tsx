@@ -65,6 +65,37 @@ interface GroupedOrder {
   itemCount: number;
 }
 
+async function sendAdminShippingEmail({
+  templateName,
+  recipientEmail,
+  idempotencyKey,
+  templateData,
+}: {
+  templateName: "shipping-confirmation" | "tracking-created";
+  recipientEmail: string;
+  idempotencyKey: string;
+  templateData: Record<string, unknown>;
+}) {
+  const { data, error } = await supabase.functions.invoke("admin-send-shipping-confirmation", {
+    body: {
+      templateName,
+      recipientEmail,
+      idempotencyKey,
+      templateData,
+    },
+  });
+
+  if (error) {
+    throw new Error(error.message || "E-Mail konnte nicht gesendet werden");
+  }
+
+  if (!data?.ok) {
+    throw new Error("E-Mail wurde vom Server nicht bestätigt");
+  }
+
+  return data;
+}
+
 function groupOrders(rows: OrderDetail[]): GroupedOrder[] {
   const map = new Map<string, GroupedOrder>();
   for (const o of rows) {
@@ -157,21 +188,20 @@ export default function AdminOrders() {
             group.items.length === 1
               ? group.items[0].title
               : group.items.map((i) => `${i.quantity}× ${i.title}`).join(", ");
-          await supabase.functions.invoke("admin-send-shipping-confirmation", {
-            body: {
-              templateName: "tracking-created",
-              recipientEmail: customerEmail,
-              idempotencyKey: `tracking-${group.groupKey}-${trimmed}`,
-              templateData: {
-                customerName: group.primary.customer_name ?? "",
-                orderId: group.primary.id,
-                trackingNumber: trimmed,
-                productTitle,
-              },
+          await sendAdminShippingEmail({
+            templateName: "tracking-created",
+            recipientEmail: customerEmail,
+            idempotencyKey: `tracking-${group.groupKey}-${trimmed}`,
+            templateData: {
+              customerName: group.primary.customer_name ?? "",
+              orderId: group.primary.id,
+              trackingNumber: trimmed,
+              productTitle,
             },
           });
         } catch (e) {
           console.error("Sendungsnummer-Mail konnte nicht gesendet werden", e);
+          throw e instanceof Error ? e : new Error("Sendungsnummer-Mail konnte nicht gesendet werden");
         }
       }
 
@@ -207,7 +237,7 @@ export default function AdminOrders() {
       // Auto-Versandbestätigung beim Wechsel auf SHIPPED
       let emailResult: "sent" | "missing-tracking" | "no-email" | "skipped" = "skipped";
       if (status === "SHIPPED" && group) {
-        const tracking = (group.primary.tracking_number || "").trim();
+        const tracking = (trackingInput || group.primary.tracking_number || "").trim();
         const customerEmail = group.primary.customer_email;
         if (!tracking) {
           emailResult = "missing-tracking";
@@ -219,23 +249,22 @@ export default function AdminOrders() {
               group.items.length === 1
                 ? group.items[0].title
                 : group.items.map((i) => `${i.quantity}× ${i.title}`).join(", ");
-            await supabase.functions.invoke("admin-send-shipping-confirmation", {
-              body: {
-                templateName: "shipping-confirmation",
-                recipientEmail: customerEmail,
-                idempotencyKey: `shipped-${group.groupKey}-${tracking}`,
-                templateData: {
-                  customerName: group.primary.customer_name ?? "",
-                  orderId: group.primary.id,
-                  trackingNumber: tracking,
-                  productTitle,
-                  shippingAddress: group.primary.shipping_address ?? null,
-                },
+            await sendAdminShippingEmail({
+              templateName: "shipping-confirmation",
+              recipientEmail: customerEmail,
+              idempotencyKey: `shipped-${group.groupKey}-${tracking}`,
+              templateData: {
+                customerName: group.primary.customer_name ?? "",
+                orderId: group.primary.id,
+                trackingNumber: tracking,
+                productTitle,
+                shippingAddress: group.primary.shipping_address ?? null,
               },
             });
             emailResult = "sent";
           } catch (e) {
             console.error("Versandbestätigung konnte nicht gesendet werden", e);
+            throw e instanceof Error ? e : new Error("Versandbestätigung konnte nicht gesendet werden");
           }
         }
       }
