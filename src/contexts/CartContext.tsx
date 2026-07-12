@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import type { Listing } from "@/lib/mock-data";
 
 export interface CartItem {
@@ -33,10 +33,39 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+const STORAGE_KEY = "be-cart-v1";
+
+type PersistedCart = { items: CartItem[]; voucher: AppliedVoucher | null };
+
+function loadPersisted(): PersistedCart {
+  if (typeof window === "undefined") return { items: [], voucher: null };
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return { items: [], voucher: null };
+    const parsed = JSON.parse(raw) as PersistedCart;
+    return {
+      items: Array.isArray(parsed?.items) ? parsed.items.filter((i) => i?.listing?.id && typeof i.quantity === "number") : [],
+      voucher: parsed?.voucher ?? null,
+    };
+  } catch {
+    return { items: [], voucher: null };
+  }
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const initial = loadPersisted();
+  const [items, setItems] = useState<CartItem[]>(initial.items);
   const [isOpen, setIsOpen] = useState(false);
-  const [voucher, setVoucher] = useState<AppliedVoucher | null>(null);
+  const [voucher, setVoucher] = useState<AppliedVoucher | null>(initial.voucher);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ items, voucher }));
+    } catch {
+      // ignore quota / private-mode errors
+    }
+  }, [items, voucher]);
 
   const getItemQuantity = useCallback((listingId: string) => {
     return items.find((item) => item.listing.id === listingId)?.quantity ?? 0;
