@@ -262,13 +262,11 @@ serve(async (req) => {
         // function rejects anon callers to prevent phishing abuse.
         const FN_URL = `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-transactional-email`;
         const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-        const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
         const invokeEmail = async (payload: Record<string, unknown>) => {
           const res = await fetch(FN_URL, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              apikey: ANON,
               Authorization: `Bearer ${SERVICE_KEY}`,
             },
             body: JSON.stringify(payload),
