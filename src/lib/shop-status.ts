@@ -7,9 +7,11 @@
  */
 export const SHOP_CLOSURE = {
   active: true,
-  // Lokale Zeit (Europe/Berlin) – ISO ohne Zeitzone reicht, wir vergleichen mit Date.now()
-  start: new Date("2026-07-23T00:00:00").getTime(),
-  end: new Date("2026-08-15T23:59:59").getTime(),
+  // Feste Berlin-Zeit (CEST, UTC+2) – unabhängig von der Zeitzone des Besuchers.
+  // Shop ist geschlossen ab 23.07.2026 00:00 Berlin bis inkl. 15.08.2026 23:59:59 Berlin.
+  // Ab 16.08.2026 00:00 Berlin automatisch wieder offen.
+  start: new Date("2026-07-23T00:00:00+02:00").getTime(),
+  end: new Date("2026-08-15T23:59:59+02:00").getTime(),
   reopenLabel: "16.08.2026",
   message:
     "Wir befinden uns aktuell in den Betriebsferien. Bestellungen sind vom 23.07. bis einschließlich 15.08.2026 nicht möglich. Ab dem 16.08.2026 sind wir wieder für dich da.",
