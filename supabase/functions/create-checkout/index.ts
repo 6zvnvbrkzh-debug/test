@@ -24,24 +24,12 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-// Betriebsferien / Shop-Schließung (Server-seitiger Sicherheits-Block)
-const SHOP_CLOSED_START = new Date("2026-07-23T00:00:00+02:00").getTime();
-const SHOP_CLOSED_END = new Date("2026-08-15T23:59:59+02:00").getTime();
+// Betriebsferien: Bestellungen sind weiterhin möglich – der Versand erfolgt
+// erst ab dem 16.08.2026. Kein Server-seitiger Block nötig.
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
-  }
-
-  const nowMs = Date.now();
-  if (nowMs >= SHOP_CLOSED_START && nowMs <= SHOP_CLOSED_END) {
-    return new Response(
-      JSON.stringify({
-        error:
-          "Wir befinden uns aktuell in den Betriebsferien. Bestellungen sind vom 23.07. bis einschließlich 15.08.2026 nicht möglich. Ab dem 16.08.2026 sind wir wieder für dich da.",
-      }),
-      { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
   }
 
   const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";

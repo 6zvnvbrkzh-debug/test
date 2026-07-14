@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import { toast } from "sonner";
 import type { Listing } from "@/lib/mock-data";
-import { isShopClosed, SHOP_CLOSURE } from "@/lib/shop-status";
+import { isShippingDelayed, SHIPPING_PAUSE } from "@/lib/shop-status";
 
 export interface CartItem {
   listing: Listing;
@@ -74,10 +74,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items]);
 
   const addItem = useCallback((listing: Listing, qty: number = 1): boolean => {
-    if (isShopClosed()) {
-      toast.error("Betriebsferien", { description: SHOP_CLOSURE.message });
-      return false;
-    }
     const currentQty = items.find((item) => item.listing.id === listing.id)?.quantity ?? 0;
     const newQty = Math.min(currentQty + qty, listing.stock);
     if (newQty <= currentQty) return false;
@@ -92,6 +88,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return [...prev, { listing, quantity: newQty - currentQty }];
     });
     setIsOpen(true);
+
+    if (isShippingDelayed()) {
+      toast.info("Hinweis zum Versand", {
+        description: `Bestellungen sind möglich – der Versand erfolgt erst ab dem ${SHIPPING_PAUSE.reopenLabel}.`,
+      });
+    }
     return true;
   }, [items]);
 
