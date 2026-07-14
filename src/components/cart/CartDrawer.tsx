@@ -299,17 +299,31 @@ export function CartDrawer() {
                 </div>
               )}
 
+              {isShopClosed() && (
+                <div className="rounded-lg border border-primary/40 bg-primary/10 px-3 py-2.5 flex items-start gap-2">
+                  <Sun className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+                  <p className="text-xs text-foreground/90 leading-relaxed">
+                    <strong>Betriebsferien:</strong> Bestellungen sind vom 23.07. bis 15.08.2026 nicht möglich. Ab dem {SHOP_CLOSURE.reopenLabel} sind wir wieder für dich da.
+                  </p>
+                </div>
+              )}
+
               <Button
                 className="w-full font-semibold press-scale transition-signal"
                 size="lg"
                 onClick={handleCheckout}
-                disabled={isCheckingOut}
+                disabled={isCheckingOut || isShopClosed()}
                 variant={mustLoginForVoucher ? "secondary" : "default"}
               >
                 {isCheckingOut ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                     Wird geladen...
+                  </>
+                ) : isShopClosed() ? (
+                  <>
+                    <Sun className="h-4 w-4 mr-2" />
+                    Shop geschlossen
                   </>
                 ) : mustLoginForVoucher ? (
                   <>
