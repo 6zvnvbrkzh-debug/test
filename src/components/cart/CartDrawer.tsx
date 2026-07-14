@@ -2,13 +2,14 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { Minus, Plus, Trash2, ShoppingBag, Loader2, Ticket, X, LogIn, Info } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, Loader2, Ticket, X, LogIn, Info, Sun } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { isShopClosed, SHOP_CLOSURE } from "@/lib/shop-status";
 
 const fmtEUR = (n: number) =>
   `${n.toFixed(2).replace(".", ",")}\u00A0€`;
@@ -70,6 +71,10 @@ export function CartDrawer() {
   const mustLoginForVoucher = Boolean(voucher && voucher.requiresAccount && !user);
 
   const handleCheckout = async () => {
+    if (isShopClosed()) {
+      toast.error("Betriebsferien", { description: SHOP_CLOSURE.message });
+      return;
+    }
     if (mustLoginForVoucher) {
       toast.info("Bitte melde dich an, damit dein Gutschein-Restguthaben deinem Konto gutgeschrieben wird.");
       setIsOpen(false);
@@ -294,17 +299,31 @@ export function CartDrawer() {
                 </div>
               )}
 
+              {isShopClosed() && (
+                <div className="rounded-lg border border-primary/40 bg-primary/10 px-3 py-2.5 flex items-start gap-2">
+                  <Sun className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+                  <p className="text-xs text-foreground/90 leading-relaxed">
+                    <strong>Betriebsferien:</strong> Bestellungen sind vom 23.07. bis 15.08.2026 nicht möglich. Ab dem {SHOP_CLOSURE.reopenLabel} sind wir wieder für dich da.
+                  </p>
+                </div>
+              )}
+
               <Button
                 className="w-full font-semibold press-scale transition-signal"
                 size="lg"
                 onClick={handleCheckout}
-                disabled={isCheckingOut}
+                disabled={isCheckingOut || isShopClosed()}
                 variant={mustLoginForVoucher ? "secondary" : "default"}
               >
                 {isCheckingOut ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                     Wird geladen...
+                  </>
+                ) : isShopClosed() ? (
+                  <>
+                    <Sun className="h-4 w-4 mr-2" />
+                    Shop geschlossen
                   </>
                 ) : mustLoginForVoucher ? (
                   <>
