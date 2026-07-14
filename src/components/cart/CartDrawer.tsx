@@ -2,13 +2,14 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { Minus, Plus, Trash2, ShoppingBag, Loader2, Ticket, X, LogIn, Info } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, Loader2, Ticket, X, LogIn, Info, Sun } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { isShopClosed, SHOP_CLOSURE } from "@/lib/shop-status";
 
 const fmtEUR = (n: number) =>
   `${n.toFixed(2).replace(".", ",")}\u00A0€`;
@@ -70,6 +71,10 @@ export function CartDrawer() {
   const mustLoginForVoucher = Boolean(voucher && voucher.requiresAccount && !user);
 
   const handleCheckout = async () => {
+    if (isShopClosed()) {
+      toast.error("Betriebsferien", { description: SHOP_CLOSURE.message });
+      return;
+    }
     if (mustLoginForVoucher) {
       toast.info("Bitte melde dich an, damit dein Gutschein-Restguthaben deinem Konto gutgeschrieben wird.");
       setIsOpen(false);
