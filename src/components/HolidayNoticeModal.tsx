@@ -69,17 +69,9 @@ export function HolidayNoticeModal() {
 
               <div className="space-y-4 text-sm sm:text-base text-muted-foreground leading-relaxed">
                 <p>
-                  Liebe Kundinnen und Kunden, wir machen Urlaub! Daher bleibt{" "}
-                  <span className="text-foreground font-medium">Barbato Electronics</span>{" "}
-                  vom{" "}
-                  <span className="text-foreground font-mono-data whitespace-nowrap">
-                    23.07.2026
-                  </span>{" "}
-                  bis einschließlich{" "}
-                  <span className="text-foreground font-mono-data whitespace-nowrap">
-                    15.08.2026
-                  </span>{" "}
-                  geschlossen.
+                  Liebe Kundinnen und Kunden, wir machen Urlaub. Der Shop bleibt
+                  aber <span className="text-foreground font-medium">geöffnet</span> – ihr
+                  könnt weiterhin ganz normal bestellen.
                 </p>
 
                 <div className="rounded-xl border border-border/40 bg-background/40 backdrop-blur-md p-4">
@@ -92,16 +84,22 @@ export function HolidayNoticeModal() {
                     <span className="text-foreground font-mono-data whitespace-nowrap">
                       22.07.2026
                     </span>
-                    . Alle bis dahin versandfertigen Bestellungen werden
-                    selbstverständlich noch verschickt.
+                    . Alle bis dahin versandfertigen Bestellungen werden noch verschickt.
                   </p>
                   <p className="text-sm mt-2">
-                    Während unserer Betriebsferien findet kein Versand statt. Ab
-                    dem{" "}
+                    Bestellungen vom{" "}
+                    <span className="text-foreground font-mono-data whitespace-nowrap">
+                      23.07.2026
+                    </span>{" "}
+                    bis{" "}
+                    <span className="text-foreground font-mono-data whitespace-nowrap">
+                      15.08.2026
+                    </span>{" "}
+                    werden gesammelt und ab dem{" "}
                     <span className="text-foreground font-mono-data whitespace-nowrap">
                       16.08.2026
                     </span>{" "}
-                    sind wir wieder wie gewohnt für euch da.
+                    schnellstmöglich versendet.
                   </p>
                 </div>
 
