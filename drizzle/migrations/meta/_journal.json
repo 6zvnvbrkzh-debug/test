@@ -8,6 +8,13 @@
       "when": 1789586139292,
       "tag": "0000_show_sold_listings_publicly",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789586325851,
+      "tag": "0001_sync_listing_status_with_stock",
+      "breakpoints": true
     }
   ]
 }
