@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import { toast } from "sonner";
 import type { Listing } from "@/lib/mock-data";
-import { isShippingDelayed, SHIPPING_PAUSE } from "@/lib/shop-status";
+
 
 export interface CartItem {
   listing: Listing;
@@ -89,11 +89,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
     setIsOpen(true);
 
-    if (isShippingDelayed()) {
-      toast.info("Hinweis zum Versand", {
-        description: `Bestellungen sind möglich – der Versand erfolgt erst ab dem ${SHIPPING_PAUSE.reopenLabel}.`,
-      });
-    }
     return true;
   }, [items]);
 
