@@ -58,7 +58,7 @@ export function useActiveListings() {
         .select(
           "id, title, description, price, original_price, stock, condition, images, specs, seller_id, status, created_at, categories(slug)"
         )
-        .eq("status", "ACTIVE")
+        .in("status", ["ACTIVE", "SOLD"])
         .order("created_at", { ascending: false });
 
       if (error) throw error;
