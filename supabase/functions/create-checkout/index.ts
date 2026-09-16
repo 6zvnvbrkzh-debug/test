@@ -24,9 +24,6 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-// Betriebsferien: Bestellungen sind weiterhin möglich – der Versand erfolgt
-// erst ab dem 16.08.2026. Kein Server-seitiger Block nötig.
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
