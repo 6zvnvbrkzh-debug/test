@@ -1,0 +1,2 @@
+# Architecture rules
+- Store imported product media as optimized CDN assets with project asset pointers, and reference their stable URLs in existing listings; this keeps catalog data dynamic and avoids bundling media binaries.
